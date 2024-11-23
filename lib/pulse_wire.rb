@@ -8,9 +8,9 @@ loader.setup
 module PulseWire
   mattr_accessor :importmap, default: Importmap::Map.new
 
-  mattr_accessor :css_paths, default: [ "app/assets/stylesheets" ]
-  mattr_accessor :html_paths, default: [ "app/**/*.rb", "app/views/*.erb" ]
-  mattr_accessor :javascript_paths, default: [ "app/javascript/**/*.js" ]
+  mattr_accessor :css_paths, default: %w[ app/assets/stylesheets ]
+  mattr_accessor :html_paths, default: %w[ app/controllers app/helpers app/models app/views ]
+  mattr_accessor :javascript_paths, default: %w[ app/javascript ]
 
   class << self
     def install

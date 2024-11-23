@@ -29,6 +29,7 @@ class PulseWire::FileWatcher
     end
 
     def process_changed_files(changed_files)
+      puts "CHANGED #{changed_files}"
       changed_files.each do |file|
         @blocks_by_path.each do |path, blocks|
           if file.to_s.start_with?(path.to_s)

@@ -9,6 +9,7 @@ class PulseWire::Installer
 
   def install
     monitor :css_paths, action: :reload_css
+    monitor :html_paths, action: :reload_html
 
     file_watcher.start
   end

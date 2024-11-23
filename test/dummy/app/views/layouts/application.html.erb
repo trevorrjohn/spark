@@ -22,11 +22,15 @@
 
   <% if Rails.env.development? %>
     <%= javascript_importmap_tags importmap: PulseWire.importmap %>
-    <%= turbo_stream_from "pulse_wire" %>
   <% end %>
 </head>
 
 <body>
+
+<% if Rails.env.development? %>
+<%= turbo_stream_from "pulse_wire", id: "pulse-wire" %>
+<% end %>
+
 <%= yield %>
 </body>
 </html>
