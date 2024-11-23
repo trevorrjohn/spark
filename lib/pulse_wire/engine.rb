@@ -1,4 +1,5 @@
 require "importmap-rails"
+require "turbo-rails"
 
 module PulseWire
   class Engine < ::Rails::Engine
@@ -26,7 +27,7 @@ module PulseWire
     end
 
     initializer "pulse_wire.install" do
-      PulseWire.install
+      PulseWire.install if Rails.env.development?
     end
   end
 end

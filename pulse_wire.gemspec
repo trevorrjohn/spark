@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "zeitwerk"
   spec.add_dependency "importmap-rails"
   spec.add_dependency "listen"
+  spec.add_dependency "turbo-rails"
 
   spec.add_development_dependency "solid_cable"
 end
