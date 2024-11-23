@@ -4,6 +4,14 @@ module PulseWire
   class Engine < ::Rails::Engine
     isolate_namespace PulseWire
 
+    config.pulse_wire = ActiveSupport::OrderedOptions.new
+
+    initializer "pulse_wire.config" do |app|
+      config.pulse_wire.each do |key, value|
+        PulseWire.send("#{key}=", value)
+      end
+    end
+
     initializer "pulse_wire.assets" do |app|
       app.config.assets.paths << root.join("app/javascript")
     end
@@ -15,6 +23,10 @@ module PulseWire
       ActiveSupport.on_load(:action_controller_base) do
         before_action { PulseWire.importmap.cache_sweeper.execute_if_updated }
       end
+    end
+
+    initializer "pulse_wire.install" do
+      PulseWire.install
     end
   end
 end

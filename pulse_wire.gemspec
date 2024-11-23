@@ -25,4 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rails", ">= 8.0.0"
   spec.add_dependency "zeitwerk"
   spec.add_dependency "importmap-rails"
+  spec.add_dependency "listen"
+
+  spec.add_development_dependency "solid_cable"
 end

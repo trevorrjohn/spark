@@ -3,6 +3,7 @@ PATH
   specs:
     pulse_wire (0.1.0)
       importmap-rails
+      listen
       rails (>= 8.0.0)
       zeitwerk
 
@@ -91,6 +92,8 @@ GEM
     date (3.4.0)
     drb (2.2.1)
     erubi (1.13.0)
+    ffi (1.17.0-arm64-darwin)
+    ffi (1.17.0-x86_64-linux-gnu)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.6)
@@ -105,6 +108,9 @@ GEM
       reline (>= 0.4.2)
     json (2.8.2)
     language_server-protocol (3.17.0.3)
+    listen (3.9.0)
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.6.1)
     loofah (2.23.1)
       crass (~> 1.0.2)
@@ -183,6 +189,9 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.2.1)
+    rb-fsevent (0.11.2)
+    rb-inotify (0.11.1)
+      ffi (~> 1.0)
     rdoc (6.8.1)
       psych (>= 4.0.0)
     regexp_parser (2.9.2)
@@ -218,6 +227,11 @@ GEM
       rubocop-rails
     ruby-progressbar (1.13.0)
     securerandom (0.3.2)
+    solid_cable (3.0.2)
+      actioncable (>= 7.2)
+      activejob (>= 7.2)
+      activerecord (>= 7.2)
+      railties (>= 7.2)
     sqlite3 (2.2.0-arm64-darwin)
     sqlite3 (2.2.0-x86_64-linux-gnu)
     stringio (3.1.2)
@@ -242,6 +256,7 @@ DEPENDENCIES
   pulse_wire!
   puma
   rubocop-rails-omakase
+  solid_cable
   sqlite3
 
 BUNDLED WITH
