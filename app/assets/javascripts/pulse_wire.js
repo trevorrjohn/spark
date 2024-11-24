@@ -7867,7 +7867,7 @@
     console.warn("Please replace `Turbo.setFormMode(mode)` with `Turbo.config.forms.mode = mode`. The top-level function is deprecated and will be removed in a future version of Turbo.`");
     config.forms.mode = mode;
   }
-  var Turbo = /*#__PURE__*/Object.freeze({
+  var Turbo$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     navigator: navigator$1,
     session: session,
@@ -9124,12 +9124,12 @@
       element = element.parentElement;
     }
   })();
-  window.Turbo = _objectSpread2(_objectSpread2({}, Turbo), {}, {
+  window.Turbo = _objectSpread2(_objectSpread2({}, Turbo$1), {}, {
     StreamActions: StreamActions
   });
   start();
 
-  var Turbo$1 = /*#__PURE__*/Object.freeze({
+  var Turbo$2 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     FetchEnctype: FetchEnctype,
     FetchMethod: FetchMethod,
@@ -9403,7 +9403,7 @@
     return body instanceof FormData || body instanceof URLSearchParams;
   }
 
-  window.Turbo = Turbo$1;
+  window.Turbo = Turbo$2;
   addEventListener("turbo:before-fetch-request", encodeMethodIntoRequestBody);
 
   var CssReloader = /*#__PURE__*/function () {
@@ -10336,19 +10336,3718 @@
     }]);
   }();
   var htmlReloader = new HtmlReloader();
-  StreamActions.reload_html = /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
-        case 0:
-          htmlReloader.reload();
-        case 1:
-        case "end":
-          return _context2.stop();
-      }
-    }, _callee2);
-  }));
+  StreamActions.reload_html = function () {
+    htmlReloader.reload();
+  };
 
-  console.debug("HOLA!");
+  /*
+  Stimulus 3.2.1
+  Copyright © 2023 Basecamp, LLC
+   */
+  var EventListener = /*#__PURE__*/function () {
+    function EventListener(eventTarget, eventName, eventOptions) {
+      _classCallCheck(this, EventListener);
+      this.eventTarget = eventTarget;
+      this.eventName = eventName;
+      this.eventOptions = eventOptions;
+      this.unorderedBindings = new Set();
+    }
+    return _createClass(EventListener, [{
+      key: "connect",
+      value: function connect() {
+        this.eventTarget.addEventListener(this.eventName, this, this.eventOptions);
+      }
+    }, {
+      key: "disconnect",
+      value: function disconnect() {
+        this.eventTarget.removeEventListener(this.eventName, this, this.eventOptions);
+      }
+    }, {
+      key: "bindingConnected",
+      value: function bindingConnected(binding) {
+        this.unorderedBindings.add(binding);
+      }
+    }, {
+      key: "bindingDisconnected",
+      value: function bindingDisconnected(binding) {
+        this.unorderedBindings["delete"](binding);
+      }
+    }, {
+      key: "handleEvent",
+      value: function handleEvent(event) {
+        var extendedEvent = extendEvent(event);
+        var _iterator = _createForOfIteratorHelper(this.bindings),
+          _step;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var binding = _step.value;
+            if (extendedEvent.immediatePropagationStopped) {
+              break;
+            } else {
+              binding.handleEvent(extendedEvent);
+            }
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      }
+    }, {
+      key: "hasBindings",
+      value: function hasBindings() {
+        return this.unorderedBindings.size > 0;
+      }
+    }, {
+      key: "bindings",
+      get: function get() {
+        return Array.from(this.unorderedBindings).sort(function (left, right) {
+          var leftIndex = left.index,
+            rightIndex = right.index;
+          return leftIndex < rightIndex ? -1 : leftIndex > rightIndex ? 1 : 0;
+        });
+      }
+    }]);
+  }();
+  function extendEvent(event) {
+    if ("immediatePropagationStopped" in event) {
+      return event;
+    } else {
+      var _stopImmediatePropagation = event.stopImmediatePropagation;
+      return Object.assign(event, {
+        immediatePropagationStopped: false,
+        stopImmediatePropagation: function stopImmediatePropagation() {
+          this.immediatePropagationStopped = true;
+          _stopImmediatePropagation.call(this);
+        }
+      });
+    }
+  }
+  var Dispatcher = /*#__PURE__*/function () {
+    function Dispatcher(application) {
+      _classCallCheck(this, Dispatcher);
+      this.application = application;
+      this.eventListenerMaps = new Map();
+      this.started = false;
+    }
+    return _createClass(Dispatcher, [{
+      key: "start",
+      value: function start() {
+        if (!this.started) {
+          this.started = true;
+          this.eventListeners.forEach(function (eventListener) {
+            return eventListener.connect();
+          });
+        }
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        if (this.started) {
+          this.started = false;
+          this.eventListeners.forEach(function (eventListener) {
+            return eventListener.disconnect();
+          });
+        }
+      }
+    }, {
+      key: "eventListeners",
+      get: function get() {
+        return Array.from(this.eventListenerMaps.values()).reduce(function (listeners, map) {
+          return listeners.concat(Array.from(map.values()));
+        }, []);
+      }
+    }, {
+      key: "bindingConnected",
+      value: function bindingConnected(binding) {
+        this.fetchEventListenerForBinding(binding).bindingConnected(binding);
+      }
+    }, {
+      key: "bindingDisconnected",
+      value: function bindingDisconnected(binding) {
+        var clearEventListeners = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+        this.fetchEventListenerForBinding(binding).bindingDisconnected(binding);
+        if (clearEventListeners) this.clearEventListenersForBinding(binding);
+      }
+    }, {
+      key: "handleError",
+      value: function handleError(error, message) {
+        var detail = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        this.application.handleError(error, "Error ".concat(message), detail);
+      }
+    }, {
+      key: "clearEventListenersForBinding",
+      value: function clearEventListenersForBinding(binding) {
+        var eventListener = this.fetchEventListenerForBinding(binding);
+        if (!eventListener.hasBindings()) {
+          eventListener.disconnect();
+          this.removeMappedEventListenerFor(binding);
+        }
+      }
+    }, {
+      key: "removeMappedEventListenerFor",
+      value: function removeMappedEventListenerFor(binding) {
+        var eventTarget = binding.eventTarget,
+          eventName = binding.eventName,
+          eventOptions = binding.eventOptions;
+        var eventListenerMap = this.fetchEventListenerMapForEventTarget(eventTarget);
+        var cacheKey = this.cacheKey(eventName, eventOptions);
+        eventListenerMap["delete"](cacheKey);
+        if (eventListenerMap.size == 0) this.eventListenerMaps["delete"](eventTarget);
+      }
+    }, {
+      key: "fetchEventListenerForBinding",
+      value: function fetchEventListenerForBinding(binding) {
+        var eventTarget = binding.eventTarget,
+          eventName = binding.eventName,
+          eventOptions = binding.eventOptions;
+        return this.fetchEventListener(eventTarget, eventName, eventOptions);
+      }
+    }, {
+      key: "fetchEventListener",
+      value: function fetchEventListener(eventTarget, eventName, eventOptions) {
+        var eventListenerMap = this.fetchEventListenerMapForEventTarget(eventTarget);
+        var cacheKey = this.cacheKey(eventName, eventOptions);
+        var eventListener = eventListenerMap.get(cacheKey);
+        if (!eventListener) {
+          eventListener = this.createEventListener(eventTarget, eventName, eventOptions);
+          eventListenerMap.set(cacheKey, eventListener);
+        }
+        return eventListener;
+      }
+    }, {
+      key: "createEventListener",
+      value: function createEventListener(eventTarget, eventName, eventOptions) {
+        var eventListener = new EventListener(eventTarget, eventName, eventOptions);
+        if (this.started) {
+          eventListener.connect();
+        }
+        return eventListener;
+      }
+    }, {
+      key: "fetchEventListenerMapForEventTarget",
+      value: function fetchEventListenerMapForEventTarget(eventTarget) {
+        var eventListenerMap = this.eventListenerMaps.get(eventTarget);
+        if (!eventListenerMap) {
+          eventListenerMap = new Map();
+          this.eventListenerMaps.set(eventTarget, eventListenerMap);
+        }
+        return eventListenerMap;
+      }
+    }, {
+      key: "cacheKey",
+      value: function cacheKey(eventName, eventOptions) {
+        var parts = [eventName];
+        Object.keys(eventOptions).sort().forEach(function (key) {
+          parts.push("".concat(eventOptions[key] ? "" : "!").concat(key));
+        });
+        return parts.join(":");
+      }
+    }]);
+  }();
+  var defaultActionDescriptorFilters = {
+    stop: function stop(_ref) {
+      var event = _ref.event,
+        value = _ref.value;
+      if (value) event.stopPropagation();
+      return true;
+    },
+    prevent: function prevent(_ref2) {
+      var event = _ref2.event,
+        value = _ref2.value;
+      if (value) event.preventDefault();
+      return true;
+    },
+    self: function self(_ref3) {
+      var event = _ref3.event,
+        value = _ref3.value,
+        element = _ref3.element;
+      if (value) {
+        return element === event.target;
+      } else {
+        return true;
+      }
+    }
+  };
+  var descriptorPattern = /^(?:(?:([^.]+?)\+)?(.+?)(?:\.(.+?))?(?:@(window|document))?->)?(.+?)(?:#([^:]+?))(?::(.+))?$/;
+  function parseActionDescriptorString(descriptorString) {
+    var source = descriptorString.trim();
+    var matches = source.match(descriptorPattern) || [];
+    var eventName = matches[2];
+    var keyFilter = matches[3];
+    if (keyFilter && !["keydown", "keyup", "keypress"].includes(eventName)) {
+      eventName += ".".concat(keyFilter);
+      keyFilter = "";
+    }
+    return {
+      eventTarget: parseEventTarget(matches[4]),
+      eventName: eventName,
+      eventOptions: matches[7] ? parseEventOptions(matches[7]) : {},
+      identifier: matches[5],
+      methodName: matches[6],
+      keyFilter: matches[1] || keyFilter
+    };
+  }
+  function parseEventTarget(eventTargetName) {
+    if (eventTargetName == "window") {
+      return window;
+    } else if (eventTargetName == "document") {
+      return document;
+    }
+  }
+  function parseEventOptions(eventOptions) {
+    return eventOptions.split(":").reduce(function (options, token) {
+      return Object.assign(options, _defineProperty({}, token.replace(/^!/, ""), !/^!/.test(token)));
+    }, {});
+  }
+  function stringifyEventTarget(eventTarget) {
+    if (eventTarget == window) {
+      return "window";
+    } else if (eventTarget == document) {
+      return "document";
+    }
+  }
+  function camelize(value) {
+    return value.replace(/(?:[_-])([a-z0-9])/g, function (_, _char) {
+      return _char.toUpperCase();
+    });
+  }
+  function namespaceCamelize(value) {
+    return camelize(value.replace(/--/g, "-").replace(/__/g, "_"));
+  }
+  function capitalize(value) {
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  }
+  function dasherize(value) {
+    return value.replace(/([A-Z])/g, function (_, _char2) {
+      return "-".concat(_char2.toLowerCase());
+    });
+  }
+  function tokenize(value) {
+    return value.match(/[^\s]+/g) || [];
+  }
+  function isSomething(object) {
+    return object !== null && object !== undefined;
+  }
+  function hasProperty(object, property) {
+    return Object.prototype.hasOwnProperty.call(object, property);
+  }
+  var allModifiers = ["meta", "ctrl", "alt", "shift"];
+  var Action = /*#__PURE__*/function () {
+    function Action(element, index, descriptor, schema) {
+      _classCallCheck(this, Action);
+      this.element = element;
+      this.index = index;
+      this.eventTarget = descriptor.eventTarget || element;
+      this.eventName = descriptor.eventName || getDefaultEventNameForElement(element) || error("missing event name");
+      this.eventOptions = descriptor.eventOptions || {};
+      this.identifier = descriptor.identifier || error("missing identifier");
+      this.methodName = descriptor.methodName || error("missing method name");
+      this.keyFilter = descriptor.keyFilter || "";
+      this.schema = schema;
+    }
+    return _createClass(Action, [{
+      key: "toString",
+      value: function toString() {
+        var eventFilter = this.keyFilter ? ".".concat(this.keyFilter) : "";
+        var eventTarget = this.eventTargetName ? "@".concat(this.eventTargetName) : "";
+        return "".concat(this.eventName).concat(eventFilter).concat(eventTarget, "->").concat(this.identifier, "#").concat(this.methodName);
+      }
+    }, {
+      key: "shouldIgnoreKeyboardEvent",
+      value: function shouldIgnoreKeyboardEvent(event) {
+        if (!this.keyFilter) {
+          return false;
+        }
+        var filters = this.keyFilter.split("+");
+        if (this.keyFilterDissatisfied(event, filters)) {
+          return true;
+        }
+        var standardFilter = filters.filter(function (key) {
+          return !allModifiers.includes(key);
+        })[0];
+        if (!standardFilter) {
+          return false;
+        }
+        if (!hasProperty(this.keyMappings, standardFilter)) {
+          error("contains unknown key filter: ".concat(this.keyFilter));
+        }
+        return this.keyMappings[standardFilter].toLowerCase() !== event.key.toLowerCase();
+      }
+    }, {
+      key: "shouldIgnoreMouseEvent",
+      value: function shouldIgnoreMouseEvent(event) {
+        if (!this.keyFilter) {
+          return false;
+        }
+        var filters = [this.keyFilter];
+        if (this.keyFilterDissatisfied(event, filters)) {
+          return true;
+        }
+        return false;
+      }
+    }, {
+      key: "params",
+      get: function get() {
+        var params = {};
+        var pattern = new RegExp("^data-".concat(this.identifier, "-(.+)-param$"), "i");
+        for (var _i = 0, _Array$from = Array.from(this.element.attributes); _i < _Array$from.length; _i++) {
+          var _Array$from$_i = _Array$from[_i],
+            name = _Array$from$_i.name,
+            value = _Array$from$_i.value;
+          var match = name.match(pattern);
+          var key = match && match[1];
+          if (key) {
+            params[camelize(key)] = typecast(value);
+          }
+        }
+        return params;
+      }
+    }, {
+      key: "eventTargetName",
+      get: function get() {
+        return stringifyEventTarget(this.eventTarget);
+      }
+    }, {
+      key: "keyMappings",
+      get: function get() {
+        return this.schema.keyMappings;
+      }
+    }, {
+      key: "keyFilterDissatisfied",
+      value: function keyFilterDissatisfied(event, filters) {
+        var _allModifiers$map = allModifiers.map(function (modifier) {
+            return filters.includes(modifier);
+          }),
+          _allModifiers$map2 = _slicedToArray(_allModifiers$map, 4),
+          meta = _allModifiers$map2[0],
+          ctrl = _allModifiers$map2[1],
+          alt = _allModifiers$map2[2],
+          shift = _allModifiers$map2[3];
+        return event.metaKey !== meta || event.ctrlKey !== ctrl || event.altKey !== alt || event.shiftKey !== shift;
+      }
+    }], [{
+      key: "forToken",
+      value: function forToken(token, schema) {
+        return new this(token.element, token.index, parseActionDescriptorString(token.content), schema);
+      }
+    }]);
+  }();
+  var defaultEventNames = {
+    a: function a() {
+      return "click";
+    },
+    button: function button() {
+      return "click";
+    },
+    form: function form() {
+      return "submit";
+    },
+    details: function details() {
+      return "toggle";
+    },
+    input: function input(e) {
+      return e.getAttribute("type") == "submit" ? "click" : "input";
+    },
+    select: function select() {
+      return "change";
+    },
+    textarea: function textarea() {
+      return "input";
+    }
+  };
+  function getDefaultEventNameForElement(element) {
+    var tagName = element.tagName.toLowerCase();
+    if (tagName in defaultEventNames) {
+      return defaultEventNames[tagName](element);
+    }
+  }
+  function error(message) {
+    throw new Error(message);
+  }
+  function typecast(value) {
+    try {
+      return JSON.parse(value);
+    } catch (o_O) {
+      return value;
+    }
+  }
+  var Binding = /*#__PURE__*/function () {
+    function Binding(context, action) {
+      _classCallCheck(this, Binding);
+      this.context = context;
+      this.action = action;
+    }
+    return _createClass(Binding, [{
+      key: "index",
+      get: function get() {
+        return this.action.index;
+      }
+    }, {
+      key: "eventTarget",
+      get: function get() {
+        return this.action.eventTarget;
+      }
+    }, {
+      key: "eventOptions",
+      get: function get() {
+        return this.action.eventOptions;
+      }
+    }, {
+      key: "identifier",
+      get: function get() {
+        return this.context.identifier;
+      }
+    }, {
+      key: "handleEvent",
+      value: function handleEvent(event) {
+        var actionEvent = this.prepareActionEvent(event);
+        if (this.willBeInvokedByEvent(event) && this.applyEventModifiers(actionEvent)) {
+          this.invokeWithEvent(actionEvent);
+        }
+      }
+    }, {
+      key: "eventName",
+      get: function get() {
+        return this.action.eventName;
+      }
+    }, {
+      key: "method",
+      get: function get() {
+        var method = this.controller[this.methodName];
+        if (typeof method == "function") {
+          return method;
+        }
+        throw new Error("Action \"".concat(this.action, "\" references undefined method \"").concat(this.methodName, "\""));
+      }
+    }, {
+      key: "applyEventModifiers",
+      value: function applyEventModifiers(event) {
+        var element = this.action.element;
+        var actionDescriptorFilters = this.context.application.actionDescriptorFilters;
+        var controller = this.context.controller;
+        var passes = true;
+        for (var _i2 = 0, _Object$entries = Object.entries(this.eventOptions); _i2 < _Object$entries.length; _i2++) {
+          var _Object$entries$_i = _slicedToArray(_Object$entries[_i2], 2),
+            name = _Object$entries$_i[0],
+            value = _Object$entries$_i[1];
+          if (name in actionDescriptorFilters) {
+            var filter = actionDescriptorFilters[name];
+            passes = passes && filter({
+              name: name,
+              value: value,
+              event: event,
+              element: element,
+              controller: controller
+            });
+          } else {
+            continue;
+          }
+        }
+        return passes;
+      }
+    }, {
+      key: "prepareActionEvent",
+      value: function prepareActionEvent(event) {
+        return Object.assign(event, {
+          params: this.action.params
+        });
+      }
+    }, {
+      key: "invokeWithEvent",
+      value: function invokeWithEvent(event) {
+        var target = event.target,
+          currentTarget = event.currentTarget;
+        try {
+          this.method.call(this.controller, event);
+          this.context.logDebugActivity(this.methodName, {
+            event: event,
+            target: target,
+            currentTarget: currentTarget,
+            action: this.methodName
+          });
+        } catch (error) {
+          var identifier = this.identifier,
+            controller = this.controller,
+            element = this.element,
+            index = this.index;
+          var detail = {
+            identifier: identifier,
+            controller: controller,
+            element: element,
+            index: index,
+            event: event
+          };
+          this.context.handleError(error, "invoking action \"".concat(this.action, "\""), detail);
+        }
+      }
+    }, {
+      key: "willBeInvokedByEvent",
+      value: function willBeInvokedByEvent(event) {
+        var eventTarget = event.target;
+        if (event instanceof KeyboardEvent && this.action.shouldIgnoreKeyboardEvent(event)) {
+          return false;
+        }
+        if (event instanceof MouseEvent && this.action.shouldIgnoreMouseEvent(event)) {
+          return false;
+        }
+        if (this.element === eventTarget) {
+          return true;
+        } else if (eventTarget instanceof Element && this.element.contains(eventTarget)) {
+          return this.scope.containsElement(eventTarget);
+        } else {
+          return this.scope.containsElement(this.action.element);
+        }
+      }
+    }, {
+      key: "controller",
+      get: function get() {
+        return this.context.controller;
+      }
+    }, {
+      key: "methodName",
+      get: function get() {
+        return this.action.methodName;
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this.scope.element;
+      }
+    }, {
+      key: "scope",
+      get: function get() {
+        return this.context.scope;
+      }
+    }]);
+  }();
+  var ElementObserver = /*#__PURE__*/function () {
+    function ElementObserver(element, delegate) {
+      var _this = this;
+      _classCallCheck(this, ElementObserver);
+      this.mutationObserverInit = {
+        attributes: true,
+        childList: true,
+        subtree: true
+      };
+      this.element = element;
+      this.started = false;
+      this.delegate = delegate;
+      this.elements = new Set();
+      this.mutationObserver = new MutationObserver(function (mutations) {
+        return _this.processMutations(mutations);
+      });
+    }
+    return _createClass(ElementObserver, [{
+      key: "start",
+      value: function start() {
+        if (!this.started) {
+          this.started = true;
+          this.mutationObserver.observe(this.element, this.mutationObserverInit);
+          this.refresh();
+        }
+      }
+    }, {
+      key: "pause",
+      value: function pause(callback) {
+        if (this.started) {
+          this.mutationObserver.disconnect();
+          this.started = false;
+        }
+        callback();
+        if (!this.started) {
+          this.mutationObserver.observe(this.element, this.mutationObserverInit);
+          this.started = true;
+        }
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        if (this.started) {
+          this.mutationObserver.takeRecords();
+          this.mutationObserver.disconnect();
+          this.started = false;
+        }
+      }
+    }, {
+      key: "refresh",
+      value: function refresh() {
+        if (this.started) {
+          var matches = new Set(this.matchElementsInTree());
+          for (var _i3 = 0, _Array$from2 = Array.from(this.elements); _i3 < _Array$from2.length; _i3++) {
+            var element = _Array$from2[_i3];
+            if (!matches.has(element)) {
+              this.removeElement(element);
+            }
+          }
+          for (var _i4 = 0, _Array$from3 = Array.from(matches); _i4 < _Array$from3.length; _i4++) {
+            var _element2 = _Array$from3[_i4];
+            this.addElement(_element2);
+          }
+        }
+      }
+    }, {
+      key: "processMutations",
+      value: function processMutations(mutations) {
+        if (this.started) {
+          var _iterator2 = _createForOfIteratorHelper(mutations),
+            _step2;
+          try {
+            for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+              var mutation = _step2.value;
+              this.processMutation(mutation);
+            }
+          } catch (err) {
+            _iterator2.e(err);
+          } finally {
+            _iterator2.f();
+          }
+        }
+      }
+    }, {
+      key: "processMutation",
+      value: function processMutation(mutation) {
+        if (mutation.type == "attributes") {
+          this.processAttributeChange(mutation.target, mutation.attributeName);
+        } else if (mutation.type == "childList") {
+          this.processRemovedNodes(mutation.removedNodes);
+          this.processAddedNodes(mutation.addedNodes);
+        }
+      }
+    }, {
+      key: "processAttributeChange",
+      value: function processAttributeChange(element, attributeName) {
+        if (this.elements.has(element)) {
+          if (this.delegate.elementAttributeChanged && this.matchElement(element)) {
+            this.delegate.elementAttributeChanged(element, attributeName);
+          } else {
+            this.removeElement(element);
+          }
+        } else if (this.matchElement(element)) {
+          this.addElement(element);
+        }
+      }
+    }, {
+      key: "processRemovedNodes",
+      value: function processRemovedNodes(nodes) {
+        for (var _i5 = 0, _Array$from4 = Array.from(nodes); _i5 < _Array$from4.length; _i5++) {
+          var node = _Array$from4[_i5];
+          var element = this.elementFromNode(node);
+          if (element) {
+            this.processTree(element, this.removeElement);
+          }
+        }
+      }
+    }, {
+      key: "processAddedNodes",
+      value: function processAddedNodes(nodes) {
+        for (var _i6 = 0, _Array$from5 = Array.from(nodes); _i6 < _Array$from5.length; _i6++) {
+          var node = _Array$from5[_i6];
+          var element = this.elementFromNode(node);
+          if (element && this.elementIsActive(element)) {
+            this.processTree(element, this.addElement);
+          }
+        }
+      }
+    }, {
+      key: "matchElement",
+      value: function matchElement(element) {
+        return this.delegate.matchElement(element);
+      }
+    }, {
+      key: "matchElementsInTree",
+      value: function matchElementsInTree() {
+        var tree = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.element;
+        return this.delegate.matchElementsInTree(tree);
+      }
+    }, {
+      key: "processTree",
+      value: function processTree(tree, processor) {
+        var _iterator3 = _createForOfIteratorHelper(this.matchElementsInTree(tree)),
+          _step3;
+        try {
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+            var element = _step3.value;
+            processor.call(this, element);
+          }
+        } catch (err) {
+          _iterator3.e(err);
+        } finally {
+          _iterator3.f();
+        }
+      }
+    }, {
+      key: "elementFromNode",
+      value: function elementFromNode(node) {
+        if (node.nodeType == Node.ELEMENT_NODE) {
+          return node;
+        }
+      }
+    }, {
+      key: "elementIsActive",
+      value: function elementIsActive(element) {
+        if (element.isConnected != this.element.isConnected) {
+          return false;
+        } else {
+          return this.element.contains(element);
+        }
+      }
+    }, {
+      key: "addElement",
+      value: function addElement(element) {
+        if (!this.elements.has(element)) {
+          if (this.elementIsActive(element)) {
+            this.elements.add(element);
+            if (this.delegate.elementMatched) {
+              this.delegate.elementMatched(element);
+            }
+          }
+        }
+      }
+    }, {
+      key: "removeElement",
+      value: function removeElement(element) {
+        if (this.elements.has(element)) {
+          this.elements["delete"](element);
+          if (this.delegate.elementUnmatched) {
+            this.delegate.elementUnmatched(element);
+          }
+        }
+      }
+    }]);
+  }();
+  var AttributeObserver = /*#__PURE__*/function () {
+    function AttributeObserver(element, attributeName, delegate) {
+      _classCallCheck(this, AttributeObserver);
+      this.attributeName = attributeName;
+      this.delegate = delegate;
+      this.elementObserver = new ElementObserver(element, this);
+    }
+    return _createClass(AttributeObserver, [{
+      key: "element",
+      get: function get() {
+        return this.elementObserver.element;
+      }
+    }, {
+      key: "selector",
+      get: function get() {
+        return "[".concat(this.attributeName, "]");
+      }
+    }, {
+      key: "start",
+      value: function start() {
+        this.elementObserver.start();
+      }
+    }, {
+      key: "pause",
+      value: function pause(callback) {
+        this.elementObserver.pause(callback);
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        this.elementObserver.stop();
+      }
+    }, {
+      key: "refresh",
+      value: function refresh() {
+        this.elementObserver.refresh();
+      }
+    }, {
+      key: "started",
+      get: function get() {
+        return this.elementObserver.started;
+      }
+    }, {
+      key: "matchElement",
+      value: function matchElement(element) {
+        return element.hasAttribute(this.attributeName);
+      }
+    }, {
+      key: "matchElementsInTree",
+      value: function matchElementsInTree(tree) {
+        var match = this.matchElement(tree) ? [tree] : [];
+        var matches = Array.from(tree.querySelectorAll(this.selector));
+        return match.concat(matches);
+      }
+    }, {
+      key: "elementMatched",
+      value: function elementMatched(element) {
+        if (this.delegate.elementMatchedAttribute) {
+          this.delegate.elementMatchedAttribute(element, this.attributeName);
+        }
+      }
+    }, {
+      key: "elementUnmatched",
+      value: function elementUnmatched(element) {
+        if (this.delegate.elementUnmatchedAttribute) {
+          this.delegate.elementUnmatchedAttribute(element, this.attributeName);
+        }
+      }
+    }, {
+      key: "elementAttributeChanged",
+      value: function elementAttributeChanged(element, attributeName) {
+        if (this.delegate.elementAttributeValueChanged && this.attributeName == attributeName) {
+          this.delegate.elementAttributeValueChanged(element, attributeName);
+        }
+      }
+    }]);
+  }();
+  function _add(map, key, value) {
+    fetch$1(map, key).add(value);
+  }
+  function del(map, key, value) {
+    fetch$1(map, key)["delete"](value);
+    prune(map, key);
+  }
+  function fetch$1(map, key) {
+    var values = map.get(key);
+    if (!values) {
+      values = new Set();
+      map.set(key, values);
+    }
+    return values;
+  }
+  function prune(map, key) {
+    var values = map.get(key);
+    if (values != null && values.size == 0) {
+      map["delete"](key);
+    }
+  }
+  var Multimap = /*#__PURE__*/function () {
+    function Multimap() {
+      _classCallCheck(this, Multimap);
+      this.valuesByKey = new Map();
+    }
+    return _createClass(Multimap, [{
+      key: "keys",
+      get: function get() {
+        return Array.from(this.valuesByKey.keys());
+      }
+    }, {
+      key: "values",
+      get: function get() {
+        var sets = Array.from(this.valuesByKey.values());
+        return sets.reduce(function (values, set) {
+          return values.concat(Array.from(set));
+        }, []);
+      }
+    }, {
+      key: "size",
+      get: function get() {
+        var sets = Array.from(this.valuesByKey.values());
+        return sets.reduce(function (size, set) {
+          return size + set.size;
+        }, 0);
+      }
+    }, {
+      key: "add",
+      value: function add(key, value) {
+        _add(this.valuesByKey, key, value);
+      }
+    }, {
+      key: "delete",
+      value: function _delete(key, value) {
+        del(this.valuesByKey, key, value);
+      }
+    }, {
+      key: "has",
+      value: function has(key, value) {
+        var values = this.valuesByKey.get(key);
+        return values != null && values.has(value);
+      }
+    }, {
+      key: "hasKey",
+      value: function hasKey(key) {
+        return this.valuesByKey.has(key);
+      }
+    }, {
+      key: "hasValue",
+      value: function hasValue(value) {
+        var sets = Array.from(this.valuesByKey.values());
+        return sets.some(function (set) {
+          return set.has(value);
+        });
+      }
+    }, {
+      key: "getValuesForKey",
+      value: function getValuesForKey(key) {
+        var values = this.valuesByKey.get(key);
+        return values ? Array.from(values) : [];
+      }
+    }, {
+      key: "getKeysForValue",
+      value: function getKeysForValue(value) {
+        return Array.from(this.valuesByKey).filter(function (_ref4) {
+          var _ref5 = _slicedToArray(_ref4, 2);
+            _ref5[0];
+            var values = _ref5[1];
+          return values.has(value);
+        }).map(function (_ref6) {
+          var _ref7 = _slicedToArray(_ref6, 2),
+            key = _ref7[0];
+            _ref7[1];
+          return key;
+        });
+      }
+    }]);
+  }();
+  var SelectorObserver = /*#__PURE__*/function () {
+    function SelectorObserver(element, selector, delegate, details) {
+      _classCallCheck(this, SelectorObserver);
+      this._selector = selector;
+      this.details = details;
+      this.elementObserver = new ElementObserver(element, this);
+      this.delegate = delegate;
+      this.matchesByElement = new Multimap();
+    }
+    return _createClass(SelectorObserver, [{
+      key: "started",
+      get: function get() {
+        return this.elementObserver.started;
+      }
+    }, {
+      key: "selector",
+      get: function get() {
+        return this._selector;
+      },
+      set: function set(selector) {
+        this._selector = selector;
+        this.refresh();
+      }
+    }, {
+      key: "start",
+      value: function start() {
+        this.elementObserver.start();
+      }
+    }, {
+      key: "pause",
+      value: function pause(callback) {
+        this.elementObserver.pause(callback);
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        this.elementObserver.stop();
+      }
+    }, {
+      key: "refresh",
+      value: function refresh() {
+        this.elementObserver.refresh();
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this.elementObserver.element;
+      }
+    }, {
+      key: "matchElement",
+      value: function matchElement(element) {
+        var selector = this.selector;
+        if (selector) {
+          var matches = element.matches(selector);
+          if (this.delegate.selectorMatchElement) {
+            return matches && this.delegate.selectorMatchElement(element, this.details);
+          }
+          return matches;
+        } else {
+          return false;
+        }
+      }
+    }, {
+      key: "matchElementsInTree",
+      value: function matchElementsInTree(tree) {
+        var _this3 = this;
+        var selector = this.selector;
+        if (selector) {
+          var match = this.matchElement(tree) ? [tree] : [];
+          var matches = Array.from(tree.querySelectorAll(selector)).filter(function (match) {
+            return _this3.matchElement(match);
+          });
+          return match.concat(matches);
+        } else {
+          return [];
+        }
+      }
+    }, {
+      key: "elementMatched",
+      value: function elementMatched(element) {
+        var selector = this.selector;
+        if (selector) {
+          this.selectorMatched(element, selector);
+        }
+      }
+    }, {
+      key: "elementUnmatched",
+      value: function elementUnmatched(element) {
+        var selectors = this.matchesByElement.getKeysForValue(element);
+        var _iterator4 = _createForOfIteratorHelper(selectors),
+          _step4;
+        try {
+          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+            var selector = _step4.value;
+            this.selectorUnmatched(element, selector);
+          }
+        } catch (err) {
+          _iterator4.e(err);
+        } finally {
+          _iterator4.f();
+        }
+      }
+    }, {
+      key: "elementAttributeChanged",
+      value: function elementAttributeChanged(element, _attributeName) {
+        var selector = this.selector;
+        if (selector) {
+          var matches = this.matchElement(element);
+          var matchedBefore = this.matchesByElement.has(selector, element);
+          if (matches && !matchedBefore) {
+            this.selectorMatched(element, selector);
+          } else if (!matches && matchedBefore) {
+            this.selectorUnmatched(element, selector);
+          }
+        }
+      }
+    }, {
+      key: "selectorMatched",
+      value: function selectorMatched(element, selector) {
+        this.delegate.selectorMatched(element, selector, this.details);
+        this.matchesByElement.add(selector, element);
+      }
+    }, {
+      key: "selectorUnmatched",
+      value: function selectorUnmatched(element, selector) {
+        this.delegate.selectorUnmatched(element, selector, this.details);
+        this.matchesByElement["delete"](selector, element);
+      }
+    }]);
+  }();
+  var StringMapObserver = /*#__PURE__*/function () {
+    function StringMapObserver(element, delegate) {
+      var _this4 = this;
+      _classCallCheck(this, StringMapObserver);
+      this.element = element;
+      this.delegate = delegate;
+      this.started = false;
+      this.stringMap = new Map();
+      this.mutationObserver = new MutationObserver(function (mutations) {
+        return _this4.processMutations(mutations);
+      });
+    }
+    return _createClass(StringMapObserver, [{
+      key: "start",
+      value: function start() {
+        if (!this.started) {
+          this.started = true;
+          this.mutationObserver.observe(this.element, {
+            attributes: true,
+            attributeOldValue: true
+          });
+          this.refresh();
+        }
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        if (this.started) {
+          this.mutationObserver.takeRecords();
+          this.mutationObserver.disconnect();
+          this.started = false;
+        }
+      }
+    }, {
+      key: "refresh",
+      value: function refresh() {
+        if (this.started) {
+          var _iterator5 = _createForOfIteratorHelper(this.knownAttributeNames),
+            _step5;
+          try {
+            for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+              var attributeName = _step5.value;
+              this.refreshAttribute(attributeName, null);
+            }
+          } catch (err) {
+            _iterator5.e(err);
+          } finally {
+            _iterator5.f();
+          }
+        }
+      }
+    }, {
+      key: "processMutations",
+      value: function processMutations(mutations) {
+        if (this.started) {
+          var _iterator6 = _createForOfIteratorHelper(mutations),
+            _step6;
+          try {
+            for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+              var mutation = _step6.value;
+              this.processMutation(mutation);
+            }
+          } catch (err) {
+            _iterator6.e(err);
+          } finally {
+            _iterator6.f();
+          }
+        }
+      }
+    }, {
+      key: "processMutation",
+      value: function processMutation(mutation) {
+        var attributeName = mutation.attributeName;
+        if (attributeName) {
+          this.refreshAttribute(attributeName, mutation.oldValue);
+        }
+      }
+    }, {
+      key: "refreshAttribute",
+      value: function refreshAttribute(attributeName, oldValue) {
+        var key = this.delegate.getStringMapKeyForAttribute(attributeName);
+        if (key != null) {
+          if (!this.stringMap.has(attributeName)) {
+            this.stringMapKeyAdded(key, attributeName);
+          }
+          var value = this.element.getAttribute(attributeName);
+          if (this.stringMap.get(attributeName) != value) {
+            this.stringMapValueChanged(value, key, oldValue);
+          }
+          if (value == null) {
+            var _oldValue = this.stringMap.get(attributeName);
+            this.stringMap["delete"](attributeName);
+            if (_oldValue) this.stringMapKeyRemoved(key, attributeName, _oldValue);
+          } else {
+            this.stringMap.set(attributeName, value);
+          }
+        }
+      }
+    }, {
+      key: "stringMapKeyAdded",
+      value: function stringMapKeyAdded(key, attributeName) {
+        if (this.delegate.stringMapKeyAdded) {
+          this.delegate.stringMapKeyAdded(key, attributeName);
+        }
+      }
+    }, {
+      key: "stringMapValueChanged",
+      value: function stringMapValueChanged(value, key, oldValue) {
+        if (this.delegate.stringMapValueChanged) {
+          this.delegate.stringMapValueChanged(value, key, oldValue);
+        }
+      }
+    }, {
+      key: "stringMapKeyRemoved",
+      value: function stringMapKeyRemoved(key, attributeName, oldValue) {
+        if (this.delegate.stringMapKeyRemoved) {
+          this.delegate.stringMapKeyRemoved(key, attributeName, oldValue);
+        }
+      }
+    }, {
+      key: "knownAttributeNames",
+      get: function get() {
+        return Array.from(new Set(this.currentAttributeNames.concat(this.recordedAttributeNames)));
+      }
+    }, {
+      key: "currentAttributeNames",
+      get: function get() {
+        return Array.from(this.element.attributes).map(function (attribute) {
+          return attribute.name;
+        });
+      }
+    }, {
+      key: "recordedAttributeNames",
+      get: function get() {
+        return Array.from(this.stringMap.keys());
+      }
+    }]);
+  }();
+  var TokenListObserver = /*#__PURE__*/function () {
+    function TokenListObserver(element, attributeName, delegate) {
+      _classCallCheck(this, TokenListObserver);
+      this.attributeObserver = new AttributeObserver(element, attributeName, this);
+      this.delegate = delegate;
+      this.tokensByElement = new Multimap();
+    }
+    return _createClass(TokenListObserver, [{
+      key: "started",
+      get: function get() {
+        return this.attributeObserver.started;
+      }
+    }, {
+      key: "start",
+      value: function start() {
+        this.attributeObserver.start();
+      }
+    }, {
+      key: "pause",
+      value: function pause(callback) {
+        this.attributeObserver.pause(callback);
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        this.attributeObserver.stop();
+      }
+    }, {
+      key: "refresh",
+      value: function refresh() {
+        this.attributeObserver.refresh();
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this.attributeObserver.element;
+      }
+    }, {
+      key: "attributeName",
+      get: function get() {
+        return this.attributeObserver.attributeName;
+      }
+    }, {
+      key: "elementMatchedAttribute",
+      value: function elementMatchedAttribute(element) {
+        this.tokensMatched(this.readTokensForElement(element));
+      }
+    }, {
+      key: "elementAttributeValueChanged",
+      value: function elementAttributeValueChanged(element) {
+        var _this$refreshTokensFo = this.refreshTokensForElement(element),
+          _this$refreshTokensFo2 = _slicedToArray(_this$refreshTokensFo, 2),
+          unmatchedTokens = _this$refreshTokensFo2[0],
+          matchedTokens = _this$refreshTokensFo2[1];
+        this.tokensUnmatched(unmatchedTokens);
+        this.tokensMatched(matchedTokens);
+      }
+    }, {
+      key: "elementUnmatchedAttribute",
+      value: function elementUnmatchedAttribute(element) {
+        this.tokensUnmatched(this.tokensByElement.getValuesForKey(element));
+      }
+    }, {
+      key: "tokensMatched",
+      value: function tokensMatched(tokens) {
+        var _this5 = this;
+        tokens.forEach(function (token) {
+          return _this5.tokenMatched(token);
+        });
+      }
+    }, {
+      key: "tokensUnmatched",
+      value: function tokensUnmatched(tokens) {
+        var _this6 = this;
+        tokens.forEach(function (token) {
+          return _this6.tokenUnmatched(token);
+        });
+      }
+    }, {
+      key: "tokenMatched",
+      value: function tokenMatched(token) {
+        this.delegate.tokenMatched(token);
+        this.tokensByElement.add(token.element, token);
+      }
+    }, {
+      key: "tokenUnmatched",
+      value: function tokenUnmatched(token) {
+        this.delegate.tokenUnmatched(token);
+        this.tokensByElement["delete"](token.element, token);
+      }
+    }, {
+      key: "refreshTokensForElement",
+      value: function refreshTokensForElement(element) {
+        var previousTokens = this.tokensByElement.getValuesForKey(element);
+        var currentTokens = this.readTokensForElement(element);
+        var firstDifferingIndex = zip(previousTokens, currentTokens).findIndex(function (_ref8) {
+          var _ref9 = _slicedToArray(_ref8, 2),
+            previousToken = _ref9[0],
+            currentToken = _ref9[1];
+          return !tokensAreEqual(previousToken, currentToken);
+        });
+        if (firstDifferingIndex == -1) {
+          return [[], []];
+        } else {
+          return [previousTokens.slice(firstDifferingIndex), currentTokens.slice(firstDifferingIndex)];
+        }
+      }
+    }, {
+      key: "readTokensForElement",
+      value: function readTokensForElement(element) {
+        var attributeName = this.attributeName;
+        var tokenString = element.getAttribute(attributeName) || "";
+        return parseTokenString(tokenString, element, attributeName);
+      }
+    }]);
+  }();
+  function parseTokenString(tokenString, element, attributeName) {
+    return tokenString.trim().split(/\s+/).filter(function (content) {
+      return content.length;
+    }).map(function (content, index) {
+      return {
+        element: element,
+        attributeName: attributeName,
+        content: content,
+        index: index
+      };
+    });
+  }
+  function zip(left, right) {
+    var length = Math.max(left.length, right.length);
+    return Array.from({
+      length: length
+    }, function (_, index) {
+      return [left[index], right[index]];
+    });
+  }
+  function tokensAreEqual(left, right) {
+    return left && right && left.index == right.index && left.content == right.content;
+  }
+  var ValueListObserver = /*#__PURE__*/function () {
+    function ValueListObserver(element, attributeName, delegate) {
+      _classCallCheck(this, ValueListObserver);
+      this.tokenListObserver = new TokenListObserver(element, attributeName, this);
+      this.delegate = delegate;
+      this.parseResultsByToken = new WeakMap();
+      this.valuesByTokenByElement = new WeakMap();
+    }
+    return _createClass(ValueListObserver, [{
+      key: "started",
+      get: function get() {
+        return this.tokenListObserver.started;
+      }
+    }, {
+      key: "start",
+      value: function start() {
+        this.tokenListObserver.start();
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        this.tokenListObserver.stop();
+      }
+    }, {
+      key: "refresh",
+      value: function refresh() {
+        this.tokenListObserver.refresh();
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this.tokenListObserver.element;
+      }
+    }, {
+      key: "attributeName",
+      get: function get() {
+        return this.tokenListObserver.attributeName;
+      }
+    }, {
+      key: "tokenMatched",
+      value: function tokenMatched(token) {
+        var element = token.element;
+        var _this$fetchParseResul = this.fetchParseResultForToken(token),
+          value = _this$fetchParseResul.value;
+        if (value) {
+          this.fetchValuesByTokenForElement(element).set(token, value);
+          this.delegate.elementMatchedValue(element, value);
+        }
+      }
+    }, {
+      key: "tokenUnmatched",
+      value: function tokenUnmatched(token) {
+        var element = token.element;
+        var _this$fetchParseResul2 = this.fetchParseResultForToken(token),
+          value = _this$fetchParseResul2.value;
+        if (value) {
+          this.fetchValuesByTokenForElement(element)["delete"](token);
+          this.delegate.elementUnmatchedValue(element, value);
+        }
+      }
+    }, {
+      key: "fetchParseResultForToken",
+      value: function fetchParseResultForToken(token) {
+        var parseResult = this.parseResultsByToken.get(token);
+        if (!parseResult) {
+          parseResult = this.parseToken(token);
+          this.parseResultsByToken.set(token, parseResult);
+        }
+        return parseResult;
+      }
+    }, {
+      key: "fetchValuesByTokenForElement",
+      value: function fetchValuesByTokenForElement(element) {
+        var valuesByToken = this.valuesByTokenByElement.get(element);
+        if (!valuesByToken) {
+          valuesByToken = new Map();
+          this.valuesByTokenByElement.set(element, valuesByToken);
+        }
+        return valuesByToken;
+      }
+    }, {
+      key: "parseToken",
+      value: function parseToken(token) {
+        try {
+          var value = this.delegate.parseValueForToken(token);
+          return {
+            value: value
+          };
+        } catch (error) {
+          return {
+            error: error
+          };
+        }
+      }
+    }]);
+  }();
+  var BindingObserver = /*#__PURE__*/function () {
+    function BindingObserver(context, delegate) {
+      _classCallCheck(this, BindingObserver);
+      this.context = context;
+      this.delegate = delegate;
+      this.bindingsByAction = new Map();
+    }
+    return _createClass(BindingObserver, [{
+      key: "start",
+      value: function start() {
+        if (!this.valueListObserver) {
+          this.valueListObserver = new ValueListObserver(this.element, this.actionAttribute, this);
+          this.valueListObserver.start();
+        }
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        if (this.valueListObserver) {
+          this.valueListObserver.stop();
+          delete this.valueListObserver;
+          this.disconnectAllActions();
+        }
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this.context.element;
+      }
+    }, {
+      key: "identifier",
+      get: function get() {
+        return this.context.identifier;
+      }
+    }, {
+      key: "actionAttribute",
+      get: function get() {
+        return this.schema.actionAttribute;
+      }
+    }, {
+      key: "schema",
+      get: function get() {
+        return this.context.schema;
+      }
+    }, {
+      key: "bindings",
+      get: function get() {
+        return Array.from(this.bindingsByAction.values());
+      }
+    }, {
+      key: "connectAction",
+      value: function connectAction(action) {
+        var binding = new Binding(this.context, action);
+        this.bindingsByAction.set(action, binding);
+        this.delegate.bindingConnected(binding);
+      }
+    }, {
+      key: "disconnectAction",
+      value: function disconnectAction(action) {
+        var binding = this.bindingsByAction.get(action);
+        if (binding) {
+          this.bindingsByAction["delete"](action);
+          this.delegate.bindingDisconnected(binding);
+        }
+      }
+    }, {
+      key: "disconnectAllActions",
+      value: function disconnectAllActions() {
+        var _this7 = this;
+        this.bindings.forEach(function (binding) {
+          return _this7.delegate.bindingDisconnected(binding, true);
+        });
+        this.bindingsByAction.clear();
+      }
+    }, {
+      key: "parseValueForToken",
+      value: function parseValueForToken(token) {
+        var action = Action.forToken(token, this.schema);
+        if (action.identifier == this.identifier) {
+          return action;
+        }
+      }
+    }, {
+      key: "elementMatchedValue",
+      value: function elementMatchedValue(element, action) {
+        this.connectAction(action);
+      }
+    }, {
+      key: "elementUnmatchedValue",
+      value: function elementUnmatchedValue(element, action) {
+        this.disconnectAction(action);
+      }
+    }]);
+  }();
+  var ValueObserver = /*#__PURE__*/function () {
+    function ValueObserver(context, receiver) {
+      _classCallCheck(this, ValueObserver);
+      this.context = context;
+      this.receiver = receiver;
+      this.stringMapObserver = new StringMapObserver(this.element, this);
+      this.valueDescriptorMap = this.controller.valueDescriptorMap;
+    }
+    return _createClass(ValueObserver, [{
+      key: "start",
+      value: function start() {
+        this.stringMapObserver.start();
+        this.invokeChangedCallbacksForDefaultValues();
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        this.stringMapObserver.stop();
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this.context.element;
+      }
+    }, {
+      key: "controller",
+      get: function get() {
+        return this.context.controller;
+      }
+    }, {
+      key: "getStringMapKeyForAttribute",
+      value: function getStringMapKeyForAttribute(attributeName) {
+        if (attributeName in this.valueDescriptorMap) {
+          return this.valueDescriptorMap[attributeName].name;
+        }
+      }
+    }, {
+      key: "stringMapKeyAdded",
+      value: function stringMapKeyAdded(key, attributeName) {
+        var descriptor = this.valueDescriptorMap[attributeName];
+        if (!this.hasValue(key)) {
+          this.invokeChangedCallback(key, descriptor.writer(this.receiver[key]), descriptor.writer(descriptor.defaultValue));
+        }
+      }
+    }, {
+      key: "stringMapValueChanged",
+      value: function stringMapValueChanged(value, name, oldValue) {
+        var descriptor = this.valueDescriptorNameMap[name];
+        if (value === null) return;
+        if (oldValue === null) {
+          oldValue = descriptor.writer(descriptor.defaultValue);
+        }
+        this.invokeChangedCallback(name, value, oldValue);
+      }
+    }, {
+      key: "stringMapKeyRemoved",
+      value: function stringMapKeyRemoved(key, attributeName, oldValue) {
+        var descriptor = this.valueDescriptorNameMap[key];
+        if (this.hasValue(key)) {
+          this.invokeChangedCallback(key, descriptor.writer(this.receiver[key]), oldValue);
+        } else {
+          this.invokeChangedCallback(key, descriptor.writer(descriptor.defaultValue), oldValue);
+        }
+      }
+    }, {
+      key: "invokeChangedCallbacksForDefaultValues",
+      value: function invokeChangedCallbacksForDefaultValues() {
+        var _iterator7 = _createForOfIteratorHelper(this.valueDescriptors),
+          _step7;
+        try {
+          for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+            var _step7$value = _step7.value,
+              key = _step7$value.key,
+              name = _step7$value.name,
+              defaultValue = _step7$value.defaultValue,
+              writer = _step7$value.writer;
+            if (defaultValue != undefined && !this.controller.data.has(key)) {
+              this.invokeChangedCallback(name, writer(defaultValue), undefined);
+            }
+          }
+        } catch (err) {
+          _iterator7.e(err);
+        } finally {
+          _iterator7.f();
+        }
+      }
+    }, {
+      key: "invokeChangedCallback",
+      value: function invokeChangedCallback(name, rawValue, rawOldValue) {
+        var changedMethodName = "".concat(name, "Changed");
+        var changedMethod = this.receiver[changedMethodName];
+        if (typeof changedMethod == "function") {
+          var descriptor = this.valueDescriptorNameMap[name];
+          try {
+            var value = descriptor.reader(rawValue);
+            var oldValue = rawOldValue;
+            if (rawOldValue) {
+              oldValue = descriptor.reader(rawOldValue);
+            }
+            changedMethod.call(this.receiver, value, oldValue);
+          } catch (error) {
+            if (error instanceof TypeError) {
+              error.message = "Stimulus Value \"".concat(this.context.identifier, ".").concat(descriptor.name, "\" - ").concat(error.message);
+            }
+            throw error;
+          }
+        }
+      }
+    }, {
+      key: "valueDescriptors",
+      get: function get() {
+        var valueDescriptorMap = this.valueDescriptorMap;
+        return Object.keys(valueDescriptorMap).map(function (key) {
+          return valueDescriptorMap[key];
+        });
+      }
+    }, {
+      key: "valueDescriptorNameMap",
+      get: function get() {
+        var _this8 = this;
+        var descriptors = {};
+        Object.keys(this.valueDescriptorMap).forEach(function (key) {
+          var descriptor = _this8.valueDescriptorMap[key];
+          descriptors[descriptor.name] = descriptor;
+        });
+        return descriptors;
+      }
+    }, {
+      key: "hasValue",
+      value: function hasValue(attributeName) {
+        var descriptor = this.valueDescriptorNameMap[attributeName];
+        var hasMethodName = "has".concat(capitalize(descriptor.name));
+        return this.receiver[hasMethodName];
+      }
+    }]);
+  }();
+  var TargetObserver = /*#__PURE__*/function () {
+    function TargetObserver(context, delegate) {
+      _classCallCheck(this, TargetObserver);
+      this.context = context;
+      this.delegate = delegate;
+      this.targetsByName = new Multimap();
+    }
+    return _createClass(TargetObserver, [{
+      key: "start",
+      value: function start() {
+        if (!this.tokenListObserver) {
+          this.tokenListObserver = new TokenListObserver(this.element, this.attributeName, this);
+          this.tokenListObserver.start();
+        }
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        if (this.tokenListObserver) {
+          this.disconnectAllTargets();
+          this.tokenListObserver.stop();
+          delete this.tokenListObserver;
+        }
+      }
+    }, {
+      key: "tokenMatched",
+      value: function tokenMatched(_ref10) {
+        var element = _ref10.element,
+          name = _ref10.content;
+        if (this.scope.containsElement(element)) {
+          this.connectTarget(element, name);
+        }
+      }
+    }, {
+      key: "tokenUnmatched",
+      value: function tokenUnmatched(_ref11) {
+        var element = _ref11.element,
+          name = _ref11.content;
+        this.disconnectTarget(element, name);
+      }
+    }, {
+      key: "connectTarget",
+      value: function connectTarget(element, name) {
+        var _this9 = this;
+        var _a;
+        if (!this.targetsByName.has(name, element)) {
+          this.targetsByName.add(name, element);
+          (_a = this.tokenListObserver) === null || _a === void 0 ? void 0 : _a.pause(function () {
+            return _this9.delegate.targetConnected(element, name);
+          });
+        }
+      }
+    }, {
+      key: "disconnectTarget",
+      value: function disconnectTarget(element, name) {
+        var _this10 = this;
+        var _a;
+        if (this.targetsByName.has(name, element)) {
+          this.targetsByName["delete"](name, element);
+          (_a = this.tokenListObserver) === null || _a === void 0 ? void 0 : _a.pause(function () {
+            return _this10.delegate.targetDisconnected(element, name);
+          });
+        }
+      }
+    }, {
+      key: "disconnectAllTargets",
+      value: function disconnectAllTargets() {
+        var _iterator8 = _createForOfIteratorHelper(this.targetsByName.keys),
+          _step8;
+        try {
+          for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+            var name = _step8.value;
+            var _iterator9 = _createForOfIteratorHelper(this.targetsByName.getValuesForKey(name)),
+              _step9;
+            try {
+              for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
+                var element = _step9.value;
+                this.disconnectTarget(element, name);
+              }
+            } catch (err) {
+              _iterator9.e(err);
+            } finally {
+              _iterator9.f();
+            }
+          }
+        } catch (err) {
+          _iterator8.e(err);
+        } finally {
+          _iterator8.f();
+        }
+      }
+    }, {
+      key: "attributeName",
+      get: function get() {
+        return "data-".concat(this.context.identifier, "-target");
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this.context.element;
+      }
+    }, {
+      key: "scope",
+      get: function get() {
+        return this.context.scope;
+      }
+    }]);
+  }();
+  function readInheritableStaticArrayValues(constructor, propertyName) {
+    var ancestors = getAncestorsForConstructor(constructor);
+    return Array.from(ancestors.reduce(function (values, constructor) {
+      getOwnStaticArrayValues(constructor, propertyName).forEach(function (name) {
+        return values.add(name);
+      });
+      return values;
+    }, new Set()));
+  }
+  function readInheritableStaticObjectPairs(constructor, propertyName) {
+    var ancestors = getAncestorsForConstructor(constructor);
+    return ancestors.reduce(function (pairs, constructor) {
+      pairs.push.apply(pairs, _toConsumableArray(getOwnStaticObjectPairs(constructor, propertyName)));
+      return pairs;
+    }, []);
+  }
+  function getAncestorsForConstructor(constructor) {
+    var ancestors = [];
+    while (constructor) {
+      ancestors.push(constructor);
+      constructor = Object.getPrototypeOf(constructor);
+    }
+    return ancestors.reverse();
+  }
+  function getOwnStaticArrayValues(constructor, propertyName) {
+    var definition = constructor[propertyName];
+    return Array.isArray(definition) ? definition : [];
+  }
+  function getOwnStaticObjectPairs(constructor, propertyName) {
+    var definition = constructor[propertyName];
+    return definition ? Object.keys(definition).map(function (key) {
+      return [key, definition[key]];
+    }) : [];
+  }
+  var OutletObserver = /*#__PURE__*/function () {
+    function OutletObserver(context, delegate) {
+      _classCallCheck(this, OutletObserver);
+      this.started = false;
+      this.context = context;
+      this.delegate = delegate;
+      this.outletsByName = new Multimap();
+      this.outletElementsByName = new Multimap();
+      this.selectorObserverMap = new Map();
+      this.attributeObserverMap = new Map();
+    }
+    return _createClass(OutletObserver, [{
+      key: "start",
+      value: function start() {
+        var _this11 = this;
+        if (!this.started) {
+          this.outletDefinitions.forEach(function (outletName) {
+            _this11.setupSelectorObserverForOutlet(outletName);
+            _this11.setupAttributeObserverForOutlet(outletName);
+          });
+          this.started = true;
+          this.dependentContexts.forEach(function (context) {
+            return context.refresh();
+          });
+        }
+      }
+    }, {
+      key: "refresh",
+      value: function refresh() {
+        this.selectorObserverMap.forEach(function (observer) {
+          return observer.refresh();
+        });
+        this.attributeObserverMap.forEach(function (observer) {
+          return observer.refresh();
+        });
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        if (this.started) {
+          this.started = false;
+          this.disconnectAllOutlets();
+          this.stopSelectorObservers();
+          this.stopAttributeObservers();
+        }
+      }
+    }, {
+      key: "stopSelectorObservers",
+      value: function stopSelectorObservers() {
+        if (this.selectorObserverMap.size > 0) {
+          this.selectorObserverMap.forEach(function (observer) {
+            return observer.stop();
+          });
+          this.selectorObserverMap.clear();
+        }
+      }
+    }, {
+      key: "stopAttributeObservers",
+      value: function stopAttributeObservers() {
+        if (this.attributeObserverMap.size > 0) {
+          this.attributeObserverMap.forEach(function (observer) {
+            return observer.stop();
+          });
+          this.attributeObserverMap.clear();
+        }
+      }
+    }, {
+      key: "selectorMatched",
+      value: function selectorMatched(element, _selector, _ref12) {
+        var outletName = _ref12.outletName;
+        var outlet = this.getOutlet(element, outletName);
+        if (outlet) {
+          this.connectOutlet(outlet, element, outletName);
+        }
+      }
+    }, {
+      key: "selectorUnmatched",
+      value: function selectorUnmatched(element, _selector, _ref13) {
+        var outletName = _ref13.outletName;
+        var outlet = this.getOutletFromMap(element, outletName);
+        if (outlet) {
+          this.disconnectOutlet(outlet, element, outletName);
+        }
+      }
+    }, {
+      key: "selectorMatchElement",
+      value: function selectorMatchElement(element, _ref14) {
+        var outletName = _ref14.outletName;
+        var selector = this.selector(outletName);
+        var hasOutlet = this.hasOutlet(element, outletName);
+        var hasOutletController = element.matches("[".concat(this.schema.controllerAttribute, "~=").concat(outletName, "]"));
+        if (selector) {
+          return hasOutlet && hasOutletController && element.matches(selector);
+        } else {
+          return false;
+        }
+      }
+    }, {
+      key: "elementMatchedAttribute",
+      value: function elementMatchedAttribute(_element, attributeName) {
+        var outletName = this.getOutletNameFromOutletAttributeName(attributeName);
+        if (outletName) {
+          this.updateSelectorObserverForOutlet(outletName);
+        }
+      }
+    }, {
+      key: "elementAttributeValueChanged",
+      value: function elementAttributeValueChanged(_element, attributeName) {
+        var outletName = this.getOutletNameFromOutletAttributeName(attributeName);
+        if (outletName) {
+          this.updateSelectorObserverForOutlet(outletName);
+        }
+      }
+    }, {
+      key: "elementUnmatchedAttribute",
+      value: function elementUnmatchedAttribute(_element, attributeName) {
+        var outletName = this.getOutletNameFromOutletAttributeName(attributeName);
+        if (outletName) {
+          this.updateSelectorObserverForOutlet(outletName);
+        }
+      }
+    }, {
+      key: "connectOutlet",
+      value: function connectOutlet(outlet, element, outletName) {
+        var _this12 = this;
+        var _a;
+        if (!this.outletElementsByName.has(outletName, element)) {
+          this.outletsByName.add(outletName, outlet);
+          this.outletElementsByName.add(outletName, element);
+          (_a = this.selectorObserverMap.get(outletName)) === null || _a === void 0 ? void 0 : _a.pause(function () {
+            return _this12.delegate.outletConnected(outlet, element, outletName);
+          });
+        }
+      }
+    }, {
+      key: "disconnectOutlet",
+      value: function disconnectOutlet(outlet, element, outletName) {
+        var _this13 = this;
+        var _a;
+        if (this.outletElementsByName.has(outletName, element)) {
+          this.outletsByName["delete"](outletName, outlet);
+          this.outletElementsByName["delete"](outletName, element);
+          (_a = this.selectorObserverMap.get(outletName)) === null || _a === void 0 ? void 0 : _a.pause(function () {
+            return _this13.delegate.outletDisconnected(outlet, element, outletName);
+          });
+        }
+      }
+    }, {
+      key: "disconnectAllOutlets",
+      value: function disconnectAllOutlets() {
+        var _iterator10 = _createForOfIteratorHelper(this.outletElementsByName.keys),
+          _step10;
+        try {
+          for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
+            var outletName = _step10.value;
+            var _iterator11 = _createForOfIteratorHelper(this.outletElementsByName.getValuesForKey(outletName)),
+              _step11;
+            try {
+              for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
+                var element = _step11.value;
+                var _iterator12 = _createForOfIteratorHelper(this.outletsByName.getValuesForKey(outletName)),
+                  _step12;
+                try {
+                  for (_iterator12.s(); !(_step12 = _iterator12.n()).done;) {
+                    var outlet = _step12.value;
+                    this.disconnectOutlet(outlet, element, outletName);
+                  }
+                } catch (err) {
+                  _iterator12.e(err);
+                } finally {
+                  _iterator12.f();
+                }
+              }
+            } catch (err) {
+              _iterator11.e(err);
+            } finally {
+              _iterator11.f();
+            }
+          }
+        } catch (err) {
+          _iterator10.e(err);
+        } finally {
+          _iterator10.f();
+        }
+      }
+    }, {
+      key: "updateSelectorObserverForOutlet",
+      value: function updateSelectorObserverForOutlet(outletName) {
+        var observer = this.selectorObserverMap.get(outletName);
+        if (observer) {
+          observer.selector = this.selector(outletName);
+        }
+      }
+    }, {
+      key: "setupSelectorObserverForOutlet",
+      value: function setupSelectorObserverForOutlet(outletName) {
+        var selector = this.selector(outletName);
+        var selectorObserver = new SelectorObserver(document.body, selector, this, {
+          outletName: outletName
+        });
+        this.selectorObserverMap.set(outletName, selectorObserver);
+        selectorObserver.start();
+      }
+    }, {
+      key: "setupAttributeObserverForOutlet",
+      value: function setupAttributeObserverForOutlet(outletName) {
+        var attributeName = this.attributeNameForOutletName(outletName);
+        var attributeObserver = new AttributeObserver(this.scope.element, attributeName, this);
+        this.attributeObserverMap.set(outletName, attributeObserver);
+        attributeObserver.start();
+      }
+    }, {
+      key: "selector",
+      value: function selector(outletName) {
+        return this.scope.outlets.getSelectorForOutletName(outletName);
+      }
+    }, {
+      key: "attributeNameForOutletName",
+      value: function attributeNameForOutletName(outletName) {
+        return this.scope.schema.outletAttributeForScope(this.identifier, outletName);
+      }
+    }, {
+      key: "getOutletNameFromOutletAttributeName",
+      value: function getOutletNameFromOutletAttributeName(attributeName) {
+        var _this14 = this;
+        return this.outletDefinitions.find(function (outletName) {
+          return _this14.attributeNameForOutletName(outletName) === attributeName;
+        });
+      }
+    }, {
+      key: "outletDependencies",
+      get: function get() {
+        var dependencies = new Multimap();
+        this.router.modules.forEach(function (module) {
+          var constructor = module.definition.controllerConstructor;
+          var outlets = readInheritableStaticArrayValues(constructor, "outlets");
+          outlets.forEach(function (outlet) {
+            return dependencies.add(outlet, module.identifier);
+          });
+        });
+        return dependencies;
+      }
+    }, {
+      key: "outletDefinitions",
+      get: function get() {
+        return this.outletDependencies.getKeysForValue(this.identifier);
+      }
+    }, {
+      key: "dependentControllerIdentifiers",
+      get: function get() {
+        return this.outletDependencies.getValuesForKey(this.identifier);
+      }
+    }, {
+      key: "dependentContexts",
+      get: function get() {
+        var identifiers = this.dependentControllerIdentifiers;
+        return this.router.contexts.filter(function (context) {
+          return identifiers.includes(context.identifier);
+        });
+      }
+    }, {
+      key: "hasOutlet",
+      value: function hasOutlet(element, outletName) {
+        return !!this.getOutlet(element, outletName) || !!this.getOutletFromMap(element, outletName);
+      }
+    }, {
+      key: "getOutlet",
+      value: function getOutlet(element, outletName) {
+        return this.application.getControllerForElementAndIdentifier(element, outletName);
+      }
+    }, {
+      key: "getOutletFromMap",
+      value: function getOutletFromMap(element, outletName) {
+        return this.outletsByName.getValuesForKey(outletName).find(function (outlet) {
+          return outlet.element === element;
+        });
+      }
+    }, {
+      key: "scope",
+      get: function get() {
+        return this.context.scope;
+      }
+    }, {
+      key: "schema",
+      get: function get() {
+        return this.context.schema;
+      }
+    }, {
+      key: "identifier",
+      get: function get() {
+        return this.context.identifier;
+      }
+    }, {
+      key: "application",
+      get: function get() {
+        return this.context.application;
+      }
+    }, {
+      key: "router",
+      get: function get() {
+        return this.application.router;
+      }
+    }]);
+  }();
+  var Context = /*#__PURE__*/function () {
+    function Context(module, scope) {
+      var _this15 = this;
+      _classCallCheck(this, Context);
+      this.logDebugActivity = function (functionName) {
+        var detail = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var identifier = _this15.identifier,
+          controller = _this15.controller,
+          element = _this15.element;
+        detail = Object.assign({
+          identifier: identifier,
+          controller: controller,
+          element: element
+        }, detail);
+        _this15.application.logDebugActivity(_this15.identifier, functionName, detail);
+      };
+      this.module = module;
+      this.scope = scope;
+      this.controller = new module.controllerConstructor(this);
+      this.bindingObserver = new BindingObserver(this, this.dispatcher);
+      this.valueObserver = new ValueObserver(this, this.controller);
+      this.targetObserver = new TargetObserver(this, this);
+      this.outletObserver = new OutletObserver(this, this);
+      try {
+        this.controller.initialize();
+        this.logDebugActivity("initialize");
+      } catch (error) {
+        this.handleError(error, "initializing controller");
+      }
+    }
+    return _createClass(Context, [{
+      key: "connect",
+      value: function connect() {
+        this.bindingObserver.start();
+        this.valueObserver.start();
+        this.targetObserver.start();
+        this.outletObserver.start();
+        try {
+          this.controller.connect();
+          this.logDebugActivity("connect");
+        } catch (error) {
+          this.handleError(error, "connecting controller");
+        }
+      }
+    }, {
+      key: "refresh",
+      value: function refresh() {
+        this.outletObserver.refresh();
+      }
+    }, {
+      key: "disconnect",
+      value: function disconnect() {
+        try {
+          this.controller.disconnect();
+          this.logDebugActivity("disconnect");
+        } catch (error) {
+          this.handleError(error, "disconnecting controller");
+        }
+        this.outletObserver.stop();
+        this.targetObserver.stop();
+        this.valueObserver.stop();
+        this.bindingObserver.stop();
+      }
+    }, {
+      key: "application",
+      get: function get() {
+        return this.module.application;
+      }
+    }, {
+      key: "identifier",
+      get: function get() {
+        return this.module.identifier;
+      }
+    }, {
+      key: "schema",
+      get: function get() {
+        return this.application.schema;
+      }
+    }, {
+      key: "dispatcher",
+      get: function get() {
+        return this.application.dispatcher;
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this.scope.element;
+      }
+    }, {
+      key: "parentElement",
+      get: function get() {
+        return this.element.parentElement;
+      }
+    }, {
+      key: "handleError",
+      value: function handleError(error, message) {
+        var detail = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        var identifier = this.identifier,
+          controller = this.controller,
+          element = this.element;
+        detail = Object.assign({
+          identifier: identifier,
+          controller: controller,
+          element: element
+        }, detail);
+        this.application.handleError(error, "Error ".concat(message), detail);
+      }
+    }, {
+      key: "targetConnected",
+      value: function targetConnected(element, name) {
+        this.invokeControllerMethod("".concat(name, "TargetConnected"), element);
+      }
+    }, {
+      key: "targetDisconnected",
+      value: function targetDisconnected(element, name) {
+        this.invokeControllerMethod("".concat(name, "TargetDisconnected"), element);
+      }
+    }, {
+      key: "outletConnected",
+      value: function outletConnected(outlet, element, name) {
+        this.invokeControllerMethod("".concat(namespaceCamelize(name), "OutletConnected"), outlet, element);
+      }
+    }, {
+      key: "outletDisconnected",
+      value: function outletDisconnected(outlet, element, name) {
+        this.invokeControllerMethod("".concat(namespaceCamelize(name), "OutletDisconnected"), outlet, element);
+      }
+    }, {
+      key: "invokeControllerMethod",
+      value: function invokeControllerMethod(methodName) {
+        var controller = this.controller;
+        if (typeof controller[methodName] == "function") {
+          for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
+            args[_key2 - 1] = arguments[_key2];
+          }
+          controller[methodName].apply(controller, args);
+        }
+      }
+    }]);
+  }();
+  function bless(constructor) {
+    return shadow(constructor, getBlessedProperties(constructor));
+  }
+  function shadow(constructor, properties) {
+    var shadowConstructor = extend$1(constructor);
+    var shadowProperties = getShadowProperties(constructor.prototype, properties);
+    Object.defineProperties(shadowConstructor.prototype, shadowProperties);
+    return shadowConstructor;
+  }
+  function getBlessedProperties(constructor) {
+    var blessings = readInheritableStaticArrayValues(constructor, "blessings");
+    return blessings.reduce(function (blessedProperties, blessing) {
+      var properties = blessing(constructor);
+      for (var key in properties) {
+        var descriptor = blessedProperties[key] || {};
+        blessedProperties[key] = Object.assign(descriptor, properties[key]);
+      }
+      return blessedProperties;
+    }, {});
+  }
+  function getShadowProperties(prototype, properties) {
+    return getOwnKeys(properties).reduce(function (shadowProperties, key) {
+      var descriptor = getShadowedDescriptor(prototype, properties, key);
+      if (descriptor) {
+        Object.assign(shadowProperties, _defineProperty({}, key, descriptor));
+      }
+      return shadowProperties;
+    }, {});
+  }
+  function getShadowedDescriptor(prototype, properties, key) {
+    var shadowingDescriptor = Object.getOwnPropertyDescriptor(prototype, key);
+    var shadowedByValue = shadowingDescriptor && "value" in shadowingDescriptor;
+    if (!shadowedByValue) {
+      var descriptor = Object.getOwnPropertyDescriptor(properties, key).value;
+      if (shadowingDescriptor) {
+        descriptor.get = shadowingDescriptor.get || descriptor.get;
+        descriptor.set = shadowingDescriptor.set || descriptor.set;
+      }
+      return descriptor;
+    }
+  }
+  var getOwnKeys = function () {
+    if (typeof Object.getOwnPropertySymbols == "function") {
+      return function (object) {
+        return [].concat(_toConsumableArray(Object.getOwnPropertyNames(object)), _toConsumableArray(Object.getOwnPropertySymbols(object)));
+      };
+    } else {
+      return Object.getOwnPropertyNames;
+    }
+  }();
+  var extend$1 = function () {
+    function extendWithReflect(constructor) {
+      function extended() {
+        return Reflect.construct(constructor, arguments, this instanceof extended ? this.constructor : void 0);
+      }
+      extended.prototype = Object.create(constructor.prototype, {
+        constructor: {
+          value: extended
+        }
+      });
+      Reflect.setPrototypeOf(extended, constructor);
+      return extended;
+    }
+    function testReflectExtension() {
+      var a = function a() {
+        this.a.call(this);
+      };
+      var b = extendWithReflect(a);
+      b.prototype.a = function () {};
+      return new b();
+    }
+    try {
+      testReflectExtension();
+      return extendWithReflect;
+    } catch (error) {
+      return function (constructor) {
+        return /*#__PURE__*/function (_constructor) {
+          function extended() {
+            _classCallCheck(this, extended);
+            return _callSuper(this, extended, arguments);
+          }
+          _inherits(extended, _constructor);
+          return _createClass(extended);
+        }(constructor);
+      };
+    }
+  }();
+  function blessDefinition(definition) {
+    return {
+      identifier: definition.identifier,
+      controllerConstructor: bless(definition.controllerConstructor)
+    };
+  }
+  var Module = /*#__PURE__*/function () {
+    function Module(application, definition) {
+      _classCallCheck(this, Module);
+      this.application = application;
+      this.definition = blessDefinition(definition);
+      this.contextsByScope = new WeakMap();
+      this.connectedContexts = new Set();
+    }
+    return _createClass(Module, [{
+      key: "identifier",
+      get: function get() {
+        return this.definition.identifier;
+      }
+    }, {
+      key: "controllerConstructor",
+      get: function get() {
+        return this.definition.controllerConstructor;
+      }
+    }, {
+      key: "contexts",
+      get: function get() {
+        return Array.from(this.connectedContexts);
+      }
+    }, {
+      key: "connectContextForScope",
+      value: function connectContextForScope(scope) {
+        var context = this.fetchContextForScope(scope);
+        this.connectedContexts.add(context);
+        context.connect();
+      }
+    }, {
+      key: "disconnectContextForScope",
+      value: function disconnectContextForScope(scope) {
+        var context = this.contextsByScope.get(scope);
+        if (context) {
+          this.connectedContexts["delete"](context);
+          context.disconnect();
+        }
+      }
+    }, {
+      key: "fetchContextForScope",
+      value: function fetchContextForScope(scope) {
+        var context = this.contextsByScope.get(scope);
+        if (!context) {
+          context = new Context(this, scope);
+          this.contextsByScope.set(scope, context);
+        }
+        return context;
+      }
+    }]);
+  }();
+  var ClassMap = /*#__PURE__*/function () {
+    function ClassMap(scope) {
+      _classCallCheck(this, ClassMap);
+      this.scope = scope;
+    }
+    return _createClass(ClassMap, [{
+      key: "has",
+      value: function has(name) {
+        return this.data.has(this.getDataKey(name));
+      }
+    }, {
+      key: "get",
+      value: function get(name) {
+        return this.getAll(name)[0];
+      }
+    }, {
+      key: "getAll",
+      value: function getAll(name) {
+        var tokenString = this.data.get(this.getDataKey(name)) || "";
+        return tokenize(tokenString);
+      }
+    }, {
+      key: "getAttributeName",
+      value: function getAttributeName(name) {
+        return this.data.getAttributeNameForKey(this.getDataKey(name));
+      }
+    }, {
+      key: "getDataKey",
+      value: function getDataKey(name) {
+        return "".concat(name, "-class");
+      }
+    }, {
+      key: "data",
+      get: function get() {
+        return this.scope.data;
+      }
+    }]);
+  }();
+  var DataMap = /*#__PURE__*/function () {
+    function DataMap(scope) {
+      _classCallCheck(this, DataMap);
+      this.scope = scope;
+    }
+    return _createClass(DataMap, [{
+      key: "element",
+      get: function get() {
+        return this.scope.element;
+      }
+    }, {
+      key: "identifier",
+      get: function get() {
+        return this.scope.identifier;
+      }
+    }, {
+      key: "get",
+      value: function get(key) {
+        var name = this.getAttributeNameForKey(key);
+        return this.element.getAttribute(name);
+      }
+    }, {
+      key: "set",
+      value: function set(key, value) {
+        var name = this.getAttributeNameForKey(key);
+        this.element.setAttribute(name, value);
+        return this.get(key);
+      }
+    }, {
+      key: "has",
+      value: function has(key) {
+        var name = this.getAttributeNameForKey(key);
+        return this.element.hasAttribute(name);
+      }
+    }, {
+      key: "delete",
+      value: function _delete(key) {
+        if (this.has(key)) {
+          var name = this.getAttributeNameForKey(key);
+          this.element.removeAttribute(name);
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }, {
+      key: "getAttributeNameForKey",
+      value: function getAttributeNameForKey(key) {
+        return "data-".concat(this.identifier, "-").concat(dasherize(key));
+      }
+    }]);
+  }();
+  var Guide = /*#__PURE__*/function () {
+    function Guide(logger) {
+      _classCallCheck(this, Guide);
+      this.warnedKeysByObject = new WeakMap();
+      this.logger = logger;
+    }
+    return _createClass(Guide, [{
+      key: "warn",
+      value: function warn(object, key, message) {
+        var warnedKeys = this.warnedKeysByObject.get(object);
+        if (!warnedKeys) {
+          warnedKeys = new Set();
+          this.warnedKeysByObject.set(object, warnedKeys);
+        }
+        if (!warnedKeys.has(key)) {
+          warnedKeys.add(key);
+          this.logger.warn(message, object);
+        }
+      }
+    }]);
+  }();
+  function attributeValueContainsToken(attributeName, token) {
+    return "[".concat(attributeName, "~=\"").concat(token, "\"]");
+  }
+  var TargetSet = /*#__PURE__*/function () {
+    function TargetSet(scope) {
+      _classCallCheck(this, TargetSet);
+      this.scope = scope;
+    }
+    return _createClass(TargetSet, [{
+      key: "element",
+      get: function get() {
+        return this.scope.element;
+      }
+    }, {
+      key: "identifier",
+      get: function get() {
+        return this.scope.identifier;
+      }
+    }, {
+      key: "schema",
+      get: function get() {
+        return this.scope.schema;
+      }
+    }, {
+      key: "has",
+      value: function has(targetName) {
+        return this.find(targetName) != null;
+      }
+    }, {
+      key: "find",
+      value: function find() {
+        var _this16 = this;
+        for (var _len2 = arguments.length, targetNames = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
+          targetNames[_key3] = arguments[_key3];
+        }
+        return targetNames.reduce(function (target, targetName) {
+          return target || _this16.findTarget(targetName) || _this16.findLegacyTarget(targetName);
+        }, undefined);
+      }
+    }, {
+      key: "findAll",
+      value: function findAll() {
+        var _this17 = this;
+        for (var _len3 = arguments.length, targetNames = new Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
+          targetNames[_key4] = arguments[_key4];
+        }
+        return targetNames.reduce(function (targets, targetName) {
+          return [].concat(_toConsumableArray(targets), _toConsumableArray(_this17.findAllTargets(targetName)), _toConsumableArray(_this17.findAllLegacyTargets(targetName)));
+        }, []);
+      }
+    }, {
+      key: "findTarget",
+      value: function findTarget(targetName) {
+        var selector = this.getSelectorForTargetName(targetName);
+        return this.scope.findElement(selector);
+      }
+    }, {
+      key: "findAllTargets",
+      value: function findAllTargets(targetName) {
+        var selector = this.getSelectorForTargetName(targetName);
+        return this.scope.findAllElements(selector);
+      }
+    }, {
+      key: "getSelectorForTargetName",
+      value: function getSelectorForTargetName(targetName) {
+        var attributeName = this.schema.targetAttributeForScope(this.identifier);
+        return attributeValueContainsToken(attributeName, targetName);
+      }
+    }, {
+      key: "findLegacyTarget",
+      value: function findLegacyTarget(targetName) {
+        var selector = this.getLegacySelectorForTargetName(targetName);
+        return this.deprecate(this.scope.findElement(selector), targetName);
+      }
+    }, {
+      key: "findAllLegacyTargets",
+      value: function findAllLegacyTargets(targetName) {
+        var _this18 = this;
+        var selector = this.getLegacySelectorForTargetName(targetName);
+        return this.scope.findAllElements(selector).map(function (element) {
+          return _this18.deprecate(element, targetName);
+        });
+      }
+    }, {
+      key: "getLegacySelectorForTargetName",
+      value: function getLegacySelectorForTargetName(targetName) {
+        var targetDescriptor = "".concat(this.identifier, ".").concat(targetName);
+        return attributeValueContainsToken(this.schema.targetAttribute, targetDescriptor);
+      }
+    }, {
+      key: "deprecate",
+      value: function deprecate(element, targetName) {
+        if (element) {
+          var identifier = this.identifier;
+          var attributeName = this.schema.targetAttribute;
+          var revisedAttributeName = this.schema.targetAttributeForScope(identifier);
+          this.guide.warn(element, "target:".concat(targetName), "Please replace ".concat(attributeName, "=\"").concat(identifier, ".").concat(targetName, "\" with ").concat(revisedAttributeName, "=\"").concat(targetName, "\". ") + "The ".concat(attributeName, " attribute is deprecated and will be removed in a future version of Stimulus."));
+        }
+        return element;
+      }
+    }, {
+      key: "guide",
+      get: function get() {
+        return this.scope.guide;
+      }
+    }]);
+  }();
+  var OutletSet = /*#__PURE__*/function () {
+    function OutletSet(scope, controllerElement) {
+      _classCallCheck(this, OutletSet);
+      this.scope = scope;
+      this.controllerElement = controllerElement;
+    }
+    return _createClass(OutletSet, [{
+      key: "element",
+      get: function get() {
+        return this.scope.element;
+      }
+    }, {
+      key: "identifier",
+      get: function get() {
+        return this.scope.identifier;
+      }
+    }, {
+      key: "schema",
+      get: function get() {
+        return this.scope.schema;
+      }
+    }, {
+      key: "has",
+      value: function has(outletName) {
+        return this.find(outletName) != null;
+      }
+    }, {
+      key: "find",
+      value: function find() {
+        var _this19 = this;
+        for (var _len4 = arguments.length, outletNames = new Array(_len4), _key5 = 0; _key5 < _len4; _key5++) {
+          outletNames[_key5] = arguments[_key5];
+        }
+        return outletNames.reduce(function (outlet, outletName) {
+          return outlet || _this19.findOutlet(outletName);
+        }, undefined);
+      }
+    }, {
+      key: "findAll",
+      value: function findAll() {
+        var _this20 = this;
+        for (var _len5 = arguments.length, outletNames = new Array(_len5), _key6 = 0; _key6 < _len5; _key6++) {
+          outletNames[_key6] = arguments[_key6];
+        }
+        return outletNames.reduce(function (outlets, outletName) {
+          return [].concat(_toConsumableArray(outlets), _toConsumableArray(_this20.findAllOutlets(outletName)));
+        }, []);
+      }
+    }, {
+      key: "getSelectorForOutletName",
+      value: function getSelectorForOutletName(outletName) {
+        var attributeName = this.schema.outletAttributeForScope(this.identifier, outletName);
+        return this.controllerElement.getAttribute(attributeName);
+      }
+    }, {
+      key: "findOutlet",
+      value: function findOutlet(outletName) {
+        var selector = this.getSelectorForOutletName(outletName);
+        if (selector) return this.findElement(selector, outletName);
+      }
+    }, {
+      key: "findAllOutlets",
+      value: function findAllOutlets(outletName) {
+        var selector = this.getSelectorForOutletName(outletName);
+        return selector ? this.findAllElements(selector, outletName) : [];
+      }
+    }, {
+      key: "findElement",
+      value: function findElement(selector, outletName) {
+        var _this21 = this;
+        var elements = this.scope.queryElements(selector);
+        return elements.filter(function (element) {
+          return _this21.matchesElement(element, selector, outletName);
+        })[0];
+      }
+    }, {
+      key: "findAllElements",
+      value: function findAllElements(selector, outletName) {
+        var _this22 = this;
+        var elements = this.scope.queryElements(selector);
+        return elements.filter(function (element) {
+          return _this22.matchesElement(element, selector, outletName);
+        });
+      }
+    }, {
+      key: "matchesElement",
+      value: function matchesElement(element, selector, outletName) {
+        var controllerAttribute = element.getAttribute(this.scope.schema.controllerAttribute) || "";
+        return element.matches(selector) && controllerAttribute.split(" ").includes(outletName);
+      }
+    }]);
+  }();
+  var Scope = /*#__PURE__*/function () {
+    function Scope(schema, element, identifier, logger) {
+      var _this23 = this;
+      _classCallCheck(this, Scope);
+      this.targets = new TargetSet(this);
+      this.classes = new ClassMap(this);
+      this.data = new DataMap(this);
+      this.containsElement = function (element) {
+        return element.closest(_this23.controllerSelector) === _this23.element;
+      };
+      this.schema = schema;
+      this.element = element;
+      this.identifier = identifier;
+      this.guide = new Guide(logger);
+      this.outlets = new OutletSet(this.documentScope, element);
+    }
+    return _createClass(Scope, [{
+      key: "findElement",
+      value: function findElement(selector) {
+        return this.element.matches(selector) ? this.element : this.queryElements(selector).find(this.containsElement);
+      }
+    }, {
+      key: "findAllElements",
+      value: function findAllElements(selector) {
+        return [].concat(_toConsumableArray(this.element.matches(selector) ? [this.element] : []), _toConsumableArray(this.queryElements(selector).filter(this.containsElement)));
+      }
+    }, {
+      key: "queryElements",
+      value: function queryElements(selector) {
+        return Array.from(this.element.querySelectorAll(selector));
+      }
+    }, {
+      key: "controllerSelector",
+      get: function get() {
+        return attributeValueContainsToken(this.schema.controllerAttribute, this.identifier);
+      }
+    }, {
+      key: "isDocumentScope",
+      get: function get() {
+        return this.element === document.documentElement;
+      }
+    }, {
+      key: "documentScope",
+      get: function get() {
+        return this.isDocumentScope ? this : new Scope(this.schema, document.documentElement, this.identifier, this.guide.logger);
+      }
+    }]);
+  }();
+  var ScopeObserver = /*#__PURE__*/function () {
+    function ScopeObserver(element, schema, delegate) {
+      _classCallCheck(this, ScopeObserver);
+      this.element = element;
+      this.schema = schema;
+      this.delegate = delegate;
+      this.valueListObserver = new ValueListObserver(this.element, this.controllerAttribute, this);
+      this.scopesByIdentifierByElement = new WeakMap();
+      this.scopeReferenceCounts = new WeakMap();
+    }
+    return _createClass(ScopeObserver, [{
+      key: "start",
+      value: function start() {
+        this.valueListObserver.start();
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        this.valueListObserver.stop();
+      }
+    }, {
+      key: "controllerAttribute",
+      get: function get() {
+        return this.schema.controllerAttribute;
+      }
+    }, {
+      key: "parseValueForToken",
+      value: function parseValueForToken(token) {
+        var element = token.element,
+          identifier = token.content;
+        return this.parseValueForElementAndIdentifier(element, identifier);
+      }
+    }, {
+      key: "parseValueForElementAndIdentifier",
+      value: function parseValueForElementAndIdentifier(element, identifier) {
+        var scopesByIdentifier = this.fetchScopesByIdentifierForElement(element);
+        var scope = scopesByIdentifier.get(identifier);
+        if (!scope) {
+          scope = this.delegate.createScopeForElementAndIdentifier(element, identifier);
+          scopesByIdentifier.set(identifier, scope);
+        }
+        return scope;
+      }
+    }, {
+      key: "elementMatchedValue",
+      value: function elementMatchedValue(element, value) {
+        var referenceCount = (this.scopeReferenceCounts.get(value) || 0) + 1;
+        this.scopeReferenceCounts.set(value, referenceCount);
+        if (referenceCount == 1) {
+          this.delegate.scopeConnected(value);
+        }
+      }
+    }, {
+      key: "elementUnmatchedValue",
+      value: function elementUnmatchedValue(element, value) {
+        var referenceCount = this.scopeReferenceCounts.get(value);
+        if (referenceCount) {
+          this.scopeReferenceCounts.set(value, referenceCount - 1);
+          if (referenceCount == 1) {
+            this.delegate.scopeDisconnected(value);
+          }
+        }
+      }
+    }, {
+      key: "fetchScopesByIdentifierForElement",
+      value: function fetchScopesByIdentifierForElement(element) {
+        var scopesByIdentifier = this.scopesByIdentifierByElement.get(element);
+        if (!scopesByIdentifier) {
+          scopesByIdentifier = new Map();
+          this.scopesByIdentifierByElement.set(element, scopesByIdentifier);
+        }
+        return scopesByIdentifier;
+      }
+    }]);
+  }();
+  var Router = /*#__PURE__*/function () {
+    function Router(application) {
+      _classCallCheck(this, Router);
+      this.application = application;
+      this.scopeObserver = new ScopeObserver(this.element, this.schema, this);
+      this.scopesByIdentifier = new Multimap();
+      this.modulesByIdentifier = new Map();
+    }
+    return _createClass(Router, [{
+      key: "element",
+      get: function get() {
+        return this.application.element;
+      }
+    }, {
+      key: "schema",
+      get: function get() {
+        return this.application.schema;
+      }
+    }, {
+      key: "logger",
+      get: function get() {
+        return this.application.logger;
+      }
+    }, {
+      key: "controllerAttribute",
+      get: function get() {
+        return this.schema.controllerAttribute;
+      }
+    }, {
+      key: "modules",
+      get: function get() {
+        return Array.from(this.modulesByIdentifier.values());
+      }
+    }, {
+      key: "contexts",
+      get: function get() {
+        return this.modules.reduce(function (contexts, module) {
+          return contexts.concat(module.contexts);
+        }, []);
+      }
+    }, {
+      key: "start",
+      value: function start() {
+        this.scopeObserver.start();
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        this.scopeObserver.stop();
+      }
+    }, {
+      key: "loadDefinition",
+      value: function loadDefinition(definition) {
+        this.unloadIdentifier(definition.identifier);
+        var module = new Module(this.application, definition);
+        this.connectModule(module);
+        var afterLoad = definition.controllerConstructor.afterLoad;
+        if (afterLoad) {
+          afterLoad.call(definition.controllerConstructor, definition.identifier, this.application);
+        }
+      }
+    }, {
+      key: "unloadIdentifier",
+      value: function unloadIdentifier(identifier) {
+        var module = this.modulesByIdentifier.get(identifier);
+        if (module) {
+          this.disconnectModule(module);
+        }
+      }
+    }, {
+      key: "getContextForElementAndIdentifier",
+      value: function getContextForElementAndIdentifier(element, identifier) {
+        var module = this.modulesByIdentifier.get(identifier);
+        if (module) {
+          return module.contexts.find(function (context) {
+            return context.element == element;
+          });
+        }
+      }
+    }, {
+      key: "proposeToConnectScopeForElementAndIdentifier",
+      value: function proposeToConnectScopeForElementAndIdentifier(element, identifier) {
+        var scope = this.scopeObserver.parseValueForElementAndIdentifier(element, identifier);
+        if (scope) {
+          this.scopeObserver.elementMatchedValue(scope.element, scope);
+        } else {
+          console.error("Couldn't find or create scope for identifier: \"".concat(identifier, "\" and element:"), element);
+        }
+      }
+    }, {
+      key: "handleError",
+      value: function handleError(error, message, detail) {
+        this.application.handleError(error, message, detail);
+      }
+    }, {
+      key: "createScopeForElementAndIdentifier",
+      value: function createScopeForElementAndIdentifier(element, identifier) {
+        return new Scope(this.schema, element, identifier, this.logger);
+      }
+    }, {
+      key: "scopeConnected",
+      value: function scopeConnected(scope) {
+        this.scopesByIdentifier.add(scope.identifier, scope);
+        var module = this.modulesByIdentifier.get(scope.identifier);
+        if (module) {
+          module.connectContextForScope(scope);
+        }
+      }
+    }, {
+      key: "scopeDisconnected",
+      value: function scopeDisconnected(scope) {
+        this.scopesByIdentifier["delete"](scope.identifier, scope);
+        var module = this.modulesByIdentifier.get(scope.identifier);
+        if (module) {
+          module.disconnectContextForScope(scope);
+        }
+      }
+    }, {
+      key: "connectModule",
+      value: function connectModule(module) {
+        this.modulesByIdentifier.set(module.identifier, module);
+        var scopes = this.scopesByIdentifier.getValuesForKey(module.identifier);
+        scopes.forEach(function (scope) {
+          return module.connectContextForScope(scope);
+        });
+      }
+    }, {
+      key: "disconnectModule",
+      value: function disconnectModule(module) {
+        this.modulesByIdentifier["delete"](module.identifier);
+        var scopes = this.scopesByIdentifier.getValuesForKey(module.identifier);
+        scopes.forEach(function (scope) {
+          return module.disconnectContextForScope(scope);
+        });
+      }
+    }]);
+  }();
+  var defaultSchema = {
+    controllerAttribute: "data-controller",
+    actionAttribute: "data-action",
+    targetAttribute: "data-target",
+    targetAttributeForScope: function targetAttributeForScope(identifier) {
+      return "data-".concat(identifier, "-target");
+    },
+    outletAttributeForScope: function outletAttributeForScope(identifier, outlet) {
+      return "data-".concat(identifier, "-").concat(outlet, "-outlet");
+    },
+    keyMappings: Object.assign(Object.assign({
+      enter: "Enter",
+      tab: "Tab",
+      esc: "Escape",
+      space: " ",
+      up: "ArrowUp",
+      down: "ArrowDown",
+      left: "ArrowLeft",
+      right: "ArrowRight",
+      home: "Home",
+      end: "End",
+      page_up: "PageUp",
+      page_down: "PageDown"
+    }, objectFromEntries("abcdefghijklmnopqrstuvwxyz".split("").map(function (c) {
+      return [c, c];
+    }))), objectFromEntries("0123456789".split("").map(function (n) {
+      return [n, n];
+    })))
+  };
+  function objectFromEntries(array) {
+    return array.reduce(function (memo, _ref15) {
+      var _ref16 = _slicedToArray(_ref15, 2),
+        k = _ref16[0],
+        v = _ref16[1];
+      return Object.assign(Object.assign({}, memo), _defineProperty({}, k, v));
+    }, {});
+  }
+  var Application = /*#__PURE__*/function () {
+    function Application() {
+      var _this24 = this;
+      var element = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : document.documentElement;
+      var schema = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : defaultSchema;
+      _classCallCheck(this, Application);
+      this.logger = console;
+      this.debug = false;
+      this.logDebugActivity = function (identifier, functionName) {
+        var detail = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        if (_this24.debug) {
+          _this24.logFormattedMessage(identifier, functionName, detail);
+        }
+      };
+      this.element = element;
+      this.schema = schema;
+      this.dispatcher = new Dispatcher(this);
+      this.router = new Router(this);
+      this.actionDescriptorFilters = Object.assign({}, defaultActionDescriptorFilters);
+    }
+    return _createClass(Application, [{
+      key: "start",
+      value: function () {
+        var _start = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return domReady();
+              case 2:
+                this.logDebugActivity("application", "starting");
+                this.dispatcher.start();
+                this.router.start();
+                this.logDebugActivity("application", "start");
+              case 6:
+              case "end":
+                return _context.stop();
+            }
+          }, _callee, this);
+        }));
+        function start() {
+          return _start.apply(this, arguments);
+        }
+        return start;
+      }()
+    }, {
+      key: "stop",
+      value: function stop() {
+        this.logDebugActivity("application", "stopping");
+        this.dispatcher.stop();
+        this.router.stop();
+        this.logDebugActivity("application", "stop");
+      }
+    }, {
+      key: "register",
+      value: function register(identifier, controllerConstructor) {
+        this.load({
+          identifier: identifier,
+          controllerConstructor: controllerConstructor
+        });
+      }
+    }, {
+      key: "registerActionOption",
+      value: function registerActionOption(name, filter) {
+        this.actionDescriptorFilters[name] = filter;
+      }
+    }, {
+      key: "load",
+      value: function load(head) {
+        var _this25 = this;
+        for (var _len6 = arguments.length, rest = new Array(_len6 > 1 ? _len6 - 1 : 0), _key7 = 1; _key7 < _len6; _key7++) {
+          rest[_key7 - 1] = arguments[_key7];
+        }
+        var definitions = Array.isArray(head) ? head : [head].concat(rest);
+        definitions.forEach(function (definition) {
+          if (definition.controllerConstructor.shouldLoad) {
+            _this25.router.loadDefinition(definition);
+          }
+        });
+      }
+    }, {
+      key: "unload",
+      value: function unload(head) {
+        var _this26 = this;
+        for (var _len7 = arguments.length, rest = new Array(_len7 > 1 ? _len7 - 1 : 0), _key8 = 1; _key8 < _len7; _key8++) {
+          rest[_key8 - 1] = arguments[_key8];
+        }
+        var identifiers = Array.isArray(head) ? head : [head].concat(rest);
+        identifiers.forEach(function (identifier) {
+          return _this26.router.unloadIdentifier(identifier);
+        });
+      }
+    }, {
+      key: "controllers",
+      get: function get() {
+        return this.router.contexts.map(function (context) {
+          return context.controller;
+        });
+      }
+    }, {
+      key: "getControllerForElementAndIdentifier",
+      value: function getControllerForElementAndIdentifier(element, identifier) {
+        var context = this.router.getContextForElementAndIdentifier(element, identifier);
+        return context ? context.controller : null;
+      }
+    }, {
+      key: "handleError",
+      value: function handleError(error, message, detail) {
+        var _a;
+        this.logger.error("%s\n\n%o\n\n%o", message, error, detail);
+        (_a = window.onerror) === null || _a === void 0 ? void 0 : _a.call(window, message, "", 0, 0, error);
+      }
+    }, {
+      key: "logFormattedMessage",
+      value: function logFormattedMessage(identifier, functionName) {
+        var detail = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        detail = Object.assign({
+          application: this
+        }, detail);
+        this.logger.groupCollapsed("".concat(identifier, " #").concat(functionName));
+        this.logger.log("details:", Object.assign({}, detail));
+        this.logger.groupEnd();
+      }
+    }], [{
+      key: "start",
+      value: function start(element, schema) {
+        var application = new this(element, schema);
+        application.start();
+        return application;
+      }
+    }]);
+  }();
+  function domReady() {
+    return new Promise(function (resolve) {
+      if (document.readyState == "loading") {
+        document.addEventListener("DOMContentLoaded", function () {
+          return resolve();
+        });
+      } else {
+        resolve();
+      }
+    });
+  }
+  function ClassPropertiesBlessing(constructor) {
+    var classes = readInheritableStaticArrayValues(constructor, "classes");
+    return classes.reduce(function (properties, classDefinition) {
+      return Object.assign(properties, propertiesForClassDefinition(classDefinition));
+    }, {});
+  }
+  function propertiesForClassDefinition(key) {
+    return _defineProperty(_defineProperty(_defineProperty({}, "".concat(key, "Class"), {
+      get: function get() {
+        var classes = this.classes;
+        if (classes.has(key)) {
+          return classes.get(key);
+        } else {
+          var attribute = classes.getAttributeName(key);
+          throw new Error("Missing attribute \"".concat(attribute, "\""));
+        }
+      }
+    }), "".concat(key, "Classes"), {
+      get: function get() {
+        return this.classes.getAll(key);
+      }
+    }), "has".concat(capitalize(key), "Class"), {
+      get: function get() {
+        return this.classes.has(key);
+      }
+    });
+  }
+  function OutletPropertiesBlessing(constructor) {
+    var outlets = readInheritableStaticArrayValues(constructor, "outlets");
+    return outlets.reduce(function (properties, outletDefinition) {
+      return Object.assign(properties, propertiesForOutletDefinition(outletDefinition));
+    }, {});
+  }
+  function getOutletController(controller, element, identifier) {
+    return controller.application.getControllerForElementAndIdentifier(element, identifier);
+  }
+  function getControllerAndEnsureConnectedScope(controller, element, outletName) {
+    var outletController = getOutletController(controller, element, outletName);
+    if (outletController) return outletController;
+    controller.application.router.proposeToConnectScopeForElementAndIdentifier(element, outletName);
+    outletController = getOutletController(controller, element, outletName);
+    if (outletController) return outletController;
+  }
+  function propertiesForOutletDefinition(name) {
+    var camelizedName = namespaceCamelize(name);
+    return _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty({}, "".concat(camelizedName, "Outlet"), {
+      get: function get() {
+        var outletElement = this.outlets.find(name);
+        var selector = this.outlets.getSelectorForOutletName(name);
+        if (outletElement) {
+          var outletController = getControllerAndEnsureConnectedScope(this, outletElement, name);
+          if (outletController) return outletController;
+          throw new Error("The provided outlet element is missing an outlet controller \"".concat(name, "\" instance for host controller \"").concat(this.identifier, "\""));
+        }
+        throw new Error("Missing outlet element \"".concat(name, "\" for host controller \"").concat(this.identifier, "\". Stimulus couldn't find a matching outlet element using selector \"").concat(selector, "\"."));
+      }
+    }), "".concat(camelizedName, "Outlets"), {
+      get: function get() {
+        var _this27 = this;
+        var outlets = this.outlets.findAll(name);
+        if (outlets.length > 0) {
+          return outlets.map(function (outletElement) {
+            var outletController = getControllerAndEnsureConnectedScope(_this27, outletElement, name);
+            if (outletController) return outletController;
+            console.warn("The provided outlet element is missing an outlet controller \"".concat(name, "\" instance for host controller \"").concat(_this27.identifier, "\""), outletElement);
+          }).filter(function (controller) {
+            return controller;
+          });
+        }
+        return [];
+      }
+    }), "".concat(camelizedName, "OutletElement"), {
+      get: function get() {
+        var outletElement = this.outlets.find(name);
+        var selector = this.outlets.getSelectorForOutletName(name);
+        if (outletElement) {
+          return outletElement;
+        } else {
+          throw new Error("Missing outlet element \"".concat(name, "\" for host controller \"").concat(this.identifier, "\". Stimulus couldn't find a matching outlet element using selector \"").concat(selector, "\"."));
+        }
+      }
+    }), "".concat(camelizedName, "OutletElements"), {
+      get: function get() {
+        return this.outlets.findAll(name);
+      }
+    }), "has".concat(capitalize(camelizedName), "Outlet"), {
+      get: function get() {
+        return this.outlets.has(name);
+      }
+    });
+  }
+  function TargetPropertiesBlessing(constructor) {
+    var targets = readInheritableStaticArrayValues(constructor, "targets");
+    return targets.reduce(function (properties, targetDefinition) {
+      return Object.assign(properties, propertiesForTargetDefinition(targetDefinition));
+    }, {});
+  }
+  function propertiesForTargetDefinition(name) {
+    return _defineProperty(_defineProperty(_defineProperty({}, "".concat(name, "Target"), {
+      get: function get() {
+        var target = this.targets.find(name);
+        if (target) {
+          return target;
+        } else {
+          throw new Error("Missing target element \"".concat(name, "\" for \"").concat(this.identifier, "\" controller"));
+        }
+      }
+    }), "".concat(name, "Targets"), {
+      get: function get() {
+        return this.targets.findAll(name);
+      }
+    }), "has".concat(capitalize(name), "Target"), {
+      get: function get() {
+        return this.targets.has(name);
+      }
+    });
+  }
+  function ValuePropertiesBlessing(constructor) {
+    var valueDefinitionPairs = readInheritableStaticObjectPairs(constructor, "values");
+    var propertyDescriptorMap = {
+      valueDescriptorMap: {
+        get: function get() {
+          var _this28 = this;
+          return valueDefinitionPairs.reduce(function (result, valueDefinitionPair) {
+            var valueDescriptor = parseValueDefinitionPair(valueDefinitionPair, _this28.identifier);
+            var attributeName = _this28.data.getAttributeNameForKey(valueDescriptor.key);
+            return Object.assign(result, _defineProperty({}, attributeName, valueDescriptor));
+          }, {});
+        }
+      }
+    };
+    return valueDefinitionPairs.reduce(function (properties, valueDefinitionPair) {
+      return Object.assign(properties, propertiesForValueDefinitionPair(valueDefinitionPair));
+    }, propertyDescriptorMap);
+  }
+  function propertiesForValueDefinitionPair(valueDefinitionPair, controller) {
+    var definition = parseValueDefinitionPair(valueDefinitionPair, controller);
+    var key = definition.key,
+      name = definition.name,
+      read = definition.reader,
+      write = definition.writer;
+    return _defineProperty(_defineProperty({}, name, {
+      get: function get() {
+        var value = this.data.get(key);
+        if (value !== null) {
+          return read(value);
+        } else {
+          return definition.defaultValue;
+        }
+      },
+      set: function set(value) {
+        if (value === undefined) {
+          this.data["delete"](key);
+        } else {
+          this.data.set(key, write(value));
+        }
+      }
+    }), "has".concat(capitalize(name)), {
+      get: function get() {
+        return this.data.has(key) || definition.hasCustomDefaultValue;
+      }
+    });
+  }
+  function parseValueDefinitionPair(_ref21, controller) {
+    var _ref22 = _slicedToArray(_ref21, 2),
+      token = _ref22[0],
+      typeDefinition = _ref22[1];
+    return valueDescriptorForTokenAndTypeDefinition({
+      controller: controller,
+      token: token,
+      typeDefinition: typeDefinition
+    });
+  }
+  function parseValueTypeConstant(constant) {
+    switch (constant) {
+      case Array:
+        return "array";
+      case Boolean:
+        return "boolean";
+      case Number:
+        return "number";
+      case Object:
+        return "object";
+      case String:
+        return "string";
+    }
+  }
+  function parseValueTypeDefault(defaultValue) {
+    switch (_typeof(defaultValue)) {
+      case "boolean":
+        return "boolean";
+      case "number":
+        return "number";
+      case "string":
+        return "string";
+    }
+    if (Array.isArray(defaultValue)) return "array";
+    if (Object.prototype.toString.call(defaultValue) === "[object Object]") return "object";
+  }
+  function parseValueTypeObject(payload) {
+    var controller = payload.controller,
+      token = payload.token,
+      typeObject = payload.typeObject;
+    var hasType = isSomething(typeObject.type);
+    var hasDefault = isSomething(typeObject["default"]);
+    var fullObject = hasType && hasDefault;
+    var onlyType = hasType && !hasDefault;
+    var onlyDefault = !hasType && hasDefault;
+    var typeFromObject = parseValueTypeConstant(typeObject.type);
+    var typeFromDefaultValue = parseValueTypeDefault(payload.typeObject["default"]);
+    if (onlyType) return typeFromObject;
+    if (onlyDefault) return typeFromDefaultValue;
+    if (typeFromObject !== typeFromDefaultValue) {
+      var propertyPath = controller ? "".concat(controller, ".").concat(token) : token;
+      throw new Error("The specified default value for the Stimulus Value \"".concat(propertyPath, "\" must match the defined type \"").concat(typeFromObject, "\". The provided default value of \"").concat(typeObject["default"], "\" is of type \"").concat(typeFromDefaultValue, "\"."));
+    }
+    if (fullObject) return typeFromObject;
+  }
+  function parseValueTypeDefinition(payload) {
+    var controller = payload.controller,
+      token = payload.token,
+      typeDefinition = payload.typeDefinition;
+    var typeObject = {
+      controller: controller,
+      token: token,
+      typeObject: typeDefinition
+    };
+    var typeFromObject = parseValueTypeObject(typeObject);
+    var typeFromDefaultValue = parseValueTypeDefault(typeDefinition);
+    var typeFromConstant = parseValueTypeConstant(typeDefinition);
+    var type = typeFromObject || typeFromDefaultValue || typeFromConstant;
+    if (type) return type;
+    var propertyPath = controller ? "".concat(controller, ".").concat(typeDefinition) : token;
+    throw new Error("Unknown value type \"".concat(propertyPath, "\" for \"").concat(token, "\" value"));
+  }
+  function defaultValueForDefinition(typeDefinition) {
+    var constant = parseValueTypeConstant(typeDefinition);
+    if (constant) return defaultValuesByType[constant];
+    var hasDefault = hasProperty(typeDefinition, "default");
+    var hasType = hasProperty(typeDefinition, "type");
+    var typeObject = typeDefinition;
+    if (hasDefault) return typeObject["default"];
+    if (hasType) {
+      var type = typeObject.type;
+      var constantFromType = parseValueTypeConstant(type);
+      if (constantFromType) return defaultValuesByType[constantFromType];
+    }
+    return typeDefinition;
+  }
+  function valueDescriptorForTokenAndTypeDefinition(payload) {
+    var token = payload.token,
+      typeDefinition = payload.typeDefinition;
+    var key = "".concat(dasherize(token), "-value");
+    var type = parseValueTypeDefinition(payload);
+    return {
+      type: type,
+      key: key,
+      name: camelize(key),
+      get defaultValue() {
+        return defaultValueForDefinition(typeDefinition);
+      },
+      get hasCustomDefaultValue() {
+        return parseValueTypeDefault(typeDefinition) !== undefined;
+      },
+      reader: readers[type],
+      writer: writers[type] || writers["default"]
+    };
+  }
+  var defaultValuesByType = {
+    get array() {
+      return [];
+    },
+    "boolean": false,
+    number: 0,
+    get object() {
+      return {};
+    },
+    string: ""
+  };
+  var readers = {
+    array: function array(value) {
+      var array = JSON.parse(value);
+      if (!Array.isArray(array)) {
+        throw new TypeError("expected value of type \"array\" but instead got value \"".concat(value, "\" of type \"").concat(parseValueTypeDefault(array), "\""));
+      }
+      return array;
+    },
+    "boolean": function boolean(value) {
+      return !(value == "0" || String(value).toLowerCase() == "false");
+    },
+    number: function number(value) {
+      return Number(value.replace(/_/g, ""));
+    },
+    object: function object(value) {
+      var object = JSON.parse(value);
+      if (object === null || _typeof(object) != "object" || Array.isArray(object)) {
+        throw new TypeError("expected value of type \"object\" but instead got value \"".concat(value, "\" of type \"").concat(parseValueTypeDefault(object), "\""));
+      }
+      return object;
+    },
+    string: function string(value) {
+      return value;
+    }
+  };
+  var writers = {
+    "default": writeString,
+    array: writeJSON,
+    object: writeJSON
+  };
+  function writeJSON(value) {
+    return JSON.stringify(value);
+  }
+  function writeString(value) {
+    return "".concat(value);
+  }
+  var Controller = /*#__PURE__*/function () {
+    function Controller(context) {
+      _classCallCheck(this, Controller);
+      this.context = context;
+    }
+    return _createClass(Controller, [{
+      key: "application",
+      get: function get() {
+        return this.context.application;
+      }
+    }, {
+      key: "scope",
+      get: function get() {
+        return this.context.scope;
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this.scope.element;
+      }
+    }, {
+      key: "identifier",
+      get: function get() {
+        return this.scope.identifier;
+      }
+    }, {
+      key: "targets",
+      get: function get() {
+        return this.scope.targets;
+      }
+    }, {
+      key: "outlets",
+      get: function get() {
+        return this.scope.outlets;
+      }
+    }, {
+      key: "classes",
+      get: function get() {
+        return this.scope.classes;
+      }
+    }, {
+      key: "data",
+      get: function get() {
+        return this.scope.data;
+      }
+    }, {
+      key: "initialize",
+      value: function initialize() {}
+    }, {
+      key: "connect",
+      value: function connect() {}
+    }, {
+      key: "disconnect",
+      value: function disconnect() {}
+    }, {
+      key: "dispatch",
+      value: function dispatch(eventName) {
+        var _ref23 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+          _ref23$target = _ref23.target,
+          target = _ref23$target === void 0 ? this.element : _ref23$target,
+          _ref23$detail = _ref23.detail,
+          detail = _ref23$detail === void 0 ? {} : _ref23$detail,
+          _ref23$prefix = _ref23.prefix,
+          prefix = _ref23$prefix === void 0 ? this.identifier : _ref23$prefix,
+          _ref23$bubbles = _ref23.bubbles,
+          bubbles = _ref23$bubbles === void 0 ? true : _ref23$bubbles,
+          _ref23$cancelable = _ref23.cancelable,
+          cancelable = _ref23$cancelable === void 0 ? true : _ref23$cancelable;
+        var type = prefix ? "".concat(prefix, ":").concat(eventName) : eventName;
+        var event = new CustomEvent(type, {
+          detail: detail,
+          bubbles: bubbles,
+          cancelable: cancelable
+        });
+        target.dispatchEvent(event);
+        return event;
+      }
+    }], [{
+      key: "shouldLoad",
+      get: function get() {
+        return true;
+      }
+    }, {
+      key: "afterLoad",
+      value: function afterLoad(_identifier, _application) {
+        return;
+      }
+    }]);
+  }();
+  Controller.blessings = [ClassPropertiesBlessing, TargetPropertiesBlessing, ValuePropertiesBlessing, OutletPropertiesBlessing];
+  Controller.targets = [];
+  Controller.outlets = [];
+  Controller.values = {};
+
+  var _controllerAttribute = /*#__PURE__*/new WeakMap();
+  var _importmapSelector = /*#__PURE__*/new WeakMap();
+  var _application = /*#__PURE__*/new WeakMap();
+  var _JavascriptReloader_brand = /*#__PURE__*/new WeakSet();
+  var JavascriptReloader = /*#__PURE__*/function () {
+    function JavascriptReloader() {
+      _classCallCheck(this, JavascriptReloader);
+      // async #reloadImportmapModules() {
+      //   const importmap = this.#parseImportmapJson()
+      //   const modulePaths = Object.values(importmap)
+      //
+      //   await Promise.all(
+      //     modulePaths.map(async path => {
+      //       const moduleUrl = await this.#reloadModulePreloadLink(path)
+      //       await import(moduleUrl).catch(error => console.error(`Failed to import module: ${moduleUrl}`, error))
+      //     })
+      //   )
+      //   console.log("All importmap modules reloaded.")
+      // }
+      _classPrivateMethodInitSpec(this, _JavascriptReloader_brand);
+      _classPrivateFieldInitSpec(this, _controllerAttribute, "data-controller");
+      _classPrivateFieldInitSpec(this, _importmapSelector, "script[type=importmap]");
+      _classPrivateFieldInitSpec(this, _application, void 0);
+      _classPrivateFieldSet2(_application, this, window.Stimulus || Application.start());
+    }
+    return _createClass(JavascriptReloader, [{
+      key: "reload",
+      value: function () {
+        var _reload = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          var _this = this;
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) switch (_context.prev = _context.next) {
+              case 0:
+                // this.#application.stop()
+                _classPrivateFieldGet2(_application, this).controllers.forEach(function (controller) {
+                  return console.debug("UNLOAD Controller", controller.identifier);
+                });
+                _classPrivateFieldGet2(_application, this).controllers.forEach(function (controller) {
+                  return controller.disconnect();
+                });
+                _classPrivateFieldGet2(_application, this).controllers.forEach(function (controller) {
+                  return _classPrivateFieldGet2(_application, _this).unload(controller.identifier);
+                });
+                _classPrivateFieldGet2(_application, this).stop();
+
+                // this.#application = Application.start()
+                // this.#application.stop()
+                // this.#application.controllers.forEach((controller) => controller.disconnect())
+
+                // await this.#reloadImportmapModules()
+                _context.next = 6;
+                return _assertClassBrand(_JavascriptReloader_brand, this, _reloadStimulusControllers).call(this);
+              case 6:
+                // await this.#resetDataControllers()
+
+                _classPrivateFieldGet2(_application, this).start();
+              case 7:
+              case "end":
+                return _context.stop();
+            }
+          }, _callee, this);
+        }));
+        function reload() {
+          return _reload.apply(this, arguments);
+        }
+        return reload;
+      }()
+    }]);
+  }();
+  function _reloadStimulusControllers() {
+    return _reloadStimulusControllers2.apply(this, arguments);
+  }
+  function _reloadStimulusControllers2() {
+    _reloadStimulusControllers2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var _this2 = this;
+      var pathsByModule, controllerPaths;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            pathsByModule = _assertClassBrand(_JavascriptReloader_brand, this, _parseImportmapJson).call(this);
+            controllerPaths = Object.keys(pathsByModule).filter(function (path) {
+              return path.endsWith("_controller");
+            });
+            _context3.next = 4;
+            return Promise.all(controllerPaths.map(/*#__PURE__*/function () {
+              var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(moduleName) {
+                var controllerName, path;
+                return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+                  while (1) switch (_context2.prev = _context2.next) {
+                    case 0:
+                      console.debug("Importing ", moduleName);
+                      controllerName = _assertClassBrand(_JavascriptReloader_brand, _this2, _extractControllerName).call(_this2, moduleName); // if (this.#canRegisterController(controllerName)) {
+                      path = pathsByModule[moduleName] + "?bust_cache=" + Date.now();
+                      _context2.next = 5;
+                      return import(path).then(function (module) {
+                        return _assertClassBrand(_JavascriptReloader_brand, _this2, _registerController).call(_this2, controllerName, module);
+                      })["catch"](function (error) {
+                        return console.error("Failed to reload controller: ".concat(controllerName), error);
+                      });
+                    case 5:
+                    case "end":
+                      return _context2.stop();
+                  }
+                }, _callee2);
+              }));
+              return function (_x) {
+                return _ref.apply(this, arguments);
+              };
+            }()));
+          case 4:
+            console.log("All Stimulus controllers reloaded and re-registered.");
+          case 5:
+          case "end":
+            return _context3.stop();
+        }
+      }, _callee3, this);
+    }));
+    return _reloadStimulusControllers2.apply(this, arguments);
+  }
+  function _parseImportmapJson() {
+    var importmapScript = document.querySelector(_classPrivateFieldGet2(_importmapSelector, this));
+    return JSON.parse(importmapScript.text).imports;
+  }
+  function _extractControllerName(path) {
+    return path.replace(/^.*\//, "").replace("_controller", "").replace(/\//g, "--").replace(/_/g, "-");
+  }
+  function _registerController(name, module) {
+    console.debug("REGISTERING", name, module);
+    _classPrivateFieldGet2(_application, this).unload(name);
+    _classPrivateFieldGet2(_application, this).register(name, module["default"]);
+  }
+  Turbo.StreamActions.reload_javascript = function () {
+    new JavascriptReloader().reload();
+  };
 
   var adapters = {
     logger: typeof console !== "undefined" ? console : undefined,

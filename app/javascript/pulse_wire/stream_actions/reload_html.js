@@ -40,6 +40,6 @@ class HtmlReloader {
 
 const htmlReloader = new HtmlReloader()
 
-Turbo.StreamActions.reload_html = async function () {
+Turbo.StreamActions.reload_html = function () {
   htmlReloader.reload()
 }

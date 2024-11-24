@@ -98,6 +98,10 @@ GEM
       activesupport (>= 6.1)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
+    importmap-rails (2.0.3)
+      actionpack (>= 6.0.0)
+      activesupport (>= 6.0.0)
+      railties (>= 6.0.0)
     io-console (0.7.2)
     irb (1.14.1)
       rdoc (>= 4.0.0)
@@ -230,6 +234,8 @@ GEM
       railties (>= 7.2)
     sqlite3 (2.2.0-arm64-darwin)
     sqlite3 (2.2.0-x86_64-linux-gnu)
+    stimulus-rails (1.3.4)
+      railties (>= 6.0.0)
     stringio (3.1.2)
     thor (1.3.2)
     timeout (0.4.2)
@@ -251,12 +257,14 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  importmap-rails
   propshaft
   pulse_wire!
   puma
   rubocop-rails-omakase
   solid_cable
   sqlite3
+  stimulus-rails
 
 BUNDLED WITH
    2.5.23
