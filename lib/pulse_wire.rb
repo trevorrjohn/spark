@@ -6,8 +6,6 @@ loader = Zeitwerk::Loader.for_gem
 loader.setup
 
 module PulseWire
-  mattr_accessor :importmap, default: Importmap::Map.new
-
   mattr_accessor :css_paths, default: %w[ app/assets/stylesheets ]
   mattr_accessor :html_paths, default: %w[ app/controllers app/helpers app/models app/views ]
   mattr_accessor :javascript_paths, default: %w[ app/javascript ]

@@ -1,6 +1,4 @@
-require "importmap-rails"
 require "turbo-rails"
-require "importmap-rails"
 
 module PulseWire
   class Engine < ::Rails::Engine
@@ -14,21 +12,11 @@ module PulseWire
       end
     end
 
-    initializer "pulse_wire.assets" do |app|
-      app.config.assets.paths << root.join("app/javascript")
-    end
-
-    initializer "pulse_wire.importmap", before: "importmap" do |app|
-      PulseWire.importmap.draw(root.join("config/importmap.rb"))
-      # PulseWire.importmap.cache_sweeper(watches: root.join("app/javascript"))
-      #
-      # ActiveSupport.on_load(:action_controller_base) do
-      #   before_action { PulseWire.importmap.cache_sweeper.execute_if_updated }
-      # end
-    end
-
-    initializer "pulse_wire.install" do
-      PulseWire.install if Rails.env.development?
+    initializer "pulse_wire.install" do |app|
+      if Rails.env.development?
+        app.middleware.use PulseWire::Middleware
+        PulseWire.install
+      end
     end
   end
 end

@@ -1,5 +1,5 @@
 import { Turbo } from "@hotwired/turbo-rails"
-import { Idiomorph } from "idiomorph"
+import { Idiomorph } from "idiomorph/dist/idiomorph.esm.js"
 
 class HtmlReloader {
   async reload() {
@@ -7,7 +7,6 @@ class HtmlReloader {
 
     try {
       const response = await fetch(window.location.href)
-      const html = await response.text
 
       if (!response.ok) {
         throw new Error(`Failed to fetch HTML: ${response.statusText}`)
@@ -35,9 +34,7 @@ class HtmlReloader {
   }
 
   updateHead(newHead) {
-    // Use Idiomorph to morph the head section
     Idiomorph.morph(document.head, newHead)
-    console.debug("Head updated using idiomorph")
   }
 }
 
