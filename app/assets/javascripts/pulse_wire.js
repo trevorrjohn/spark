@@ -10410,7 +10410,7 @@
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return fetch(window.location.href);
+            return fetch(_classPrivateGetter(_HtmlReloader_brand, this, _get_reloadUrl));
           case 2:
             response = _context3.sent;
             _context3.next = 5;
@@ -10423,9 +10423,14 @@
           case "end":
             return _context3.stop();
         }
-      }, _callee3);
+      }, _callee3, this);
     }));
     return _reloadDocument2.apply(this, arguments);
+  }
+  function _get_reloadUrl(_this) {
+    var url = new URL(window.location.href);
+    url.searchParams.set("pulse_wire", "true");
+    return url.toString();
   }
   function _updateHead(newHead) {
     Idiomorph.morph(document.head, newHead);

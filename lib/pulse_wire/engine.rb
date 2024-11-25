@@ -1,4 +1,5 @@
 require "turbo-rails"
+require "action_cable/server/base"
 
 module PulseWire
   class Engine < ::Rails::Engine
@@ -14,7 +15,10 @@ module PulseWire
 
     initializer "pulse_wire.install" do |app|
       if Rails.env.development?
+        ::ActionCable::Server::Base.prepend(PulseWire::ActionCable::PersistentCableServer)
+        app.middleware.insert_before ActionDispatch::Executor, PulseWire::ActionCable::PersistentCableMiddleware
         app.middleware.use PulseWire::Middleware
+
         PulseWire.install
       end
     end

@@ -17,10 +17,16 @@ export class HtmlReloader {
   }
 
   async #reloadDocument() {
-    const response = await fetch(window.location.href)
+    const response = await fetch(this.#reloadUrl)
     const fetchedHTML = await response.text()
     const parser = new DOMParser()
     return parser.parseFromString(fetchedHTML, "text/html")
+  }
+
+  get #reloadUrl() {
+    const url = new URL(window.location.href)
+    url.searchParams.set("pulse_wire", "true")
+    return url.toString()
   }
 
   #updateHead(newHead) {
