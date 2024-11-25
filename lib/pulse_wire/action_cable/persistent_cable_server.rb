@@ -12,11 +12,8 @@ module PulseWire::ActionCable::PersistentCableServer
   end
 
   def without_restarting
-    Rails.logger.info "BEFORE WITHOUT RESTART"
     self.suppress_restarts = true
-    yield.tap do
-      Rails.logger.info "AFTER WITHOUT RESTART"
-    end
+    yield
   ensure
     self.suppress_restarts = false
   end
