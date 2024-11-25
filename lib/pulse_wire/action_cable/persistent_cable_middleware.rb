@@ -12,6 +12,6 @@ class PulseWire::ActionCable::PersistentCableMiddleware
       @app.call(env)
     end
 
-    [status, headers, response]
+    [ status, headers, response ]
   end
 end

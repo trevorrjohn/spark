@@ -10,10 +10,10 @@ class PulseWire::Middleware
       body = response_body(response)
       body = inject_javascript(body)
       headers["Content-Length"] = body.bytesize.to_s if body
-      response = [body]
+      response = [ body ]
     end
 
-    [status, headers, response]
+    [ status, headers, response ]
   end
 
   private
