@@ -1,24 +1,20 @@
 import { Application } from "@hotwired/stimulus"
 
 export class StimulusReloader {
-  #controllerAttribute = "data-controller"
-  #importmapSelector = "script[type=importmap]"
-  #application
-
   static async reload() {
     return new StimulusReloader().reload()
   }
 
   constructor() {
-    this.#application = window.Stimulus || Application.start()
+    this.application = window.Stimulus || Application.start()
   }
 
   async reload() {
-    this.#application.stop()
+    this.application.stop()
 
     await this.#reloadStimulusControllers()
 
-    this.#application.start()
+    this.application.start()
   }
 
   async #reloadStimulusControllers() {
@@ -36,6 +32,11 @@ export class StimulusReloader {
     return this.pathsByModule
   }
 
+  #parseImportmapJson() {
+    const importmapScript = document.querySelector("script[type=importmap]")
+    return JSON.parse(importmapScript.text).imports
+  }
+
   async #reloadStimulusController(moduleName) {
     const controllerName = this.#extractControllerName(moduleName)
     const path = this.#pathForModuleName(moduleName) + "?bust_cache=" + Date.now()
@@ -49,11 +50,6 @@ export class StimulusReloader {
     return this.#stimulusPathsByModule[moduleName];
   }
 
-  #parseImportmapJson() {
-    const importmapScript = document.querySelector(this.#importmapSelector)
-    return JSON.parse(importmapScript.text).imports
-  }
-
   #extractControllerName(path) {
     return path
       .replace(/^.*\//, "")
@@ -63,7 +59,7 @@ export class StimulusReloader {
   }
 
   #registerController(name, module) {
-    this.#application.unload(name)
-    this.#application.register(name, module.default)
+    this.application.unload(name)
+    this.application.register(name, module.default)
   }
 }

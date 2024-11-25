@@ -14019,18 +14019,12 @@
   Controller.outlets = [];
   Controller.values = {};
 
-  var _controllerAttribute = /*#__PURE__*/new WeakMap();
-  var _importmapSelector = /*#__PURE__*/new WeakMap();
-  var _application = /*#__PURE__*/new WeakMap();
   var _StimulusReloader_brand = /*#__PURE__*/new WeakSet();
   var StimulusReloader = /*#__PURE__*/function () {
     function StimulusReloader() {
       _classCallCheck(this, StimulusReloader);
       _classPrivateMethodInitSpec(this, _StimulusReloader_brand);
-      _classPrivateFieldInitSpec(this, _controllerAttribute, "data-controller");
-      _classPrivateFieldInitSpec(this, _importmapSelector, "script[type=importmap]");
-      _classPrivateFieldInitSpec(this, _application, void 0);
-      _classPrivateFieldSet2(_application, this, window.Stimulus || Application.start());
+      this.application = window.Stimulus || Application.start();
     }
     return _createClass(StimulusReloader, [{
       key: "reload",
@@ -14039,11 +14033,11 @@
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) switch (_context.prev = _context.next) {
               case 0:
-                _classPrivateFieldGet2(_application, this).stop();
+                this.application.stop();
                 _context.next = 3;
                 return _assertClassBrand(_StimulusReloader_brand, this, _reloadStimulusControllers).call(this);
               case 3:
-                _classPrivateFieldGet2(_application, this).start();
+                this.application.start();
               case 4:
               case "end":
                 return _context.stop();
@@ -14119,6 +14113,10 @@
     _this2.pathsByModule = _this2.pathsByModule || _assertClassBrand(_StimulusReloader_brand, _this2, _parseImportmapJson).call(_this2);
     return _this2.pathsByModule;
   }
+  function _parseImportmapJson() {
+    var importmapScript = document.querySelector("script[type=importmap]");
+    return JSON.parse(importmapScript.text).imports;
+  }
   function _reloadStimulusController(_x) {
     return _reloadStimulusController2.apply(this, arguments);
   }
@@ -14146,16 +14144,12 @@
   function _pathForModuleName(moduleName) {
     return _classPrivateGetter(_StimulusReloader_brand, this, _get_stimulusPathsByModule)[moduleName];
   }
-  function _parseImportmapJson() {
-    var importmapScript = document.querySelector(_classPrivateFieldGet2(_importmapSelector, this));
-    return JSON.parse(importmapScript.text).imports;
-  }
   function _extractControllerName(path) {
     return path.replace(/^.*\//, "").replace("_controller", "").replace(/\//g, "--").replace(/_/g, "-");
   }
   function _registerController(name, module) {
-    _classPrivateFieldGet2(_application, this).unload(name);
-    _classPrivateFieldGet2(_application, this).register(name, module["default"]);
+    this.application.unload(name);
+    this.application.register(name, module["default"]);
   }
 
   StreamActions.reload_stimulus = function () {
