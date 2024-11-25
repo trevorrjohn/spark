@@ -9406,20 +9406,32 @@
   window.Turbo = Turbo$1;
   addEventListener("turbo:before-fetch-request", encodeMethodIntoRequestBody);
 
+  var _CssReloader_brand = /*#__PURE__*/new WeakSet();
   var CssReloader = /*#__PURE__*/function () {
     function CssReloader() {
       _classCallCheck(this, CssReloader);
+      _classPrivateMethodInitSpec(this, _CssReloader_brand);
     }
     return _createClass(CssReloader, [{
       key: "reload",
-      value: function reload() {
-        console.debug("CSS reloaded");
-        var links = document.querySelectorAll('link[rel="stylesheet"]');
-        links.forEach(function (link) {
-          var href = link.getAttribute('href');
-          link.setAttribute('href', "".concat(href, "?reload=").concat(Date.now()));
-        });
-      }
+      value: function () {
+        var _reload = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return Promise.all(_assertClassBrand(_CssReloader_brand, this, _reloadAllLinks).call(this));
+              case 2:
+              case "end":
+                return _context.stop();
+            }
+          }, _callee, this);
+        }));
+        function reload() {
+          return _reload.apply(this, arguments);
+        }
+        return reload;
+      }()
     }], [{
       key: "reload",
       value: function reload() {
@@ -9430,6 +9442,38 @@
       }
     }]);
   }();
+  function _reloadAllLinks() {
+    var _this2 = this;
+    return Array.from(_classPrivateGetter(_CssReloader_brand, this, _get_cssLinks)).map(function (link) {
+      return _assertClassBrand(_CssReloader_brand, _this2, _reloadLink).call(_this2, link);
+    });
+  }
+  function _get_cssLinks(_this) {
+    return document.querySelectorAll("link[rel='stylesheet']");
+  }
+  function _reloadLink(_x) {
+    return _reloadLink2.apply(this, arguments);
+  }
+  function _reloadLink2() {
+    _reloadLink2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(link) {
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            return _context2.abrupt("return", new Promise(function (resolve) {
+              var href = link.getAttribute("href");
+              link.setAttribute("href", "".concat(href, "?reload=").concat(Date.now()));
+              link.onload = function () {
+                return resolve();
+              };
+            }));
+          case 1:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2);
+    }));
+    return _reloadLink2.apply(this, arguments);
+  }
 
   StreamActions.reload_css = function () {
     CssReloader.reload();

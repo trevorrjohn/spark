@@ -1,15 +1,25 @@
 export class CssReloader {
   static reload(...params) {
-    new CssReloader(...params).reload();
+    new CssReloader(...params).reload()
   }
 
-  reload() {
-    console.debug("CSS reloaded");
+  async reload() {
+    await Promise.all(this.#reloadAllLinks())
+  }
 
-    const links = document.querySelectorAll('link[rel="stylesheet"]');
-    links.forEach(link => {
-      const href = link.getAttribute('href');
-      link.setAttribute('href', `${href}?reload=${Date.now()}`);
-    });
+  #reloadAllLinks() {
+    return Array.from(this.#cssLinks).map(link => this.#reloadLink(link))
+  }
+
+  get #cssLinks() {
+    return document.querySelectorAll("link[rel='stylesheet']")
+  }
+
+  async #reloadLink(link) {
+    return new Promise(resolve => {
+      const href = link.getAttribute("href")
+      link.setAttribute("href", `${href}?reload=${Date.now()}`)
+      link.onload = () => resolve()
+    })
   }
 }
