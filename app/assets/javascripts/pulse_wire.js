@@ -9434,12 +9434,30 @@
       }()
     }], [{
       key: "reload",
-      value: function reload() {
-        for (var _len = arguments.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-          params[_key] = arguments[_key];
+      value: function () {
+        var _reload2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+          var _len,
+            params,
+            _key,
+            _args2 = arguments;
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+            while (1) switch (_context2.prev = _context2.next) {
+              case 0:
+                for (_len = _args2.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
+                  params[_key] = _args2[_key];
+                }
+                return _context2.abrupt("return", _construct(CssReloader, params).reload());
+              case 2:
+              case "end":
+                return _context2.stop();
+            }
+          }, _callee2);
+        }));
+        function reload() {
+          return _reload2.apply(this, arguments);
         }
-        _construct(CssReloader, params).reload();
-      }
+        return reload;
+      }()
     }]);
   }();
   function _reloadAllLinks() {
@@ -9455,11 +9473,11 @@
     return _reloadLink2.apply(this, arguments);
   }
   function _reloadLink2() {
-    _reloadLink2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(link) {
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) switch (_context2.prev = _context2.next) {
+    _reloadLink2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(link) {
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            return _context2.abrupt("return", new Promise(function (resolve) {
+            return _context3.abrupt("return", new Promise(function (resolve) {
               var href = link.getAttribute("href");
               link.setAttribute("href", "".concat(href, "?reload=").concat(Date.now()));
               link.onload = function () {
@@ -9468,9 +9486,9 @@
             }));
           case 1:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
-      }, _callee2);
+      }, _callee3);
     }));
     return _reloadLink2.apply(this, arguments);
   }
@@ -10323,75 +10341,105 @@
     };
   }();
 
+  var _HtmlReloader_brand = /*#__PURE__*/new WeakSet();
   var HtmlReloader = /*#__PURE__*/function () {
     function HtmlReloader() {
       _classCallCheck(this, HtmlReloader);
+      _classPrivateMethodInitSpec(this, _HtmlReloader_brand);
     }
     return _createClass(HtmlReloader, [{
       key: "reload",
       value: function () {
         var _reload = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-          var response, fetchedHTML, parser, fetchedDocument;
+          var reloadedDocument;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) switch (_context.prev = _context.next) {
               case 0:
-                console.debug("HTML reloaded");
-                _context.prev = 1;
-                _context.next = 4;
-                return fetch(window.location.href);
-              case 4:
-                response = _context.sent;
-                if (response.ok) {
-                  _context.next = 7;
-                  break;
-                }
-                throw new Error("Failed to fetch HTML: ".concat(response.statusText));
-              case 7:
-                _context.next = 9;
-                return response.text();
-              case 9:
-                fetchedHTML = _context.sent;
-                parser = new DOMParser();
-                fetchedDocument = parser.parseFromString(fetchedHTML, "text/html");
-                this.updateHead(fetchedDocument.head);
-                Idiomorph.morph(document.body, fetchedDocument.body, {
-                  callbacks: {
-                    beforeNodeMorphed: function beforeNodeMorphed(oldNode, newNode) {
-                      var value = !(oldNode instanceof HTMLElement) || !oldNode.closest("turbo-cable-stream-source");
-                      return value;
-                    }
-                  }
-                });
-                console.debug("HTML successfully reloaded");
-                _context.next = 20;
+                _context.prev = 0;
+                _context.next = 3;
+                return _assertClassBrand(_HtmlReloader_brand, this, _reloadDocument).call(this);
+              case 3:
+                reloadedDocument = _context.sent;
+                _assertClassBrand(_HtmlReloader_brand, this, _updateHead).call(this, reloadedDocument.head);
+                _assertClassBrand(_HtmlReloader_brand, this, _updateBody).call(this, reloadedDocument.body);
+                _context.next = 11;
                 break;
-              case 17:
-                _context.prev = 17;
-                _context.t0 = _context["catch"](1);
+              case 8:
+                _context.prev = 8;
+                _context.t0 = _context["catch"](0);
                 console.error("Error reloading HTML:", _context.t0);
-              case 20:
+              case 11:
               case "end":
                 return _context.stop();
             }
-          }, _callee, this, [[1, 17]]);
+          }, _callee, this, [[0, 8]]);
         }));
         function reload() {
           return _reload.apply(this, arguments);
         }
         return reload;
       }()
-    }, {
-      key: "updateHead",
-      value: function updateHead(newHead) {
-        Idiomorph.morph(document.head, newHead);
-      }
     }], [{
       key: "reload",
-      value: function reload() {
-        new HtmlReloader().reload();
-      }
+      value: function () {
+        var _reload2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+            while (1) switch (_context2.prev = _context2.next) {
+              case 0:
+                return _context2.abrupt("return", new HtmlReloader().reload());
+              case 1:
+              case "end":
+                return _context2.stop();
+            }
+          }, _callee2);
+        }));
+        function reload() {
+          return _reload2.apply(this, arguments);
+        }
+        return reload;
+      }()
     }]);
   }();
+  function _reloadDocument() {
+    return _reloadDocument2.apply(this, arguments);
+  }
+  function _reloadDocument2() {
+    _reloadDocument2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var response, fetchedHTML, parser;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return fetch(window.location.href);
+          case 2:
+            response = _context3.sent;
+            _context3.next = 5;
+            return response.text();
+          case 5:
+            fetchedHTML = _context3.sent;
+            parser = new DOMParser();
+            return _context3.abrupt("return", parser.parseFromString(fetchedHTML, "text/html"));
+          case 8:
+          case "end":
+            return _context3.stop();
+        }
+      }, _callee3);
+    }));
+    return _reloadDocument2.apply(this, arguments);
+  }
+  function _updateHead(newHead) {
+    Idiomorph.morph(document.head, newHead);
+  }
+  function _updateBody(newBody) {
+    Idiomorph.morph(document.body, newBody, {
+      callbacks: {
+        beforeNodeMorphed: function beforeNodeMorphed(oldNode, newNode) {
+          var value = !(oldNode instanceof HTMLElement) || !oldNode.closest("turbo-cable-stream-source");
+          return value;
+        }
+      }
+    });
+  }
 
   StreamActions.reload_html = function () {
     HtmlReloader.reload();
