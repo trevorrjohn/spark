@@ -11,8 +11,8 @@ module PulseWire
   mattr_accessor :stimulus_paths, default: %w[ app/javascript/controllers ]
 
   class << self
-    def install
-      Installer.new.install
+    def install_into(application)
+      Installer.new(application).install
     end
   end
 end

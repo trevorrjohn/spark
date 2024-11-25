@@ -13,14 +13,8 @@ module PulseWire
       end
     end
 
-    initializer "pulse_wire.install" do |app|
-      if Rails.env.development?
-        ::ActionCable::Server::Base.prepend(PulseWire::ActionCable::PersistentCableServer)
-        app.middleware.insert_before ActionDispatch::Executor, PulseWire::ActionCable::PersistentCableMiddleware
-        app.middleware.use PulseWire::Middleware
-
-        PulseWire.install
-      end
+    initializer "pulse_wire.install" do |application|
+      PulseWire.install_into application if Rails.env.development?
     end
   end
 end
