@@ -7867,7 +7867,7 @@
     console.warn("Please replace `Turbo.setFormMode(mode)` with `Turbo.config.forms.mode = mode`. The top-level function is deprecated and will be removed in a future version of Turbo.`");
     config.forms.mode = mode;
   }
-  var Turbo$1 = /*#__PURE__*/Object.freeze({
+  var Turbo = /*#__PURE__*/Object.freeze({
     __proto__: null,
     navigator: navigator$1,
     session: session,
@@ -9124,12 +9124,12 @@
       element = element.parentElement;
     }
   })();
-  window.Turbo = _objectSpread2(_objectSpread2({}, Turbo$1), {}, {
+  window.Turbo = _objectSpread2(_objectSpread2({}, Turbo), {}, {
     StreamActions: StreamActions
   });
   start();
 
-  var Turbo$2 = /*#__PURE__*/Object.freeze({
+  var Turbo$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     FetchEnctype: FetchEnctype,
     FetchMethod: FetchMethod,
@@ -9403,7 +9403,7 @@
     return body instanceof FormData || body instanceof URLSearchParams;
   }
 
-  window.Turbo = Turbo$2;
+  window.Turbo = Turbo$1;
   addEventListener("turbo:before-fetch-request", encodeMethodIntoRequestBody);
 
   var CssReloader = /*#__PURE__*/function () {
@@ -9422,9 +9422,9 @@
       }
     }]);
   }();
-  var cssReloader = new CssReloader();
+
   StreamActions.reload_css = function () {
-    cssReloader.reload();
+    new CssReloader().reload();
   };
 
   // base IIFE to define idiomorph
@@ -10335,9 +10335,9 @@
       }
     }]);
   }();
-  var htmlReloader = new HtmlReloader();
+
   StreamActions.reload_html = function () {
-    htmlReloader.reload();
+    new HtmlReloader().reload();
   };
 
   /*
@@ -14045,7 +14045,8 @@
     _classPrivateFieldGet2(_application, this).unload(name);
     _classPrivateFieldGet2(_application, this).register(name, module["default"]);
   }
-  Turbo.StreamActions.reload_javascript = function () {
+
+  StreamActions.reload_javascript = function () {
     new JavascriptReloader().reload();
   };
 
