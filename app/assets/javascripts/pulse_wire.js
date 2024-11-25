@@ -9420,11 +9420,19 @@
           link.setAttribute('href', "".concat(href, "?reload=").concat(Date.now()));
         });
       }
+    }], [{
+      key: "reload",
+      value: function reload() {
+        for (var _len = arguments.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
+          params[_key] = arguments[_key];
+        }
+        _construct(CssReloader, params).reload();
+      }
     }]);
   }();
 
   StreamActions.reload_css = function () {
-    new CssReloader().reload();
+    CssReloader.reload();
   };
 
   // base IIFE to define idiomorph
@@ -10333,11 +10341,16 @@
       value: function updateHead(newHead) {
         Idiomorph.morph(document.head, newHead);
       }
+    }], [{
+      key: "reload",
+      value: function reload() {
+        new HtmlReloader().reload();
+      }
     }]);
   }();
 
   StreamActions.reload_html = function () {
-    new HtmlReloader().reload();
+    HtmlReloader.reload();
   };
 
   /*
@@ -13981,6 +13994,11 @@
         }
         return reload;
       }()
+    }], [{
+      key: "reload",
+      value: function reload() {
+        new JavascriptReloader().reload();
+      }
     }]);
   }();
   function _reloadStimulusControllers() {
@@ -14047,7 +14065,7 @@
   }
 
   StreamActions.reload_javascript = function () {
-    new JavascriptReloader().reload();
+    JavascriptReloader.reload();
   };
 
   var adapters = {

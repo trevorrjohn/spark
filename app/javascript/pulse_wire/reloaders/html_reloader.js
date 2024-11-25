@@ -1,6 +1,10 @@
 import { Idiomorph } from "idiomorph/dist/idiomorph.esm.js"
 
 export class HtmlReloader {
+  static reload() {
+    new HtmlReloader().reload()
+  }
+
   async reload() {
     console.debug("HTML reloaded")
 

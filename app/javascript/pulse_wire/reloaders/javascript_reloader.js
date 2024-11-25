@@ -5,6 +5,10 @@ export class JavascriptReloader {
   #importmapSelector = "script[type=importmap]"
   #application
 
+  static reload() {
+    new JavascriptReloader().reload()
+  }
+
   constructor() {
     this.#application = window.Stimulus || Application.start()
   }
