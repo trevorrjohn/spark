@@ -14022,60 +14022,29 @@
   var _controllerAttribute = /*#__PURE__*/new WeakMap();
   var _importmapSelector = /*#__PURE__*/new WeakMap();
   var _application = /*#__PURE__*/new WeakMap();
-  var _JavascriptReloader_brand = /*#__PURE__*/new WeakSet();
-  var JavascriptReloader = /*#__PURE__*/function () {
-    function JavascriptReloader() {
-      _classCallCheck(this, JavascriptReloader);
-      // async #reloadImportmapModules() {
-      //   const importmap = this.#parseImportmapJson()
-      //   const modulePaths = Object.values(importmap)
-      //
-      //   await Promise.all(
-      //     modulePaths.map(async path => {
-      //       const moduleUrl = await this.#reloadModulePreloadLink(path)
-      //       await import(moduleUrl).catch(error => console.error(`Failed to import module: ${moduleUrl}`, error))
-      //     })
-      //   )
-      //   console.log("All importmap modules reloaded.")
-      // }
-      _classPrivateMethodInitSpec(this, _JavascriptReloader_brand);
+  var _StimulusReloader_brand = /*#__PURE__*/new WeakSet();
+  var StimulusReloader = /*#__PURE__*/function () {
+    function StimulusReloader() {
+      _classCallCheck(this, StimulusReloader);
+      _classPrivateMethodInitSpec(this, _StimulusReloader_brand);
       _classPrivateFieldInitSpec(this, _controllerAttribute, "data-controller");
       _classPrivateFieldInitSpec(this, _importmapSelector, "script[type=importmap]");
       _classPrivateFieldInitSpec(this, _application, void 0);
       _classPrivateFieldSet2(_application, this, window.Stimulus || Application.start());
     }
-    return _createClass(JavascriptReloader, [{
+    return _createClass(StimulusReloader, [{
       key: "reload",
       value: function () {
         var _reload = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-          var _this = this;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) switch (_context.prev = _context.next) {
               case 0:
-                // this.#application.stop()
-                _classPrivateFieldGet2(_application, this).controllers.forEach(function (controller) {
-                  return console.debug("UNLOAD Controller", controller.identifier);
-                });
-                _classPrivateFieldGet2(_application, this).controllers.forEach(function (controller) {
-                  return controller.disconnect();
-                });
-                _classPrivateFieldGet2(_application, this).controllers.forEach(function (controller) {
-                  return _classPrivateFieldGet2(_application, _this).unload(controller.identifier);
-                });
                 _classPrivateFieldGet2(_application, this).stop();
-
-                // this.#application = Application.start()
-                // this.#application.stop()
-                // this.#application.controllers.forEach((controller) => controller.disconnect())
-
-                // await this.#reloadImportmapModules()
-                _context.next = 6;
-                return _assertClassBrand(_JavascriptReloader_brand, this, _reloadStimulusControllers).call(this);
-              case 6:
-                // await this.#resetDataControllers()
-
+                _context.next = 3;
+                return _assertClassBrand(_StimulusReloader_brand, this, _reloadStimulusControllers).call(this);
+              case 3:
                 _classPrivateFieldGet2(_application, this).start();
-              case 7:
+              case 4:
               case "end":
                 return _context.stop();
             }
@@ -14088,60 +14057,94 @@
       }()
     }], [{
       key: "reload",
-      value: function reload() {
-        new JavascriptReloader().reload();
-      }
+      value: function () {
+        var _reload2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+            while (1) switch (_context2.prev = _context2.next) {
+              case 0:
+                return _context2.abrupt("return", new StimulusReloader().reload());
+              case 1:
+              case "end":
+                return _context2.stop();
+            }
+          }, _callee2);
+        }));
+        function reload() {
+          return _reload2.apply(this, arguments);
+        }
+        return reload;
+      }()
     }]);
   }();
   function _reloadStimulusControllers() {
     return _reloadStimulusControllers2.apply(this, arguments);
   }
   function _reloadStimulusControllers2() {
-    _reloadStimulusControllers2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var _this2 = this;
-      var pathsByModule, controllerPaths;
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) switch (_context3.prev = _context3.next) {
+    _reloadStimulusControllers2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var _this3 = this;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
           case 0:
-            pathsByModule = _assertClassBrand(_JavascriptReloader_brand, this, _parseImportmapJson).call(this);
-            controllerPaths = Object.keys(pathsByModule).filter(function (path) {
-              return path.endsWith("_controller");
-            });
-            _context3.next = 4;
-            return Promise.all(controllerPaths.map(/*#__PURE__*/function () {
-              var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(moduleName) {
-                var controllerName, path;
-                return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-                  while (1) switch (_context2.prev = _context2.next) {
+            _context4.next = 2;
+            return Promise.all(_classPrivateGetter(_StimulusReloader_brand, this, _get_stimulusControllerPaths).map(/*#__PURE__*/function () {
+              var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(moduleName) {
+                return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+                  while (1) switch (_context3.prev = _context3.next) {
                     case 0:
-                      console.debug("Importing ", moduleName);
-                      controllerName = _assertClassBrand(_JavascriptReloader_brand, _this2, _extractControllerName).call(_this2, moduleName); // if (this.#canRegisterController(controllerName)) {
-                      path = pathsByModule[moduleName] + "?bust_cache=" + Date.now();
-                      _context2.next = 5;
-                      return import(path).then(function (module) {
-                        return _assertClassBrand(_JavascriptReloader_brand, _this2, _registerController).call(_this2, controllerName, module);
-                      })["catch"](function (error) {
-                        return console.error("Failed to reload controller: ".concat(controllerName), error);
-                      });
-                    case 5:
+                      return _context3.abrupt("return", _assertClassBrand(_StimulusReloader_brand, _this3, _reloadStimulusController).call(_this3, moduleName));
+                    case 1:
                     case "end":
-                      return _context2.stop();
+                      return _context3.stop();
                   }
-                }, _callee2);
+                }, _callee3);
               }));
-              return function (_x) {
+              return function (_x2) {
                 return _ref.apply(this, arguments);
               };
             }()));
-          case 4:
-            console.log("All Stimulus controllers reloaded and re-registered.");
-          case 5:
+          case 2:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
-      }, _callee3, this);
+      }, _callee4, this);
     }));
     return _reloadStimulusControllers2.apply(this, arguments);
+  }
+  function _get_stimulusControllerPaths(_this) {
+    return Object.keys(_classPrivateGetter(_StimulusReloader_brand, _this, _get_stimulusPathsByModule)).filter(function (path) {
+      return path.endsWith("_controller");
+    });
+  }
+  function _get_stimulusPathsByModule(_this2) {
+    _this2.pathsByModule = _this2.pathsByModule || _assertClassBrand(_StimulusReloader_brand, _this2, _parseImportmapJson).call(_this2);
+    return _this2.pathsByModule;
+  }
+  function _reloadStimulusController(_x) {
+    return _reloadStimulusController2.apply(this, arguments);
+  }
+  function _reloadStimulusController2() {
+    _reloadStimulusController2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5(moduleName) {
+      var controllerName, path, module;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
+          case 0:
+            controllerName = _assertClassBrand(_StimulusReloader_brand, this, _extractControllerName).call(this, moduleName);
+            path = _assertClassBrand(_StimulusReloader_brand, this, _pathForModuleName).call(this, moduleName) + "?bust_cache=" + Date.now();
+            _context5.next = 4;
+            return import(path);
+          case 4:
+            module = _context5.sent;
+            _assertClassBrand(_StimulusReloader_brand, this, _registerController).call(this, controllerName, module);
+          case 6:
+          case "end":
+            return _context5.stop();
+        }
+      }, _callee5, this);
+    }));
+    return _reloadStimulusController2.apply(this, arguments);
+  }
+  function _pathForModuleName(moduleName) {
+    return _classPrivateGetter(_StimulusReloader_brand, this, _get_stimulusPathsByModule)[moduleName];
   }
   function _parseImportmapJson() {
     var importmapScript = document.querySelector(_classPrivateFieldGet2(_importmapSelector, this));
@@ -14151,13 +14154,12 @@
     return path.replace(/^.*\//, "").replace("_controller", "").replace(/\//g, "--").replace(/_/g, "-");
   }
   function _registerController(name, module) {
-    console.debug("REGISTERING", name, module);
     _classPrivateFieldGet2(_application, this).unload(name);
     _classPrivateFieldGet2(_application, this).register(name, module["default"]);
   }
 
-  StreamActions.reload_javascript = function () {
-    JavascriptReloader.reload();
+  StreamActions.reload_stimulus = function () {
+    StimulusReloader.reload();
   };
 
   var adapters = {

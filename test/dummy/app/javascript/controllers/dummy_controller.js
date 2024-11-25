@@ -1,9 +1,16 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  connect() {
-    console.debug("Dummy controller connected")
+  initialize() {
+    this.version = 2
+  }
 
-    // this.element.style = "color: blue;"
+  connect() {
+    console.debug("Dummy controller connected ", this.version)
+    this.element.style = "color: blue;"
+  }
+
+  disconnect() {
+    console.debug("Dummy controller disconnected", this.version)
   }
 }
