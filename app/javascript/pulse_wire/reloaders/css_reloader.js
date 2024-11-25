@@ -1,6 +1,6 @@
 export class CssReloader {
-  static reload(...params) {
-    new CssReloader(...params).reload()
+  static async reload(...params) {
+    return new CssReloader(...params).reload()
   }
 
   async reload() {
