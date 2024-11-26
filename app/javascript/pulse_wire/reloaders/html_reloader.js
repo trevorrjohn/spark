@@ -1,7 +1,7 @@
 import { Idiomorph } from "idiomorph/dist/idiomorph.esm.js"
-import { log } from "../logger.js";
-import { reloadHtmlDocument } from "../helpers.js";
-import { StimulusReloader } from "./stimulus_reloader.js";
+import { log } from "../logger.js"
+import { reloadHtmlDocument } from "../helpers.js"
+import { StimulusReloader } from "./stimulus_reloader.js"
 
 export class HtmlReloader {
   static async reload() {

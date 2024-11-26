@@ -1,6 +1,6 @@
 import { Application } from "@hotwired/stimulus"
 import { log } from "../logger.js"
-import { cacheBustedUrl } from "../helpers.js";
+import { cacheBustedUrl } from "../helpers.js"
 
 export class StimulusReloader {
   static async reload(...params) {
@@ -54,7 +54,7 @@ export class StimulusReloader {
   }
 
   #pathForModuleName(moduleName) {
-    return this.#stimulusPathsByModule[moduleName];
+    return this.#stimulusPathsByModule[moduleName]
   }
 
   #extractControllerName(path) {

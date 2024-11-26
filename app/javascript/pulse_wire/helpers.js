@@ -15,7 +15,7 @@ export function cacheBustedUrl(urlString) {
 }
 
 export async function reloadHtmlDocument() {
-  let currentUrl = urlWithParams(window.location.href, { pulse_wire: "true" });
+  let currentUrl = urlWithParams(window.location.href, { pulse_wire: "true" })
   const response = await fetch(currentUrl)
   const fetchedHTML = await response.text()
   const parser = new DOMParser()

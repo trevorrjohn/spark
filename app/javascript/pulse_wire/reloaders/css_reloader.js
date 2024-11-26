@@ -1,5 +1,5 @@
 import { log } from "../logger.js"
-import { reloadHtmlDocument } from "../helpers.js";
+import { reloadHtmlDocument } from "../helpers.js"
 
 export class CssReloader {
   static async reload(...params) {
