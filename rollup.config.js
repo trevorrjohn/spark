@@ -19,7 +19,7 @@ export default {
       format: "iife",
       sourcemap: true,
       inlineDynamicImports: true,
-      plugins: [terser()]
+      plugins: [ terser() ]
     },
   ],
   plugins: [
@@ -27,7 +27,17 @@ export default {
     commonjs(),
     babel({
       babelHelpers: "bundled",
-      presets: ["@babel/preset-env"],
+      presets: [
+        [
+          "@babel/preset-env",
+          {
+            targets: "> 0.25%, not dead",
+            exclude: [ "transform-template-literals" ],
+            modules: false,
+          },
+        ],
+      ],
+      exclude: "node_modules/**",
     }),
-  ],
+  ]
 }
