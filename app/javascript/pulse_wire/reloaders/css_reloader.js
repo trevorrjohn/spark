@@ -5,7 +5,7 @@ export class CssReloader {
     return new CssReloader(...params).reload()
   }
 
-  constructor(filePattern) {
+  constructor(filePattern = /./) {
     this.filePattern = filePattern
   }
 
