@@ -1,4 +1,5 @@
 import { Application } from "@hotwired/stimulus"
+import { log } from "../logger.js"
 
 export class StimulusReloader {
   static async reload() {
@@ -10,6 +11,8 @@ export class StimulusReloader {
   }
 
   async reload() {
+    log("Reload Stimulus controllers...")
+
     this.application.stop()
 
     await this.#reloadStimulusControllers()
@@ -38,6 +41,8 @@ export class StimulusReloader {
   }
 
   async #reloadStimulusController(moduleName) {
+    log(`\t${moduleName}`)
+
     const controllerName = this.#extractControllerName(moduleName)
     const path = this.#pathForModuleName(moduleName) + "?bust_cache=" + Date.now()
 

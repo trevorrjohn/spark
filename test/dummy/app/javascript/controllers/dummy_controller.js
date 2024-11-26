@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   initialize() {
-    this.version = 3
+    this.version = 6
   }
 
   connect() {

@@ -1,4 +1,5 @@
 import { Idiomorph } from "idiomorph/dist/idiomorph.esm.js"
+import { log } from "../logger.js";
 
 export class HtmlReloader {
   static async reload() {
@@ -7,6 +8,8 @@ export class HtmlReloader {
 
   async reload() {
     try {
+      log("Reload html...")
+
       const reloadedDocument = await this.#reloadDocument()
 
       this.#updateHead(reloadedDocument.head)

@@ -1,9 +1,13 @@
+import { log } from "../logger.js"
+
 export class CssReloader {
   static async reload(...params) {
     return new CssReloader(...params).reload()
   }
 
   async reload() {
+    log("Reload css...")
+
     await Promise.all(this.#reloadAllLinks())
   }
 
@@ -18,8 +22,14 @@ export class CssReloader {
   async #reloadLink(link) {
     return new Promise(resolve => {
       const href = link.getAttribute("href")
-      link.setAttribute("href", `${href}?reload=${Date.now()}`)
-      link.onload = () => resolve()
+      const newLink = document.createElement("link")
+      newLink.rel = "stylesheet"
+      newLink.href = `${href}?reload=${Date.now()}`
+      newLink.onload = () => {
+        log(`\t${href}`)
+        resolve()
+      }
+      link.parentNode.replaceChild(newLink, link)
     })
   }
 }

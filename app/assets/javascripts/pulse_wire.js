@@ -1,4 +1,4 @@
-(function () {
+(function (exports) {
   'use strict';
 
   function _arrayLikeToArray(r, a) {
@@ -9406,6 +9406,16 @@
   window.Turbo = Turbo$1;
   addEventListener("turbo:before-fetch-request", encodeMethodIntoRequestBody);
 
+  function log() {
+    if (PulseWire.config.loggingEnabled) {
+      var _console;
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+      (_console = console).log.apply(_console, ["[pulse_wire]"].concat(args));
+    }
+  }
+
   var _CssReloader_brand = /*#__PURE__*/new WeakSet();
   var CssReloader = /*#__PURE__*/function () {
     function CssReloader() {
@@ -9419,9 +9429,10 @@
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                log("Reload css...");
+                _context.next = 3;
                 return Promise.all(_assertClassBrand(_CssReloader_brand, this, _reloadAllLinks).call(this));
-              case 2:
+              case 3:
               case "end":
                 return _context.stop();
             }
@@ -9479,10 +9490,14 @@
           case 0:
             return _context3.abrupt("return", new Promise(function (resolve) {
               var href = link.getAttribute("href");
-              link.setAttribute("href", "".concat(href, "?reload=").concat(Date.now()));
-              link.onload = function () {
-                return resolve();
+              var newLink = document.createElement("link");
+              newLink.rel = "stylesheet";
+              newLink.href = "".concat(href, "?reload=").concat(Date.now());
+              newLink.onload = function () {
+                log("\t".concat(href));
+                resolve();
               };
+              link.parentNode.replaceChild(newLink, link);
             }));
           case 1:
           case "end":
@@ -10356,23 +10371,24 @@
             while (1) switch (_context.prev = _context.next) {
               case 0:
                 _context.prev = 0;
-                _context.next = 3;
+                log("Reload html...");
+                _context.next = 4;
                 return _assertClassBrand(_HtmlReloader_brand, this, _reloadDocument).call(this);
-              case 3:
+              case 4:
                 reloadedDocument = _context.sent;
                 _assertClassBrand(_HtmlReloader_brand, this, _updateHead).call(this, reloadedDocument.head);
                 _assertClassBrand(_HtmlReloader_brand, this, _updateBody).call(this, reloadedDocument.body);
-                _context.next = 11;
+                _context.next = 12;
                 break;
-              case 8:
-                _context.prev = 8;
+              case 9:
+                _context.prev = 9;
                 _context.t0 = _context["catch"](0);
                 console.error("Error reloading HTML:", _context.t0);
-              case 11:
+              case 12:
               case "end":
                 return _context.stop();
             }
-          }, _callee, this, [[0, 8]]);
+          }, _callee, this, [[0, 9]]);
         }));
         function reload() {
           return _reload.apply(this, arguments);
@@ -14038,12 +14054,13 @@
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) switch (_context.prev = _context.next) {
               case 0:
+                log("Reload Stimulus controllers...");
                 this.application.stop();
-                _context.next = 3;
+                _context.next = 4;
                 return _assertClassBrand(_StimulusReloader_brand, this, _reloadStimulusControllers).call(this);
-              case 3:
-                this.application.start();
               case 4:
+                this.application.start();
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -14131,14 +14148,15 @@
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) switch (_context5.prev = _context5.next) {
           case 0:
+            log("\t".concat(moduleName));
             controllerName = _assertClassBrand(_StimulusReloader_brand, this, _extractControllerName).call(this, moduleName);
             path = _assertClassBrand(_StimulusReloader_brand, this, _pathForModuleName).call(this, moduleName) + "?bust_cache=" + Date.now();
-            _context5.next = 4;
+            _context5.next = 5;
             return import(path);
-          case 4:
+          case 5:
             module = _context5.sent;
             _assertClassBrand(_StimulusReloader_brand, this, _registerController).call(this, controllerName, module);
-          case 6:
+          case 7:
           case "end":
             return _context5.stop();
         }
@@ -14159,6 +14177,12 @@
 
   StreamActions.reload_stimulus = function () {
     StimulusReloader.reload();
+  };
+
+  var PulseWire = {
+    config: {
+      loggingEnabled: true
+    }
   };
 
   var adapters = {
@@ -14964,4 +14988,8 @@
     logger: logger
   });
 
-})();
+  exports.PulseWire = PulseWire;
+
+  return exports;
+
+})({});
