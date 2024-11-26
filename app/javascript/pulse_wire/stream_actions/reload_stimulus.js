@@ -1,6 +1,8 @@
 import { Turbo } from "@hotwired/turbo-rails"
 import { StimulusReloader } from "../reloaders/stimulus_reloader.js";
+import { nameFromFilePath } from "../helpers.js";
 
 Turbo.StreamActions.reload_stimulus = function () {
-  StimulusReloader.reload()
+  const filePath = nameFromFilePath(this.getAttribute("file_path"))
+  StimulusReloader.reload(new RegExp(filePath))
 }

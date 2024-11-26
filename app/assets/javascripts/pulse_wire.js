@@ -9956,9 +9956,14 @@
 
   class StimulusReloader {
     static async reload() {
-      return new StimulusReloader().reload();
+      for (var _len = arguments.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
+        params[_key] = arguments[_key];
+      }
+      return new StimulusReloader(...params).reload();
     }
     constructor() {
+      let filePattern = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : /./;
+      this.filePattern = filePattern;
       this.application = window.Stimulus || Application.start();
     }
     async reload() {
@@ -9971,7 +9976,7 @@
       await Promise.all(this.#stimulusControllerPaths.map(async moduleName => this.#reloadStimulusController(moduleName)));
     }
     get #stimulusControllerPaths() {
-      return Object.keys(this.#stimulusPathsByModule).filter(path => path.endsWith("_controller"));
+      return Object.keys(this.#stimulusPathsByModule).filter(path => path.endsWith("_controller") && this.filePattern.test(path));
     }
     get #stimulusPathsByModule() {
       this.pathsByModule = this.pathsByModule || this.#parseImportmapJson();
@@ -10010,7 +10015,6 @@
     }
     async #reloadHtml() {
       try {
-        console.debug("HOLA");
         log("Reload html...");
         const reloadedDocument = await reloadHtmlDocument();
         this.#updateBody(reloadedDocument.body);
@@ -10038,7 +10042,8 @@
   };
 
   StreamActions.reload_stimulus = function () {
-    StimulusReloader.reload();
+    const filePath = nameFromFilePath(this.getAttribute("file_path"));
+    StimulusReloader.reload(new RegExp(filePath));
   };
 
   const PulseWire = {

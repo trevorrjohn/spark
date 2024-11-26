@@ -3,11 +3,12 @@ import { log } from "../logger.js"
 import { cacheBustedUrl } from "../helpers.js";
 
 export class StimulusReloader {
-  static async reload() {
-    return new StimulusReloader().reload()
+  static async reload(...params) {
+    return new StimulusReloader(...params).reload()
   }
 
-  constructor() {
+  constructor(filePattern = /./) {
+    this.filePattern = filePattern
     this.application = window.Stimulus || Application.start()
   }
 
@@ -28,7 +29,7 @@ export class StimulusReloader {
   }
 
   get #stimulusControllerPaths() {
-    return Object.keys(this.#stimulusPathsByModule).filter(path => path.endsWith("_controller"))
+    return Object.keys(this.#stimulusPathsByModule).filter(path => path.endsWith("_controller") && this.filePattern.test(path))
   }
 
   get #stimulusPathsByModule() {
