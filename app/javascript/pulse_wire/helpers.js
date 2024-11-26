@@ -13,3 +13,12 @@ export function urlWithParams(urlString, params) {
 export function cacheBustedUrl(urlString) {
   return urlWithParams(urlString, { reload: Date.now() })
 }
+
+export async function reloadHtmlDocument() {
+  let currentUrl = urlWithParams(window.location.href, { pulse_wire: "true" });
+  const response = await fetch(currentUrl)
+  const fetchedHTML = await response.text()
+  const parser = new DOMParser()
+  return parser.parseFromString(fetchedHTML, "text/html")
+}
+

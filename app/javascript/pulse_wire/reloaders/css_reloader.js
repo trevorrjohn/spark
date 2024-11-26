@@ -1,5 +1,5 @@
 import { log } from "../logger.js"
-import { cacheBustedUrl } from "../helpers.js";
+import { reloadHtmlDocument } from "../helpers.js";
 
 export class CssReloader {
   static async reload(...params) {
@@ -12,8 +12,13 @@ export class CssReloader {
 
   async reload() {
     log("Reload css...")
-
+    this.newCssLinks = await this.#loadNewCssLinks()
     await Promise.all(this.#reloadAllLinks())
+  }
+
+  async #loadNewCssLinks() {
+    const reloadedDocument = await reloadHtmlDocument()
+    return Array.from(reloadedDocument.head.querySelectorAll("link[rel='stylesheet']"))
   }
 
   #reloadAllLinks() {
@@ -39,14 +44,22 @@ export class CssReloader {
   async #reloadLink(link) {
     return new Promise(resolve => {
       const href = link.getAttribute("href")
-      const newLink = document.createElement("link")
-      newLink.rel = "stylesheet"
-      newLink.href = cacheBustedUrl(href)
+      const newLink = this.#findNewLinkFor(link)
       newLink.onload = () => {
         log(`\t${href}`)
         resolve()
       }
       link.parentNode.replaceChild(newLink, link)
     })
+  }
+
+  #findNewLinkFor(link) {
+    return this.newCssLinks.find(newLink => {
+      return this.#withoutAssetDigest(link.href) === this.#withoutAssetDigest(newLink.href)
+    })
+  }
+
+  #withoutAssetDigest(url) {
+    return url.replace(/-[^-]+\.css$/, ".css")
   }
 }

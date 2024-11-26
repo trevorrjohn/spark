@@ -6921,6 +6921,15 @@
       reload: Date.now()
     });
   }
+  async function reloadHtmlDocument() {
+    let currentUrl = urlWithParams(window.location.href, {
+      pulse_wire: "true"
+    });
+    const response = await fetch(currentUrl);
+    const fetchedHTML = await response.text();
+    const parser = new DOMParser();
+    return parser.parseFromString(fetchedHTML, "text/html");
+  }
 
   class CssReloader {
     static async reload() {
@@ -6935,7 +6944,12 @@
     }
     async reload() {
       log("Reload css...");
+      this.newCssLinks = await this.#loadNewCssLinks();
       await Promise.all(this.#reloadAllLinks());
+    }
+    async #loadNewCssLinks() {
+      const reloadedDocument = await reloadHtmlDocument();
+      return Array.from(reloadedDocument.head.querySelectorAll("link[rel='stylesheet']"));
     }
     #reloadAllLinks() {
       return Array.from(this.#cssLinks).map(link => this.#reloadLinkIfNeeded(link));
@@ -6956,15 +6970,21 @@
     async #reloadLink(link) {
       return new Promise(resolve => {
         const href = link.getAttribute("href");
-        const newLink = document.createElement("link");
-        newLink.rel = "stylesheet";
-        newLink.href = cacheBustedUrl(href);
+        const newLink = this.#findNewLinkFor(link);
         newLink.onload = () => {
           log(`\t${href}`);
           resolve();
         };
         link.parentNode.replaceChild(newLink, link);
       });
+    }
+    #findNewLinkFor(link) {
+      return this.newCssLinks.find(newLink => {
+        return this.#withoutAssetDigest(link.href) === this.#withoutAssetDigest(newLink.href);
+      });
+    }
+    #withoutAssetDigest(url) {
+      return url.replace(/-[^-]+\.css$/, ".css");
     }
   }
 
@@ -9992,8 +10012,7 @@
       try {
         console.debug("HOLA");
         log("Reload html...");
-        const reloadedDocument = await this.#reloadDocument();
-        this.#updateHead(reloadedDocument.head);
+        const reloadedDocument = await reloadHtmlDocument();
         this.#updateBody(reloadedDocument.body);
       } catch (error) {
         console.error("Error reloading HTML:", error);
@@ -10001,20 +10020,6 @@
     }
     async #reloadStimulus() {
       return new StimulusReloader().reload();
-    }
-    async #reloadDocument() {
-      const response = await fetch(this.#reloadUrl);
-      const fetchedHTML = await response.text();
-      const parser = new DOMParser();
-      return parser.parseFromString(fetchedHTML, "text/html");
-    }
-    get #reloadUrl() {
-      return urlWithParams(window.location.href, {
-        pulse_wire: "true"
-      });
-    }
-    #updateHead(newHead) {
-      Idiomorph.morph(document.head, newHead);
     }
     #updateBody(newBody) {
       Idiomorph.morph(document.body, newBody, {
