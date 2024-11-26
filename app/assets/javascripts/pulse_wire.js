@@ -9418,9 +9418,10 @@
 
   var _CssReloader_brand = /*#__PURE__*/new WeakSet();
   var CssReloader = /*#__PURE__*/function () {
-    function CssReloader() {
+    function CssReloader(filePattern) {
       _classCallCheck(this, CssReloader);
       _classPrivateMethodInitSpec(this, _CssReloader_brand);
+      this.filePattern = filePattern;
     }
     return _createClass(CssReloader, [{
       key: "reload",
@@ -9474,11 +9475,22 @@
   function _reloadAllLinks() {
     var _this2 = this;
     return Array.from(_classPrivateGetter(_CssReloader_brand, this, _get_cssLinks)).map(function (link) {
-      return _assertClassBrand(_CssReloader_brand, _this2, _reloadLink).call(_this2, link);
+      return _assertClassBrand(_CssReloader_brand, _this2, _reloadLinkIfNeeded).call(_this2, link);
     });
   }
   function _get_cssLinks(_this) {
     return document.querySelectorAll("link[rel='stylesheet']");
+  }
+  function _reloadLinkIfNeeded(link) {
+    if (_assertClassBrand(_CssReloader_brand, this, _shouldReloadLink).call(this, link)) {
+      return _assertClassBrand(_CssReloader_brand, this, _reloadLink).call(this, link);
+    } else {
+      return Promise.resolve();
+    }
+  }
+  function _shouldReloadLink(link) {
+    console.debug("Es", this.filePattern);
+    return this.filePattern.test(link.getAttribute("href"));
   }
   function _reloadLink(_x) {
     return _reloadLink2.apply(this, arguments);
@@ -9508,8 +9520,13 @@
     return _reloadLink2.apply(this, arguments);
   }
 
+  function nameFromFilePath(path) {
+    return path.split("/").pop().split(".")[0];
+  }
+
   StreamActions.reload_css = function () {
-    CssReloader.reload();
+    var filePath = nameFromFilePath(this.getAttribute("file_path"));
+    CssReloader.reload(new RegExp(filePath));
   };
 
   // base IIFE to define idiomorph

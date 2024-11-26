@@ -43,7 +43,7 @@ class PulseWire::Installer
 
     def stream_action_for(action, file_path)
       <<~HTML
-        <turbo-stream action="#{action}" path="#{file_path}">
+        <turbo-stream action="#{action}" file_path="#{file_path}">
       HTML
     end
 end

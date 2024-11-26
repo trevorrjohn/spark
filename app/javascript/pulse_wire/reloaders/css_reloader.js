@@ -5,6 +5,10 @@ export class CssReloader {
     return new CssReloader(...params).reload()
   }
 
+  constructor(filePattern) {
+    this.filePattern = filePattern
+  }
+
   async reload() {
     log("Reload css...")
 
@@ -12,11 +16,24 @@ export class CssReloader {
   }
 
   #reloadAllLinks() {
-    return Array.from(this.#cssLinks).map(link => this.#reloadLink(link))
+    return Array.from(this.#cssLinks).map(link => this.#reloadLinkIfNeeded(link))
   }
 
   get #cssLinks() {
     return document.querySelectorAll("link[rel='stylesheet']")
+  }
+
+  #reloadLinkIfNeeded(link) {
+    if (this.#shouldReloadLink(link)) {
+      return this.#reloadLink(link)
+    } else {
+      return Promise.resolve()
+    }
+  }
+
+  #shouldReloadLink(link) {
+    console.debug("Es", this.filePattern)
+    return this.filePattern.test(link.getAttribute("href"))
   }
 
   async #reloadLink(link) {
