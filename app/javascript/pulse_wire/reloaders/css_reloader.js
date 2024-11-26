@@ -1,4 +1,5 @@
 import { log } from "../logger.js"
+import { cacheBustedUrl } from "../helpers.js";
 
 export class CssReloader {
   static async reload(...params) {
@@ -40,7 +41,7 @@ export class CssReloader {
       const href = link.getAttribute("href")
       const newLink = document.createElement("link")
       newLink.rel = "stylesheet"
-      newLink.href = `${href}?reload=${Date.now()}`
+      newLink.href = cacheBustedUrl(href)
       newLink.onload = () => {
         log(`\t${href}`)
         resolve()

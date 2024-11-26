@@ -1,5 +1,6 @@
 import { Application } from "@hotwired/stimulus"
 import { log } from "../logger.js"
+import { cacheBustedUrl } from "../helpers.js";
 
 export class StimulusReloader {
   static async reload() {
@@ -44,7 +45,7 @@ export class StimulusReloader {
     log(`\t${moduleName}`)
 
     const controllerName = this.#extractControllerName(moduleName)
-    const path = this.#pathForModuleName(moduleName) + "?bust_cache=" + Date.now()
+    const path = cacheBustedUrl(this.#pathForModuleName(moduleName))
 
     const module = await import(path)
 

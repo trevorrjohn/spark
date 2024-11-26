@@ -9418,7 +9418,8 @@
 
   var _CssReloader_brand = /*#__PURE__*/new WeakSet();
   var CssReloader = /*#__PURE__*/function () {
-    function CssReloader(filePattern) {
+    function CssReloader() {
+      var filePattern = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : /./;
       _classCallCheck(this, CssReloader);
       _classPrivateMethodInitSpec(this, _CssReloader_brand);
       this.filePattern = filePattern;
@@ -9489,7 +9490,6 @@
     }
   }
   function _shouldReloadLink(link) {
-    console.debug("Es", this.filePattern);
     return this.filePattern.test(link.getAttribute("href"));
   }
   function _reloadLink(_x) {

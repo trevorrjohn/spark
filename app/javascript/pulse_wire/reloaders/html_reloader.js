@@ -1,5 +1,6 @@
 import { Idiomorph } from "idiomorph/dist/idiomorph.esm.js"
 import { log } from "../logger.js";
+import { urlWithParams } from "../helpers.js";
 
 export class HtmlReloader {
   static async reload() {
@@ -27,9 +28,7 @@ export class HtmlReloader {
   }
 
   get #reloadUrl() {
-    const url = new URL(window.location.href)
-    url.searchParams.set("pulse_wire", "true")
-    return url.toString()
+    return urlWithParams(this.#currentUrl, { pulse_wire: "true" })
   }
 
   #updateHead(newHead) {
