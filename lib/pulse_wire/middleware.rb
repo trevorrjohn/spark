@@ -28,8 +28,8 @@ class PulseWire::Middleware
     end
 
     def inject_javascript(body)
-      scrpit_path = ActionController::Base.helpers.asset_path("pulse_wire.js")
-      script_tag = ActionController::Base.helpers.javascript_include_tag(scrpit_path)
+      script_path = ActionController::Base.helpers.asset_path("pulse_wire.js")
+      script_tag = ActionController::Base.helpers.javascript_include_tag(script_path)
       body.sub("</head>", "#{script_tag}</head>")
     end
 end
