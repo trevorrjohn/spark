@@ -1,6 +1,7 @@
 import { Idiomorph } from "idiomorph/dist/idiomorph.esm.js"
 import { log } from "../logger.js";
 import { urlWithParams } from "../helpers.js";
+import { StimulusReloader } from "./stimulus_reloader.js";
 
 export class HtmlReloader {
   static async reload() {
@@ -8,7 +9,13 @@ export class HtmlReloader {
   }
 
   async reload() {
+    await this.#reloadHtml()
+    await this.#reloadStimulus()
+  }
+
+  async #reloadHtml() {
     try {
+      console.debug("HOLA");
       log("Reload html...")
 
       const reloadedDocument = await this.#reloadDocument()
@@ -20,6 +27,10 @@ export class HtmlReloader {
     }
   }
 
+  async #reloadStimulus() {
+    return new StimulusReloader().reload()
+  }
+
   async #reloadDocument() {
     const response = await fetch(this.#reloadUrl)
     const fetchedHTML = await response.text()
@@ -28,7 +39,7 @@ export class HtmlReloader {
   }
 
   get #reloadUrl() {
-    return urlWithParams(this.#currentUrl, { pulse_wire: "true" })
+    return urlWithParams(window.location.href, { pulse_wire: "true" })
   }
 
   #updateHead(newHead) {

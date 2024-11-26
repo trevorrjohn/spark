@@ -9416,6 +9416,25 @@
     }
   }
 
+  function nameFromFilePath(path) {
+    return path.split("/").pop().split(".")[0];
+  }
+  function urlWithParams(urlString, params) {
+    var url = new URL(urlString, window.location.origin);
+    Object.entries(params).forEach(function (_ref) {
+      var _ref2 = _slicedToArray(_ref, 2),
+        key = _ref2[0],
+        value = _ref2[1];
+      url.searchParams.set(key, value);
+    });
+    return url.toString();
+  }
+  function cacheBustedUrl(urlString) {
+    return urlWithParams(urlString, {
+      reload: Date.now()
+    });
+  }
+
   var _CssReloader_brand = /*#__PURE__*/new WeakSet();
   var CssReloader = /*#__PURE__*/function () {
     function CssReloader() {
@@ -9504,7 +9523,7 @@
               var href = link.getAttribute("href");
               var newLink = document.createElement("link");
               newLink.rel = "stylesheet";
-              newLink.href = "".concat(href, "?reload=").concat(Date.now());
+              newLink.href = cacheBustedUrl(href);
               newLink.onload = function () {
                 log("\t".concat(href));
                 resolve();
@@ -9518,10 +9537,6 @@
       }, _callee3);
     }));
     return _reloadLink2.apply(this, arguments);
-  }
-
-  function nameFromFilePath(path) {
-    return path.split("/").pop().split(".")[0];
   }
 
   StreamActions.reload_css = function () {
@@ -10372,116 +10387,6 @@
       defaults: defaults
     };
   }();
-
-  var _HtmlReloader_brand = /*#__PURE__*/new WeakSet();
-  var HtmlReloader = /*#__PURE__*/function () {
-    function HtmlReloader() {
-      _classCallCheck(this, HtmlReloader);
-      _classPrivateMethodInitSpec(this, _HtmlReloader_brand);
-    }
-    return _createClass(HtmlReloader, [{
-      key: "reload",
-      value: function () {
-        var _reload = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-          var reloadedDocument;
-          return _regeneratorRuntime().wrap(function _callee$(_context) {
-            while (1) switch (_context.prev = _context.next) {
-              case 0:
-                _context.prev = 0;
-                log("Reload html...");
-                _context.next = 4;
-                return _assertClassBrand(_HtmlReloader_brand, this, _reloadDocument).call(this);
-              case 4:
-                reloadedDocument = _context.sent;
-                _assertClassBrand(_HtmlReloader_brand, this, _updateHead).call(this, reloadedDocument.head);
-                _assertClassBrand(_HtmlReloader_brand, this, _updateBody).call(this, reloadedDocument.body);
-                _context.next = 12;
-                break;
-              case 9:
-                _context.prev = 9;
-                _context.t0 = _context["catch"](0);
-                console.error("Error reloading HTML:", _context.t0);
-              case 12:
-              case "end":
-                return _context.stop();
-            }
-          }, _callee, this, [[0, 9]]);
-        }));
-        function reload() {
-          return _reload.apply(this, arguments);
-        }
-        return reload;
-      }()
-    }], [{
-      key: "reload",
-      value: function () {
-        var _reload2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-            while (1) switch (_context2.prev = _context2.next) {
-              case 0:
-                return _context2.abrupt("return", new HtmlReloader().reload());
-              case 1:
-              case "end":
-                return _context2.stop();
-            }
-          }, _callee2);
-        }));
-        function reload() {
-          return _reload2.apply(this, arguments);
-        }
-        return reload;
-      }()
-    }]);
-  }();
-  function _reloadDocument() {
-    return _reloadDocument2.apply(this, arguments);
-  }
-  function _reloadDocument2() {
-    _reloadDocument2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var response, fetchedHTML, parser;
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.next = 2;
-            return fetch(_classPrivateGetter(_HtmlReloader_brand, this, _get_reloadUrl));
-          case 2:
-            response = _context3.sent;
-            _context3.next = 5;
-            return response.text();
-          case 5:
-            fetchedHTML = _context3.sent;
-            parser = new DOMParser();
-            return _context3.abrupt("return", parser.parseFromString(fetchedHTML, "text/html"));
-          case 8:
-          case "end":
-            return _context3.stop();
-        }
-      }, _callee3, this);
-    }));
-    return _reloadDocument2.apply(this, arguments);
-  }
-  function _get_reloadUrl(_this) {
-    var url = new URL(window.location.href);
-    url.searchParams.set("pulse_wire", "true");
-    return url.toString();
-  }
-  function _updateHead(newHead) {
-    Idiomorph.morph(document.head, newHead);
-  }
-  function _updateBody(newBody) {
-    Idiomorph.morph(document.body, newBody, {
-      callbacks: {
-        beforeNodeMorphed: function beforeNodeMorphed(oldNode, newNode) {
-          var value = !(oldNode instanceof HTMLElement) || !oldNode.closest("turbo-cable-stream-source");
-          return value;
-        }
-      }
-    });
-  }
-
-  StreamActions.reload_html = function () {
-    HtmlReloader.reload();
-  };
 
   /*
   Stimulus 3.2.1
@@ -14167,7 +14072,7 @@
           case 0:
             log("\t".concat(moduleName));
             controllerName = _assertClassBrand(_StimulusReloader_brand, this, _extractControllerName).call(this, moduleName);
-            path = _assertClassBrand(_StimulusReloader_brand, this, _pathForModuleName).call(this, moduleName) + "?bust_cache=" + Date.now();
+            path = cacheBustedUrl(_assertClassBrand(_StimulusReloader_brand, this, _pathForModuleName).call(this, moduleName));
             _context5.next = 5;
             return import(path);
           case 5:
@@ -14191,6 +14096,155 @@
     this.application.unload(name);
     this.application.register(name, module["default"]);
   }
+
+  var _HtmlReloader_brand = /*#__PURE__*/new WeakSet();
+  var HtmlReloader = /*#__PURE__*/function () {
+    function HtmlReloader() {
+      _classCallCheck(this, HtmlReloader);
+      _classPrivateMethodInitSpec(this, _HtmlReloader_brand);
+    }
+    return _createClass(HtmlReloader, [{
+      key: "reload",
+      value: function () {
+        var _reload = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return _assertClassBrand(_HtmlReloader_brand, this, _reloadHtml).call(this);
+              case 2:
+                _context.next = 4;
+                return _assertClassBrand(_HtmlReloader_brand, this, _reloadStimulus).call(this);
+              case 4:
+              case "end":
+                return _context.stop();
+            }
+          }, _callee, this);
+        }));
+        function reload() {
+          return _reload.apply(this, arguments);
+        }
+        return reload;
+      }()
+    }], [{
+      key: "reload",
+      value: function () {
+        var _reload2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+            while (1) switch (_context2.prev = _context2.next) {
+              case 0:
+                return _context2.abrupt("return", new HtmlReloader().reload());
+              case 1:
+              case "end":
+                return _context2.stop();
+            }
+          }, _callee2);
+        }));
+        function reload() {
+          return _reload2.apply(this, arguments);
+        }
+        return reload;
+      }()
+    }]);
+  }();
+  function _reloadHtml() {
+    return _reloadHtml2.apply(this, arguments);
+  }
+  function _reloadHtml2() {
+    _reloadHtml2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var reloadedDocument;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            console.debug("HOLA");
+            log("Reload html...");
+            _context3.next = 5;
+            return _assertClassBrand(_HtmlReloader_brand, this, _reloadDocument).call(this);
+          case 5:
+            reloadedDocument = _context3.sent;
+            _assertClassBrand(_HtmlReloader_brand, this, _updateHead).call(this, reloadedDocument.head);
+            _assertClassBrand(_HtmlReloader_brand, this, _updateBody).call(this, reloadedDocument.body);
+            _context3.next = 13;
+            break;
+          case 10:
+            _context3.prev = 10;
+            _context3.t0 = _context3["catch"](0);
+            console.error("Error reloading HTML:", _context3.t0);
+          case 13:
+          case "end":
+            return _context3.stop();
+        }
+      }, _callee3, this, [[0, 10]]);
+    }));
+    return _reloadHtml2.apply(this, arguments);
+  }
+  function _reloadStimulus() {
+    return _reloadStimulus2.apply(this, arguments);
+  }
+  function _reloadStimulus2() {
+    _reloadStimulus2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
+          case 0:
+            return _context4.abrupt("return", new StimulusReloader().reload());
+          case 1:
+          case "end":
+            return _context4.stop();
+        }
+      }, _callee4);
+    }));
+    return _reloadStimulus2.apply(this, arguments);
+  }
+  function _reloadDocument() {
+    return _reloadDocument2.apply(this, arguments);
+  }
+  function _reloadDocument2() {
+    _reloadDocument2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+      var response, fetchedHTML, parser;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.next = 2;
+            return fetch(_classPrivateGetter(_HtmlReloader_brand, this, _get_reloadUrl));
+          case 2:
+            response = _context5.sent;
+            _context5.next = 5;
+            return response.text();
+          case 5:
+            fetchedHTML = _context5.sent;
+            parser = new DOMParser();
+            return _context5.abrupt("return", parser.parseFromString(fetchedHTML, "text/html"));
+          case 8:
+          case "end":
+            return _context5.stop();
+        }
+      }, _callee5, this);
+    }));
+    return _reloadDocument2.apply(this, arguments);
+  }
+  function _get_reloadUrl(_this) {
+    return urlWithParams(window.location.href, {
+      pulse_wire: "true"
+    });
+  }
+  function _updateHead(newHead) {
+    Idiomorph.morph(document.head, newHead);
+  }
+  function _updateBody(newBody) {
+    Idiomorph.morph(document.body, newBody, {
+      callbacks: {
+        beforeNodeMorphed: function beforeNodeMorphed(oldNode, newNode) {
+          var value = !(oldNode instanceof HTMLElement) || !oldNode.closest("turbo-cable-stream-source");
+          return value;
+        }
+      }
+    });
+  }
+
+  StreamActions.reload_html = function () {
+    HtmlReloader.reload();
+  };
 
   StreamActions.reload_stimulus = function () {
     StimulusReloader.reload();
