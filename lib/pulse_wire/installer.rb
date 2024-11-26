@@ -32,8 +32,8 @@ class PulseWire::Installer
     end
 
     def monitor(paths_name, action:)
-      file_watcher.monitor PulseWire.public_send(paths_name) do
-        ActionCable.server.broadcast "pulse_wire", stream_action_for(action)
+      file_watcher.monitor PulseWire.public_send(paths_name) do |file_path|
+        ActionCable.server.broadcast "pulse_wire", stream_action_for(action, file_path)
       end
     end
 
@@ -41,9 +41,9 @@ class PulseWire::Installer
       @file_watches ||= PulseWire::FileWatcher.new
     end
 
-    def stream_action_for(action)
+    def stream_action_for(action, file_path)
       <<~HTML
-        <turbo-stream action="#{action}">
+        <turbo-stream action="#{action}" path="#{file_path}">
       HTML
     end
 end
