@@ -32,7 +32,6 @@ export class CssReloader {
   }
 
   #shouldReloadLink(link) {
-    console.debug("Es", this.filePattern)
     return this.filePattern.test(link.getAttribute("href"))
   }
 
