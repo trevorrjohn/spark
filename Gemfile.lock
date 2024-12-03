@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pulse_wire (0.1.0)
+    hotwire_spark (0.1.0)
       listen
       rails (>= 8.0.0)
       turbo-rails
@@ -257,9 +257,9 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  hotwire_spark!
   importmap-rails
   propshaft
-  pulse_wire!
   puma
   rubocop
   rubocop-rails-omakase

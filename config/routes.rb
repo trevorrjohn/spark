@@ -1,2 +1,2 @@
-PulseWire::Engine.routes.draw do
+HotwireSpark::Engine.routes.draw do
 end

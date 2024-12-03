@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  mount PulseWire::Engine => "/pulse_wire"
+  mount HotwireSpark::Engine => "/hotwire_spark"
 
   root to: "home#show"
 end

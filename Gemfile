@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in pulse_wire.gemspec.
+# Specify your gem's dependencies in hotwire_spark.gemspec.
 gemspec
 
 gem "puma"

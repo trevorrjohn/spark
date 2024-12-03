@@ -3,19 +3,19 @@ import resolve from "@rollup/plugin-node-resolve"
 import commonjs from "@rollup/plugin-commonjs"
 import babel from "@rollup/plugin-babel"
 
-const inputFile = "app/javascript/pulse_wire/index.js"
+const inputFile = "app/javascript/hotwire_spark/index.js"
 const outputDir = "app/assets/javascripts"
 
 export default {
   input: inputFile,
   output: [
     {
-      file: `${outputDir}/pulse_wire.js`,
+      file: `${outputDir}/hotwire_spark.js`,
       format: "iife",
       inlineDynamicImports: true
     },
     {
-      file: `${outputDir}/pulse_wire.min.js`,
+      file: `${outputDir}/hotwire_spark.min.js`,
       format: "iife",
       sourcemap: true,
       inlineDynamicImports: true,
