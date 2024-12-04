@@ -7,10 +7,11 @@ class HotwireSpark::Middleware
     status, headers, response = @app.call(env)
 
     if html_response?(headers)
-      body = response_body(response)
-      body = inject_javascript(body)
-      headers["Content-Length"] = body.bytesize.to_s if body
-      response = [ body ]
+      html = html_from(response)
+      html = inject_javascript(html)
+      html = inject_turbo_stream(html)
+      headers["Content-Length"] = html.bytesize.to_s if html
+      response = [ html ]
     end
 
     [ status, headers, response ]
@@ -21,15 +22,20 @@ class HotwireSpark::Middleware
       headers["Content-Type"]&.include?("text/html")
     end
 
-    def response_body(response)
+    def html_from(response)
       response_body = []
       response.each { |part| response_body << part }
       response_body.join
     end
 
-    def inject_javascript(body)
+    def inject_javascript(html)
       script_path = ActionController::Base.helpers.asset_path("hotwire_spark.js")
       script_tag = ActionController::Base.helpers.javascript_include_tag(script_path)
-      body.sub("</head>", "#{script_tag}</head>")
+      html.sub("</head>", "#{script_tag}</head>")
+    end
+
+    def inject_turbo_stream(html)
+      turbo_stream_tag = ActionController::Base.helpers.turbo_stream_from "hotwire_spark"
+      html.sub("</body>", "#{turbo_stream_tag}</body>")
     end
 end
