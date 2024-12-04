@@ -35,7 +35,7 @@ class HotwireSpark::Middleware
     end
 
     def inject_turbo_stream(html)
-      turbo_stream_tag = ActionController::Base.helpers.turbo_stream_from "hotwire_spark"
+      turbo_stream_tag = ActionController::Base.helpers.turbo_stream_from "hotwire_spark", channel: HotwireSpark::ActionCable::StreamsChannel
       html.sub("</body>", "#{turbo_stream_tag}</body>")
     end
 end
