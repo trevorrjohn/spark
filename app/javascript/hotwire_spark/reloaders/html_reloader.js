@@ -9,8 +9,8 @@ export class HtmlReloader {
   }
 
   async reload() {
-    await this.#reloadHtml()
-    await this.#reloadStimulus()
+    const reloadedDocument = await this.#reloadHtml()
+    await this.#reloadStimulus(reloadedDocument)
   }
 
   async #reloadHtml() {
@@ -19,13 +19,14 @@ export class HtmlReloader {
 
       const reloadedDocument = await reloadHtmlDocument()
       this.#updateBody(reloadedDocument.body)
+      return reloadedDocument
     } catch (error) {
       console.error("Error reloading HTML:", error)
     }
   }
 
-  async #reloadStimulus() {
-    return new StimulusReloader().reload()
+  async #reloadStimulus(reloadedDocument) {
+    return new StimulusReloader(reloadedDocument).reload()
   }
 
   #updateBody(newBody) {

@@ -4,5 +4,5 @@ import { nameFromFilePath } from "../helpers.js"
 
 Turbo.StreamActions.reload_stimulus = function () {
   const filePath = nameFromFilePath(this.getAttribute("file_path"))
-  StimulusReloader.reload(new RegExp(filePath))
+  StimulusReloader.reload(window.document, new RegExp(filePath))
 }

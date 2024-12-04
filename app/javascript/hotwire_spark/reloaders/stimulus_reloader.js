@@ -7,7 +7,8 @@ export class StimulusReloader {
     return new StimulusReloader(...params).reload()
   }
 
-  constructor(filePattern = /./) {
+  constructor(document = window.document, filePattern = /./) {
+    this.document = document
     this.filePattern = filePattern
     this.application = window.Stimulus || Application.start()
   }
@@ -38,7 +39,7 @@ export class StimulusReloader {
   }
 
   #parseImportmapJson() {
-    const importmapScript = document.querySelector("script[type=importmap]")
+    const importmapScript = this.document.querySelector("script[type=importmap]")
     return JSON.parse(importmapScript.text).imports
   }
 

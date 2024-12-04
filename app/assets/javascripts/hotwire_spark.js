@@ -9962,7 +9962,9 @@
       return new StimulusReloader(...params).reload();
     }
     constructor() {
-      let filePattern = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : /./;
+      let document = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.document;
+      let filePattern = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : /./;
+      this.document = document;
       this.filePattern = filePattern;
       this.application = window.Stimulus || Application.start();
     }
@@ -9983,7 +9985,7 @@
       return this.pathsByModule;
     }
     #parseImportmapJson() {
-      const importmapScript = document.querySelector("script[type=importmap]");
+      const importmapScript = this.document.querySelector("script[type=importmap]");
       return JSON.parse(importmapScript.text).imports;
     }
     async #reloadStimulusController(moduleName) {
@@ -10010,20 +10012,21 @@
       return new HtmlReloader().reload();
     }
     async reload() {
-      await this.#reloadHtml();
-      await this.#reloadStimulus();
+      const reloadedDocument = await this.#reloadHtml();
+      await this.#reloadStimulus(reloadedDocument);
     }
     async #reloadHtml() {
       try {
         log("Reload html...");
         const reloadedDocument = await reloadHtmlDocument();
         this.#updateBody(reloadedDocument.body);
+        return reloadedDocument;
       } catch (error) {
         console.error("Error reloading HTML:", error);
       }
     }
-    async #reloadStimulus() {
-      return new StimulusReloader().reload();
+    async #reloadStimulus(reloadedDocument) {
+      return new StimulusReloader(reloadedDocument).reload();
     }
     #updateBody(newBody) {
       Idiomorph.morph(document.body, newBody, {
@@ -10043,7 +10046,7 @@
 
   StreamActions.reload_stimulus = function () {
     const filePath = nameFromFilePath(this.getAttribute("file_path"));
-    StimulusReloader.reload(new RegExp(filePath));
+    StimulusReloader.reload(window.document, new RegExp(filePath));
   };
 
   const HotwireSpark = {
