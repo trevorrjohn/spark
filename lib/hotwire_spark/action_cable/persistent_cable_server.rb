@@ -6,15 +6,20 @@ module HotwireSpark::ActionCable::PersistentCableServer
   end
 
   def restart
-    return if suppress_restarts
+    return if restarts_suppressed?
 
     super
   end
 
   def without_restarting
-    self.suppress_restarts = true
+    old_suppress_restarts, self.suppress_restarts = self.suppress_restarts, true
     yield
   ensure
-    self.suppress_restarts = false
+    self.suppress_restarts = old_suppress_restarts
   end
+
+  private
+    def restarts_suppressed?
+      suppress_restarts
+    end
 end
