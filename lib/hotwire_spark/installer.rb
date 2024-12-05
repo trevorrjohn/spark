@@ -19,6 +19,11 @@ class HotwireSpark::Installer
     def configure_middleware
       ::ActionCable::Server::Base.prepend(HotwireSpark::ActionCable::PersistentCableServer)
 
+      # TODO: Temporary patch until this gets merged https://github.com/rails/solid_cable/pull/50
+      if defined?(::ActionCable::SubscriptionAdapter::SolidCable::Listener)
+        ActionCable::SubscriptionAdapter::SolidCable::Listener.prepend(HotwireSpark::ActionCable::SolidCableWithSafeReloads)
+      end
+
       middleware.insert_before ActionDispatch::Executor, HotwireSpark::ActionCable::PersistentCableMiddleware
       middleware.use HotwireSpark::Middleware
     end
