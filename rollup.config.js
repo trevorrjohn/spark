@@ -11,12 +11,14 @@ export default {
   output: [
     {
       file: `${outputDir}/hotwire_spark.js`,
+      name: "HotwireSpark",
       format: "iife",
       inlineDynamicImports: true
     },
     {
       file: `${outputDir}/hotwire_spark.min.js`,
       format: "iife",
+      name: "HotwireSpark",
       sourcemap: true,
       inlineDynamicImports: true,
       plugins: [ terser() ]

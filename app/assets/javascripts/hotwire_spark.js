@@ -1,4 +1,4 @@
-(function (exports) {
+var HotwireSpark = (function () {
   'use strict';
 
   /*!
@@ -10740,8 +10740,6 @@
     logger: logger
   });
 
-  exports.HotwireSpark = HotwireSpark;
+  return HotwireSpark;
 
-  return exports;
-
-})({});
+})();

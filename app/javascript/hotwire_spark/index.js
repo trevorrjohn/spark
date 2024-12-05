@@ -1,7 +1,9 @@
 import "./stream_actions"
 
-export const HotwireSpark = {
+const HotwireSpark = {
   config: {
     loggingEnabled: true,
   }
 }
+
+export default HotwireSpark
