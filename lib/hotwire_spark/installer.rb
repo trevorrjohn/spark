@@ -1,5 +1,3 @@
-require "turbo-rails"
-
 class HotwireSpark::Installer
   attr_reader :file_watcher
 
