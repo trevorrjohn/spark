@@ -38,7 +38,7 @@ class HotwireSpark::Installer
 
     def monitor(paths_name, action:)
       file_watcher.monitor HotwireSpark.public_send(paths_name) do |file_path|
-        ActionCable.server.broadcast "hotwire_spark", stream_action_for(action, file_path)
+        ActionCable.server.broadcast "hotwire_spark", reload_message_for(action, file_path)
       end
     end
 
@@ -46,9 +46,7 @@ class HotwireSpark::Installer
       @file_watches ||= HotwireSpark::FileWatcher.new
     end
 
-    def stream_action_for(action, file_path)
-      <<~HTML
-        <turbo-stream action="#{action}" file_path="#{file_path}">
-      HTML
+    def reload_message_for(action, file_path)
+      { action: action, path: file_path }
     end
 end

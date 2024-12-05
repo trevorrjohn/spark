@@ -1,4 +1,4 @@
-import "./stream_actions"
+import "./channels/monitoring_channel.js"
 
 const HotwireSpark = {
   config: {

@@ -1,4 +1,3 @@
-require "turbo-rails"
 require "action_cable/server/base"
 
 module HotwireSpark
