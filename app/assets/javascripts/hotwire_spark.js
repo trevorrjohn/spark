@@ -531,9 +531,9 @@ var HotwireSpark = (function () {
     });
   }
   async function reloadHtmlDocument() {
-    let currentUrl = urlWithParams(window.location.href, {
+    let currentUrl = cacheBustedUrl(urlWithParams(window.location.href, {
       hotwire_spark: "true"
-    });
+    }));
     const response = await fetch(currentUrl);
     const fetchedHTML = await response.text();
     const parser = new DOMParser();
@@ -3626,7 +3626,7 @@ var HotwireSpark = (function () {
       return new Promise(resolve => {
         const href = link.getAttribute("href");
         const newLink = this.#findNewLinkFor(link);
-        newLink.href = cacheBustedUrl(newLink.href);
+        newLink.setAttribute("href", cacheBustedUrl(newLink.getAttribute("href")));
         newLink.onload = () => {
           log(`\t${href}`);
           resolve();
@@ -3640,7 +3640,7 @@ var HotwireSpark = (function () {
       });
     }
     #withoutAssetDigest(url) {
-      return url.replace(/-[^-]+\.css$/, ".css");
+      return url.replace(/-[^-]+\.css.*$/, ".css");
     }
   }
 

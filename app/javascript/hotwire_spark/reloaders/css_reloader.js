@@ -45,8 +45,7 @@ export class CssReloader {
     return new Promise(resolve => {
       const href = link.getAttribute("href")
       const newLink = this.#findNewLinkFor(link)
-
-      newLink.href = cacheBustedUrl(newLink.href)
+      newLink.setAttribute("href", cacheBustedUrl(newLink.getAttribute("href")))
       newLink.onload = () => {
         log(`\t${href}`)
         resolve()
@@ -62,6 +61,6 @@ export class CssReloader {
   }
 
   #withoutAssetDigest(url) {
-    return url.replace(/-[^-]+\.css$/, ".css")
+    return url.replace(/-[^-]+\.css.*$/, ".css")
   }
 }
