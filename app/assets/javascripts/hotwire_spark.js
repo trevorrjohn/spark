@@ -3654,16 +3654,16 @@ var HotwireSpark = (function () {
         action,
         path
       } = _ref;
-      const filePath = nameFromFilePath(path);
+      const fileName = nameFromFilePath(path);
       switch (action) {
         case "reload_html":
           this.reloadHtml();
           break;
         case "reload_css":
-          this.reloadCss(filePath);
+          this.reloadCss(fileName);
           break;
         case "reload_stimulus":
-          this.reloadStimulus(filePath);
+          this.reloadStimulus(fileName);
           break;
       }
     },
