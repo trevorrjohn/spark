@@ -3626,6 +3626,7 @@ var HotwireSpark = (function () {
       return new Promise(resolve => {
         const href = link.getAttribute("href");
         const newLink = this.#findNewLinkFor(link);
+        newLink.href = cacheBustedUrl(newLink.href);
         newLink.onload = () => {
           log(`\t${href}`);
           resolve();

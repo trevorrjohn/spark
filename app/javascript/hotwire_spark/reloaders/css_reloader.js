@@ -1,5 +1,5 @@
 import { log } from "../logger.js"
-import { reloadHtmlDocument } from "../helpers.js"
+import { cacheBustedUrl, reloadHtmlDocument } from "../helpers.js"
 
 export class CssReloader {
   static async reload(...params) {
@@ -45,6 +45,8 @@ export class CssReloader {
     return new Promise(resolve => {
       const href = link.getAttribute("href")
       const newLink = this.#findNewLinkFor(link)
+
+      newLink.href = cacheBustedUrl(newLink.href)
       newLink.onload = () => {
         log(`\t${href}`)
         resolve()
