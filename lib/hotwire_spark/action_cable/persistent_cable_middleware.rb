@@ -37,7 +37,7 @@ class HotwireSpark::ActionCable::PersistentCableMiddleware
     end
 
     def disable_action_cable_restarts_cookie
-      expiration = (Time.now + RESTARTS_SUPPRESSED_GRACE_PERIOD).utc
+      expiration = RESTARTS_SUPPRESSED_GRACE_PERIOD.from_now.utc
       "#{COOKIE_NAME}=true; Path=/; Expires=#{expiration.httpdate}; HttpOnly"
     end
 end
