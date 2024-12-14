@@ -4,6 +4,7 @@ module FilesHelper
   included do
     teardown do
       restore_original_files
+      delete_added_files
     end
   end
 
@@ -22,21 +23,47 @@ module FilesHelper
     updated_content = content.gsub(pattern, replacement)
     File.write(path, updated_content)
 
-    # It hangs if I don't invoke explicitly in system tests with reloading enabled
     Rails.application.reloader.reload!
   end
 
-  # Remove .original files
-  def restore_original_files
-    @paths_to_restore.each do |path|
-      system "cp", path, path.gsub(/#{ORIGINAL_EXTENSION}$/, "")
-      system "rm", path
-    end
+  def add_file(path, content)
+    path = Rails.application.root.join(path).to_s
+
+    raise ArgumentError, "File at '#{path}' already exists." if File.exist?(path)
+
+    remember_path_to_delete path
+    File.write path, content
+
+    Rails.application.reloader.reload!
   end
 
   private
     def remember_path_to_restore(path)
+      paths_to_restore << path
+    end
+
+    def paths_to_restore
       @paths_to_restore ||= []
-      @paths_to_restore << path
+    end
+
+    def remember_path_to_delete(path)
+      paths_to_delete << path
+    end
+
+    def paths_to_delete
+      @paths_to_delete ||= []
+    end
+
+    def restore_original_files
+      paths_to_restore.each do |path|
+        FileUtils.cp(path, path.gsub(/#{ORIGINAL_EXTENSION}$/, ""))
+        FileUtils.rm(path)
+      end
+    end
+
+    def delete_added_files
+      paths_to_delete.each do |path|
+        FileUtils.rm(path)
+      end
     end
 end

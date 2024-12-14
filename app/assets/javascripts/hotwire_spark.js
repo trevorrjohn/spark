@@ -3531,7 +3531,10 @@ var HotwireSpark = (function () {
       await Promise.all(this.#stimulusControllerPaths.map(async moduleName => this.#reloadStimulusController(moduleName)));
     }
     get #stimulusControllerPaths() {
-      return Object.keys(this.#stimulusPathsByModule).filter(path => path.endsWith("_controller") && this.filePattern.test(path));
+      return Object.keys(this.#stimulusPathsByModule).filter(path => path.endsWith("_controller") && this.#shouldReloadController(path));
+    }
+    #shouldReloadController(path) {
+      return this.filePattern.test(path);
     }
     get #stimulusPathsByModule() {
       this.pathsByModule = this.pathsByModule || this.#parseImportmapJson();
