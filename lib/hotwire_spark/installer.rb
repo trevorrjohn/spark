@@ -10,21 +10,21 @@ class HotwireSpark::Installer
     monitor_paths
   end
 
+  def configure_middleware
+    ::ActionCable::Server::Base.prepend(HotwireSpark::ActionCable::PersistentCableServer)
+
+    # TODO: Temporary patch until this gets merged https://github.com/rails/solid_cable/pull/50
+    if defined?(::ActionCable::SubscriptionAdapter::SolidCable::Listener)
+      ActionCable::SubscriptionAdapter::SolidCable::Listener.prepend(HotwireSpark::ActionCable::SolidCableListenerWithSafeReloads)
+    end
+
+    middleware.insert_before ActionDispatch::Executor, HotwireSpark::ActionCable::PersistentCableMiddleware
+    middleware.use HotwireSpark::Middleware
+  end
+
   private
     attr_reader :application
     delegate :middleware, to: :application
-
-    def configure_middleware
-      ::ActionCable::Server::Base.prepend(HotwireSpark::ActionCable::PersistentCableServer)
-
-      # TODO: Temporary patch until this gets merged https://github.com/rails/solid_cable/pull/50
-      if defined?(::ActionCable::SubscriptionAdapter::SolidCable::Listener)
-        ActionCable::SubscriptionAdapter::SolidCable::Listener.prepend(HotwireSpark::ActionCable::SolidCableListenerWithSafeReloads)
-      end
-
-      middleware.insert_before ActionDispatch::Executor, HotwireSpark::ActionCable::PersistentCableMiddleware
-      middleware.use HotwireSpark::Middleware
-    end
 
     def monitor_paths
       monitor :css_paths, action: :reload_css

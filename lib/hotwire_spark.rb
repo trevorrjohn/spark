@@ -10,9 +10,15 @@ module HotwireSpark
   mattr_accessor :html_paths, default: %w[ app/controllers app/helpers app/models app/views ]
   mattr_accessor :stimulus_paths, default: %w[ app/javascript/controllers ]
 
+  mattr_accessor :enabled, default: Rails.env.development?
+
   class << self
     def install_into(application)
       Installer.new(application).install
+    end
+
+    def enabled?
+      enabled
     end
   end
 end

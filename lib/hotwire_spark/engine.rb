@@ -13,7 +13,7 @@ module HotwireSpark
     end
 
     initializer "hotwire_spark.install" do |application|
-      HotwireSpark.install_into application if Rails.env.development?
+      HotwireSpark.install_into application if HotwireSpark.enabled?
     end
   end
 end
