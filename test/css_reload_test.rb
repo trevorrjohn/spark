@@ -9,4 +9,15 @@ class CssReloadTest < ApplicationSystemTestCase
 
     assert_no_text "This is pretty cool"
   end
+
+  test "load new CSS stylesheets" do
+    visit root_path
+    assert_text "This is pretty cool"
+
+    add_file "app/assets/stylesheets/other_stylesheet.css", <<~CSS
+      body { visibility: hidden!important; }
+    CSS
+
+    assert_no_text "This is pretty cool"
+  end
 end
