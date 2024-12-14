@@ -7,6 +7,7 @@ export default class extends Controller {
 
   connect() {
     console.debug("Dummy controller connected ", this.version)
+    this.element.querySelector("#replace").textContent = "_REPLACE_"
   }
 
   disconnect() {
