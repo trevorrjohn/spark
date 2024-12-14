@@ -1,12 +1,12 @@
 require "application_system_test_case"
 
 class CssReloadTest < ApplicationSystemTestCase
-  test "reload Stimulus controller changes" do
+  test "reload HTML changes" do
     visit root_path
-    assert_text "_REPLACE_"
+    assert_text "This is pretty cool"
 
-    change_file "app/javascript/controllers/dummy_controller.js", "_REPLACE_", "This was replaced!"
+    change_file "app/assets/stylesheets/base.css", "visible", "hidden"
 
-    assert_no_text "This was replaced!"
+    assert_no_text "This is pretty cool"
   end
 end
