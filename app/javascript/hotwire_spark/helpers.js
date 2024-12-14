@@ -17,6 +17,11 @@ export function cacheBustedUrl(urlString) {
 export async function reloadHtmlDocument() {
   let currentUrl = cacheBustedUrl(urlWithParams(window.location.href, { hotwire_spark: "true" }))
   const response = await fetch(currentUrl)
+
+  if (!response.ok) {
+    throw new Error(`${response.status} when fetching ${currentUrl}`)
+  }
+
   const fetchedHTML = await response.text()
   const parser = new DOMParser()
   return parser.parseFromString(fetchedHTML, "text/html")

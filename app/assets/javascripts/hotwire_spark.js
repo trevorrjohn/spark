@@ -535,6 +535,9 @@ var HotwireSpark = (function () {
       hotwire_spark: "true"
     }));
     const response = await fetch(currentUrl);
+    if (!response.ok) {
+      throw new Error(`${response.status} when fetching ${currentUrl}`);
+    }
     const fetchedHTML = await response.text();
     const parser = new DOMParser();
     return parser.parseFromString(fetchedHTML, "text/html");
@@ -3572,14 +3575,10 @@ var HotwireSpark = (function () {
       await this.#reloadStimulus(reloadedDocument);
     }
     async #reloadHtml() {
-      try {
-        log("Reload html...");
-        const reloadedDocument = await reloadHtmlDocument();
-        this.#updateBody(reloadedDocument.body);
-        return reloadedDocument;
-      } catch (error) {
-        console.error("Error reloading HTML:", error);
-      }
+      log("Reload html...");
+      const reloadedDocument = await reloadHtmlDocument();
+      this.#updateBody(reloadedDocument.body);
+      return reloadedDocument;
     }
     async #reloadStimulus(reloadedDocument) {
       return new StimulusReloader(reloadedDocument).reload();
@@ -3658,8 +3657,12 @@ var HotwireSpark = (function () {
     connected() {
       document.body.setAttribute("data-hotwire-spark-ready", "");
     },
-    received(data) {
-      this.dispatchMessage(data);
+    async received(data) {
+      try {
+        await this.dispatchMessage(data);
+      } catch (error) {
+        console.log(`Error on ${data.action}`, error);
+      }
     },
     dispatchMessage(_ref) {
       let {
@@ -3669,24 +3672,21 @@ var HotwireSpark = (function () {
       const fileName = nameFromFilePath(path);
       switch (action) {
         case "reload_html":
-          this.reloadHtml();
-          break;
+          return this.reloadHtml();
         case "reload_css":
-          this.reloadCss(fileName);
-          break;
+          return this.reloadCss(fileName);
         case "reload_stimulus":
-          this.reloadStimulus(fileName);
-          break;
+          return this.reloadStimulus(fileName);
       }
     },
     reloadHtml() {
-      HtmlReloader.reload();
+      return HtmlReloader.reload();
     },
     reloadCss(path) {
-      CssReloader.reload(new RegExp(path));
+      return CssReloader.reload(new RegExp(path));
     },
     reloadStimulus(path) {
-      StimulusReloader.reload(new RegExp(path));
+      return StimulusReloader.reload(new RegExp(path));
     }
   });
 

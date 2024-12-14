@@ -14,15 +14,11 @@ export class HtmlReloader {
   }
 
   async #reloadHtml() {
-    try {
-      log("Reload html...")
+    log("Reload html...")
 
-      const reloadedDocument = await reloadHtmlDocument()
-      this.#updateBody(reloadedDocument.body)
-      return reloadedDocument
-    } catch (error) {
-      console.error("Error reloading HTML:", error)
-    }
+    const reloadedDocument = await reloadHtmlDocument()
+    this.#updateBody(reloadedDocument.body)
+    return reloadedDocument
   }
 
   async #reloadStimulus(reloadedDocument) {
