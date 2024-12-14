@@ -5,7 +5,7 @@ class StimulusReloadTest < ApplicationSystemTestCase
     visit root_path
     assert_no_text "This was replaced!"
 
-    change_file "app/javascript/controllers/dummy_controller.js", "_REPLACE_", "This was replaced!"
+    edit_file "app/javascript/controllers/dummy_controller.js", replace: "_REPLACE_", with: "This was replaced!"
 
     assert_text "This was replaced!"
   end
@@ -14,7 +14,7 @@ class StimulusReloadTest < ApplicationSystemTestCase
     visit root_path
     assert_no_text "This was replaced!"
 
-    change_file "app/views/home/show.html.erb", "_REPLACE_CONTROLLER_", "other-dummy"
+    edit_file "app/views/home/show.html.erb", replace: "_REPLACE_CONTROLLER_", with: "other-dummy"
 
     add_file "app/javascript/controllers/other_dummy_controller.js", <<~JS
       import { Controller } from "@hotwired/stimulus"

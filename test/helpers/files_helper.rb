@@ -10,7 +10,7 @@ module FilesHelper
 
   ORIGINAL_EXTENSION = ".original"
 
-  def change_file(path, pattern, replacement)
+  def edit_file(path, replace:, with:)
     path = Rails.application.root.join(path).to_s
 
     raise ArgumentError, "File at '#{path}' does not exist." unless File.exist?(path)
@@ -20,7 +20,7 @@ module FilesHelper
     system "cp", path, original_path
 
     content = File.read(path)
-    updated_content = content.gsub(pattern, replacement)
+    updated_content = content.gsub(replace, with)
     File.write(path, updated_content)
 
     reload_rails_reloader

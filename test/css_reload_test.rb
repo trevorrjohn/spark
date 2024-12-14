@@ -5,7 +5,7 @@ class CssReloadTest < ApplicationSystemTestCase
     visit root_path
     assert_text "This is pretty cool"
 
-    change_file "app/assets/stylesheets/base.css", "visible", "hidden"
+    edit_file "app/assets/stylesheets/base.css", replace: "visible", with: "hidden"
 
     assert_no_text "This is pretty cool"
   end
