@@ -8,4 +8,3 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 end
 
 Capybara.server = :puma, { Silent: true }
-

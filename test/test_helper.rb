@@ -33,4 +33,3 @@ class ActiveSupport::TestCase
       Rails.application.reloader.reload!
     end
 end
-
