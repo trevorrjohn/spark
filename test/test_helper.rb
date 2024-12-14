@@ -32,4 +32,8 @@ class ActiveSupport::TestCase
     def reload_rails_reloader
       Rails.application.reloader.reload!
     end
+
+    def wait_for_hotwire_spark
+      assert_css "[data-hotwire-spark-ready]"
+    end
 end

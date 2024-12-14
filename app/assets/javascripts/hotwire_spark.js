@@ -3656,6 +3656,9 @@ var HotwireSpark = (function () {
   consumer.subscriptions.create({
     channel: "HotwireSpark::Channel"
   }, {
+    connected() {
+      document.body.setAttribute("data-hotwire-spark-ready", "");
+    },
     received(data) {
       this.dispatchMessage(data);
     },

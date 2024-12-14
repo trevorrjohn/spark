@@ -5,6 +5,10 @@ import { CssReloader } from "../reloaders/css_reloader.js";
 import { StimulusReloader } from "../reloaders/stimulus_reloader.js";
 
 consumer.subscriptions.create({ channel: "HotwireSpark::Channel" }, {
+  connected() {
+    document.body.setAttribute("data-hotwire-spark-ready", "")
+  },
+
   received(data) {
     this.dispatchMessage(data)
   },

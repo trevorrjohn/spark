@@ -15,6 +15,7 @@ class StimulusReloadTest < ApplicationSystemTestCase
     assert_no_text "This was replaced!"
 
     edit_file "app/views/home/show.html.erb", replace: "_REPLACE_CONTROLLER_", with: "other-dummy"
+    sleep 2 # Broadcasting many jobs in a row sometimes makes the test fail
 
     add_file "app/javascript/controllers/other_dummy_controller.js", <<~JS
       import { Controller } from "@hotwired/stimulus"
