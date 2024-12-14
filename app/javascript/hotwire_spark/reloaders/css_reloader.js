@@ -49,7 +49,6 @@ export class CssReloader {
         log(`\t${href}`)
         resolve()
       }
-      link.parentNode.replaceChild(newLink, link)
     })
   }
 
