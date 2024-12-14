@@ -23,7 +23,7 @@ module FilesHelper
     updated_content = content.gsub(pattern, replacement)
     File.write(path, updated_content)
 
-    Rails.application.reloader.reload!
+    reload_rails_reloader
   end
 
   def add_file(path, content)
@@ -34,7 +34,7 @@ module FilesHelper
     remember_path_to_delete path
     File.write path, content
 
-    Rails.application.reloader.reload!
+    reload_rails_reloader
   end
 
   private

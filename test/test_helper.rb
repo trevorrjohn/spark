@@ -20,11 +20,17 @@ class ActiveSupport::TestCase
   include FilesHelper
 
   setup do
+    reload_rails_reloader
     ActionCable.server.suppress_restarts = true
   end
 
   teardown do
     ActionCable.server.suppress_restarts = false
   end
+
+  private
+    def reload_rails_reloader
+      Rails.application.reloader.reload!
+    end
 end
 

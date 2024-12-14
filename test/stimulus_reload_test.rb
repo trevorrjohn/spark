@@ -1,6 +1,6 @@
 require "application_system_test_case"
 
-class CssReloadTest < ApplicationSystemTestCase
+class StimulusReloadTest < ApplicationSystemTestCase
   test "reload Stimulus controller changes" do
     visit root_path
     assert_no_text "This was replaced!"

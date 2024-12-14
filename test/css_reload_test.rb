@@ -1,7 +1,7 @@
 require "application_system_test_case"
 
 class CssReloadTest < ApplicationSystemTestCase
-  test "reload HTML changes" do
+  test "reload CSS changes" do
     visit root_path
     assert_text "This is pretty cool"
 
