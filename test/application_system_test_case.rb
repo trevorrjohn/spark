@@ -11,6 +11,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       wait_for_hotwire_spark
     end
   end
+
+  private
+    def wait_for_hotwire_spark
+      assert_css "[data-hotwire-spark-ready]"
+    end
 end
 
 Capybara.server = :puma, { Silent: true }

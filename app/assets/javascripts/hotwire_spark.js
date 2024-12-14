@@ -3633,7 +3633,6 @@ var HotwireSpark = (function () {
           log(`\t${href}`);
           resolve();
         };
-        link.parentNode.replaceChild(newLink, link);
       });
     }
     #findExistingLinkFor(link) {
