@@ -53,9 +53,7 @@ export class CssReloader {
   }
 
   #findExistingLinkFor(link) {
-    return this.#cssLinks.find(newLink => {
-      return this.#withoutAssetDigest(link.href) === this.#withoutAssetDigest(newLink.href)
-    })
+    return this.#cssLinks.find(newLink => this.#withoutAssetDigest(link.href) === this.#withoutAssetDigest(newLink.href))
   }
 
   get #cssLinks() {
