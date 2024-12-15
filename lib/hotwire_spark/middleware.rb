@@ -28,8 +28,11 @@ class HotwireSpark::Middleware
     end
 
     def inject_javascript(html)
-      script_path = ActionController::Base.helpers.asset_path("hotwire_spark.js")
-      script_tag = ActionController::Base.helpers.javascript_include_tag(script_path)
       html.sub("</head>", "#{script_tag}</head>")
+    end
+
+    def script_tag
+      script_path = ActionController::Base.helpers.asset_path("hotwire_spark.js")
+      ActionController::Base.helpers.javascript_include_tag(script_path)
     end
 end
