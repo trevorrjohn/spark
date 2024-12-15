@@ -27,11 +27,14 @@ class HotwireSpark::Installer
     delegate :middleware, to: :application
 
     def monitor_paths
+      register_monitored_paths
+      file_watcher.start
+    end
+
+    def register_monitored_paths
       monitor :css_paths, action: :reload_css
       monitor :html_paths, action: :reload_html
       monitor :stimulus_paths, action: :reload_stimulus
-
-      file_watcher.start
     end
 
     def monitor(paths_name, action:)
