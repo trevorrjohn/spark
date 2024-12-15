@@ -2,9 +2,13 @@ export function nameFromFilePath(path) {
   return path.split("/").pop().split(".")[0]
 }
 
+export function withoutAssetDigest(path) {
+  return path.replace(/-[a-z0-9]+\.(\w+)$/, ".$1");
+}
+
 export function urlWithParams(urlString, params) {
   const url = new URL(urlString, window.location.origin)
-  Object.entries(params).forEach(([key, value]) => {
+  Object.entries(params).forEach(([ key, value ]) => {
     url.searchParams.set(key, value)
   })
   return url.toString()

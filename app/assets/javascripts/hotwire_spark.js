@@ -517,6 +517,9 @@ var HotwireSpark = (function () {
   function nameFromFilePath(path) {
     return path.split("/").pop().split(".")[0];
   }
+  function withoutAssetDigest(path) {
+    return path.replace(/-[a-z0-9]+\.(\w+)$/, ".$1");
+  }
   function urlWithParams(urlString, params) {
     const url = new URL(urlString, window.location.origin);
     Object.entries(params).forEach(_ref => {
@@ -3635,15 +3638,10 @@ var HotwireSpark = (function () {
       });
     }
     #findExistingLinkFor(link) {
-      return this.#cssLinks.find(newLink => {
-        return this.#withoutAssetDigest(link.href) === this.#withoutAssetDigest(newLink.href);
-      });
+      return this.#cssLinks.find(newLink => withoutAssetDigest(link.href) === withoutAssetDigest(newLink.href));
     }
     get #cssLinks() {
       return Array.from(document.querySelectorAll("link[rel='stylesheet']"));
-    }
-    #withoutAssetDigest(url) {
-      return url.replace(/-[^-]+\.css.*$/, ".css");
     }
     #appendNewLink(link) {
       document.head.append(link);
