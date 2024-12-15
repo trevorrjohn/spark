@@ -23,7 +23,7 @@ class HotwireSpark::ActionCable::PersistentCableMiddleware
 
     def respond_suppressing_action_cable_restarts(env)
       status, headers, body = suppressing_action_cable_restarts { @app.call(env) }
-      headers["Set-Cookie"] = append_cookie(headers["Set-Cookie"])
+      headers["Set-Cookie"] = append_cookie_to_disable_cable_restarts(headers["Set-Cookie"])
 
       [ status, headers, body ]
     end
@@ -32,11 +32,11 @@ class HotwireSpark::ActionCable::PersistentCableMiddleware
       ActionCable.server.without_restarting(&block)
     end
 
-    def append_cookie(existing_cookies)
-      [ existing_cookies, disable_action_cable_restarts_cookie ].compact
+    def append_cookie_to_disable_cable_restarts(existing_cookies)
+      [ existing_cookies, cookie_to_disable_cable_restarts ].compact
     end
 
-    def disable_action_cable_restarts_cookie
+    def cookie_to_disable_cable_restarts
       expiration = RESTARTS_SUPPRESSED_GRACE_PERIOD.from_now.utc
       "#{COOKIE_NAME}=true; Path=/; Expires=#{expiration.httpdate}; HttpOnly"
     end
