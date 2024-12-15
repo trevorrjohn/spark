@@ -2,12 +2,12 @@ require "listen"
 
 class HotwireSpark::FileWatcher
   def initialize
-    @blocks_by_path = Hash.new { |hash, key| hash[key] = [] }
+    @callbacks_by_path = Hash.new { |hash, key| hash[key] = [] }
   end
 
-  def monitor(paths, &block)
+  def monitor(paths, &callback)
     Array(paths).each do |path|
-      @blocks_by_path[expand_path(path)] << block
+      @callbacks_by_path[expand_path(path)] << callback
     end
   end
 
@@ -25,14 +25,14 @@ class HotwireSpark::FileWatcher
     end
 
     def paths
-      @blocks_by_path.keys
+      @callbacks_by_path.keys
     end
 
     def process_changed_files(changed_files)
       changed_files.each do |file|
-        @blocks_by_path.each do |path, blocks|
+        @callbacks_by_path.each do |path, callbacks|
           if file.to_s.start_with?(path.to_s)
-            blocks.each { |action| action.call(file) }
+            callbacks.each { |callback| callback.call(file) }
           end
         end
       end
