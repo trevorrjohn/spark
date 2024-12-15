@@ -43,11 +43,11 @@ class HotwireSpark::Installer
       end
     end
 
-    def file_watcher
-      @file_watches ||= HotwireSpark::FileWatcher.new
-    end
-
     def reload_message_for(action, file_path)
       { action: action, path: file_path }
+    end
+
+    def file_watcher
+      @file_watches ||= HotwireSpark::FileWatcher.new
     end
 end
