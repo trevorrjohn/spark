@@ -39,8 +39,12 @@ class HotwireSpark::Installer
 
     def monitor(paths_name, action:)
       file_watcher.monitor HotwireSpark.public_send(paths_name) do |file_path|
-        ActionCable.server.broadcast "hotwire_spark", reload_message_for(action, file_path)
+        broadcast_reload_action(action, file_path)
       end
+    end
+
+    def broadcast_reload_action(action, file_path)
+      ActionCable.server.broadcast "hotwire_spark", reload_message_for(action, file_path)
     end
 
     def reload_message_for(action, file_path)
