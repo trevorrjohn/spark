@@ -518,7 +518,7 @@ var HotwireSpark = (function () {
     return path.split("/").pop().split(".")[0];
   }
   function pathWithoutAssetDigest(path) {
-    return path.replace(/-[a-z0-9]+\.(\w+)$/, ".$1");
+    return path.replace(/-[a-z0-9]+\.(\w+)(\?.*)?$/, ".$1");
   }
   function urlWithParams(urlString, params) {
     const url = new URL(urlString, window.location.origin);
@@ -3636,7 +3636,9 @@ var HotwireSpark = (function () {
       });
     }
     #findExistingLinkFor(link) {
-      return this.#cssLinks.find(newLink => pathWithoutAssetDigest(link.href) === pathWithoutAssetDigest(newLink.href));
+      return this.#cssLinks.find(newLink => {
+        return pathWithoutAssetDigest(link.href) === pathWithoutAssetDigest(newLink.href);
+      });
     }
     get #cssLinks() {
       return Array.from(document.querySelectorAll("link[rel='stylesheet']"));
