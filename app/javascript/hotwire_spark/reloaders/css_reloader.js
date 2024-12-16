@@ -16,8 +16,8 @@ export class CssReloader {
   }
 
   async #reloadAllLinks() {
-    const newCssLinks = await this.#loadNewCssLinks();
-    return newCssLinks.map(link => this.#reloadLinkIfNeeded(link))
+    const cssLinks = await this.#loadNewCssLinks();
+    return cssLinks.map(link => this.#reloadLinkIfNeeded(link))
   }
 
   async #loadNewCssLinks() {

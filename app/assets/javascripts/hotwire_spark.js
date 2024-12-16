@@ -3607,8 +3607,8 @@ var HotwireSpark = (function () {
       await Promise.all(await this.#reloadAllLinks());
     }
     async #reloadAllLinks() {
-      const newCssLinks = await this.#loadNewCssLinks();
-      return newCssLinks.map(link => this.#reloadLinkIfNeeded(link));
+      const cssLinks = await this.#loadNewCssLinks();
+      return cssLinks.map(link => this.#reloadLinkIfNeeded(link));
     }
     async #loadNewCssLinks() {
       const reloadedDocument = await reloadHtmlDocument();
@@ -3675,6 +3675,8 @@ var HotwireSpark = (function () {
           return this.reloadCss(fileName);
         case "reload_stimulus":
           return this.reloadStimulus(fileName);
+        default:
+          throw new Error(`Unknown action: ${action}`);
       }
     },
     reloadHtml() {
