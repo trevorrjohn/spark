@@ -20,13 +20,15 @@ consumer.subscriptions.create({ channel: "HotwireSpark::Channel" }, {
   dispatchMessage({ action, path }) {
     const fileName = assetNameFromPath(path)
 
-    switch (action) {
+    switch(action) {
       case "reload_html":
         return this.reloadHtml()
       case "reload_css":
         return this.reloadCss(fileName)
       case "reload_stimulus":
         return this.reloadStimulus(fileName)
+      default:
+        throw new Error(`Unknown action: ${action}`)
     }
   },
 
