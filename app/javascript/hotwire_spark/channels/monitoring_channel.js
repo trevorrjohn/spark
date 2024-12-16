@@ -11,13 +11,13 @@ consumer.subscriptions.create({ channel: "HotwireSpark::Channel" }, {
 
   async received(message) {
     try {
-      await this.dispatchMessage(message)
+      await this.dispatch(message)
     } catch(error) {
       console.log(`Error on ${message.action}`, error)
     }
   },
 
-  dispatchMessage({ action, path }) {
+  dispatch({ action, path }) {
     const fileName = assetNameFromPath(path)
 
     switch(action) {
