@@ -3655,12 +3655,12 @@ var HotwireSpark = (function () {
     },
     async received(message) {
       try {
-        await this.dispatchMessage(message);
+        await this.dispatch(message);
       } catch (error) {
         console.log(`Error on ${message.action}`, error);
       }
     },
-    dispatchMessage(_ref) {
+    dispatch(_ref) {
       let {
         action,
         path
