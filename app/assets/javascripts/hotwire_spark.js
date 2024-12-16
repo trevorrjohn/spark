@@ -3583,11 +3583,11 @@ var HotwireSpark = (function () {
       this.#updateBody(reloadedDocument.body);
       return reloadedDocument;
     }
-    async #reloadStimulus(reloadedDocument) {
-      return new StimulusReloader(reloadedDocument).reload();
-    }
     #updateBody(newBody) {
       Idiomorph.morph(document.body, newBody);
+    }
+    async #reloadStimulus(reloadedDocument) {
+      return new StimulusReloader(reloadedDocument).reload();
     }
   }
 
