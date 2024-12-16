@@ -26,7 +26,6 @@ export class CssReloader {
   }
 
   #reloadLinkIfNeeded(link) {
-    console.debug("reload if needed", link);
     if (this.#shouldReloadLink(link)) {
       return this.#reloadLink(link)
     } else {
@@ -35,7 +34,6 @@ export class CssReloader {
   }
 
   #shouldReloadLink(link) {
-    console.debug("CHECKING ", link.getAttribute("href"), this.filePattern);
     return this.filePattern.test(link.getAttribute("href"))
   }
 
