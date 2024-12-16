@@ -9,11 +9,11 @@ consumer.subscriptions.create({ channel: "HotwireSpark::Channel" }, {
     document.body.setAttribute("data-hotwire-spark-ready", "")
   },
 
-  async received(data) {
+  async received(message) {
     try {
-      await this.dispatchMessage(data)
+      await this.dispatchMessage(message)
     } catch(error) {
-      console.log(`Error on ${data.action}`, error)
+      console.log(`Error on ${message.action}`, error)
     }
   },
 

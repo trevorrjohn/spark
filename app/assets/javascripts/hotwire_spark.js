@@ -3636,9 +3636,7 @@ var HotwireSpark = (function () {
       });
     }
     #findExistingLinkFor(link) {
-      return this.#cssLinks.find(newLink => {
-        return pathWithoutAssetDigest(link.href) === pathWithoutAssetDigest(newLink.href);
-      });
+      return this.#cssLinks.find(newLink => pathWithoutAssetDigest(link.href) === pathWithoutAssetDigest(newLink.href));
     }
     get #cssLinks() {
       return Array.from(document.querySelectorAll("link[rel='stylesheet']"));
@@ -3655,11 +3653,11 @@ var HotwireSpark = (function () {
     connected() {
       document.body.setAttribute("data-hotwire-spark-ready", "");
     },
-    async received(data) {
+    async received(message) {
       try {
-        await this.dispatchMessage(data);
+        await this.dispatchMessage(message);
       } catch (error) {
-        console.log(`Error on ${data.action}`, error);
+        console.log(`Error on ${message.action}`, error);
       }
     },
     dispatchMessage(_ref) {
