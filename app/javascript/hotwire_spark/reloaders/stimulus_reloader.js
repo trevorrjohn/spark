@@ -18,9 +18,7 @@ export class StimulusReloader {
     log("Reload Stimulus controllers...")
 
     this.application.stop()
-
     await this.#reloadStimulusControllers()
-
     this.application.start()
   }
 

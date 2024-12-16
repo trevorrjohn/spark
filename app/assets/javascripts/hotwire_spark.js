@@ -3615,7 +3615,6 @@ var HotwireSpark = (function () {
       return Array.from(reloadedDocument.head.querySelectorAll("link[rel='stylesheet']"));
     }
     #reloadLinkIfNeeded(link) {
-      console.debug("reload if needed", link);
       if (this.#shouldReloadLink(link)) {
         return this.#reloadLink(link);
       } else {
@@ -3623,7 +3622,6 @@ var HotwireSpark = (function () {
       }
     }
     #shouldReloadLink(link) {
-      console.debug("CHECKING ", link.getAttribute("href"), this.filePattern);
       return this.filePattern.test(link.getAttribute("href"));
     }
     async #reloadLink(link) {
