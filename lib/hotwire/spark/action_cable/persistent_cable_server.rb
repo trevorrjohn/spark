@@ -1,4 +1,4 @@
-module HotwireSpark::ActionCable::PersistentCableServer
+module Hotwire::Spark::ActionCable::PersistentCableServer
   def self.prepended(base)
     base.class_eval do
       thread_mattr_accessor :suppress_restarts

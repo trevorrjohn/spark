@@ -1,4 +1,4 @@
-module HotwireSpark::ActionCable::SolidCableListenerWithSafeReloads
+module Hotwire::Spark::ActionCable::SolidCableListenerWithSafeReloads
   private
     def broadcast_messages
       Rails.application.executor.wrap  do

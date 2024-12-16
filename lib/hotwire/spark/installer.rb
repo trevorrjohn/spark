@@ -1,4 +1,4 @@
-class HotwireSpark::Installer
+class Hotwire::Spark::Installer
   attr_reader :file_watcher
 
   def initialize(application)
@@ -11,10 +11,10 @@ class HotwireSpark::Installer
   end
 
   def configure_middleware
-    ::ActionCable::Server::Base.prepend(HotwireSpark::ActionCable::PersistentCableServer)
+    ::ActionCable::Server::Base.prepend(Hotwire::Spark::ActionCable::PersistentCableServer)
 
-    middleware.insert_before ActionDispatch::Executor, HotwireSpark::ActionCable::PersistentCableMiddleware
-    middleware.use HotwireSpark::Middleware
+    middleware.insert_before ActionDispatch::Executor, Hotwire::Spark::ActionCable::PersistentCableMiddleware
+    middleware.use Hotwire::Spark::Middleware
   end
 
   private
@@ -33,7 +33,7 @@ class HotwireSpark::Installer
     end
 
     def monitor(paths_name, action:)
-      file_watcher.monitor HotwireSpark.public_send(paths_name) do |file_path|
+      file_watcher.monitor Hotwire::Spark.public_send(paths_name) do |file_path|
         broadcast_reload_action(action, file_path)
       end
     end
@@ -47,6 +47,6 @@ class HotwireSpark::Installer
     end
 
     def file_watcher
-      @file_watches ||= HotwireSpark::FileWatcher.new
+      @file_watches ||= Hotwire::Spark::FileWatcher.new
     end
 end

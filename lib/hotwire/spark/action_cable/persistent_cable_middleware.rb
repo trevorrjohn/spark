@@ -1,4 +1,4 @@
-class HotwireSpark::ActionCable::PersistentCableMiddleware
+class Hotwire::Spark::ActionCable::PersistentCableMiddleware
   def initialize(app)
     @app = app
   end

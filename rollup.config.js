@@ -3,7 +3,7 @@ import resolve from "@rollup/plugin-node-resolve"
 import commonjs from "@rollup/plugin-commonjs"
 import babel from "@rollup/plugin-babel"
 
-const inputFile = "app/javascript/hotwire_spark/index.js"
+const inputFile = "app/javascript/hotwire/spark/index.js"
 const outputDir = "app/assets/javascripts"
 
 export default {

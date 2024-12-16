@@ -1,8 +1,8 @@
-require_relative "lib/hotwire_spark/version"
+require_relative "lib/hotwire/spark/version"
 
 Gem::Specification.new do |spec|
-  spec.name        = "hotwire_spark"
-  spec.version     = HotwireSpark::VERSION
+  spec.name        = "hotwire-spark"
+  spec.version     = Hotwire::Spark::VERSION
   spec.authors     = [ "Jorge Manrubia" ]
   spec.email       = [ "jorge@37signals.com" ]
   spec.homepage    = "https://github.com/basecamp/hotwire_spark"

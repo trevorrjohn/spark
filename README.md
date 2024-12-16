@@ -1,4 +1,4 @@
-# HotwireSpark
+# Hotwire Spark
 Short description and motivation.
 
 ## Usage

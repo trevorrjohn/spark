@@ -1,4 +1,4 @@
-class HotwireSpark::Middleware
+class Hotwire::Spark::Middleware
   def initialize(app)
     @app = app
   end

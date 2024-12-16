@@ -3648,7 +3648,7 @@ var HotwireSpark = (function () {
   }
 
   consumer.subscriptions.create({
-    channel: "HotwireSpark::Channel"
+    channel: "Hotwire::Spark::Channel"
   }, {
     connected() {
       document.body.setAttribute("data-hotwire-spark-ready", "");

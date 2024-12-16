@@ -1,11 +1,12 @@
-require "hotwire_spark/version"
-require "hotwire_spark/engine"
+require "hotwire/spark/version"
+require "hotwire/spark/engine"
 
 require "zeitwerk"
-loader = Zeitwerk::Loader.for_gem
+loader = Zeitwerk::Loader.for_gem(warn_on_extra_files: false)
+loader.ignore("#{__dir__}/hotwire-spark.rb")
 loader.setup
 
-module HotwireSpark
+module Hotwire::Spark
   mattr_accessor :css_paths, default: []
   mattr_accessor :html_paths, default: []
   mattr_accessor :stimulus_paths, default: []
@@ -22,3 +23,6 @@ module HotwireSpark
     end
   end
 end
+
+
+

@@ -4,7 +4,7 @@ import { HtmlReloader } from "../reloaders/html_reloader.js";
 import { CssReloader } from "../reloaders/css_reloader.js";
 import { StimulusReloader } from "../reloaders/stimulus_reloader.js";
 
-consumer.subscriptions.create({ channel: "HotwireSpark::Channel" }, {
+consumer.subscriptions.create({ channel: "Hotwire::Spark::Channel" }, {
   connected() {
     document.body.setAttribute("data-hotwire-spark-ready", "")
   },

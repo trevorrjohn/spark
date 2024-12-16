@@ -1,2 +1,2 @@
-HotwireSpark::Engine.routes.draw do
+Hotwire::Spark::Engine.routes.draw do
 end

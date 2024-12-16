@@ -53,6 +53,6 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
 
-  config.middleware.use HotwireSpark::Middleware
-  config.hotwire_spark.enabled = true
+  config.middleware.use Hotwire::Spark::Middleware
+  config.hotwire.spark.enabled = true
 end

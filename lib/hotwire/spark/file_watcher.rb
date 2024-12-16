@@ -1,6 +1,6 @@
 require "listen"
 
-class HotwireSpark::FileWatcher
+class Hotwire::Spark::FileWatcher
   def initialize
     @callbacks_by_path = Hash.new { |hash, key| hash[key] = [] }
   end
