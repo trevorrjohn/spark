@@ -1,5 +1,5 @@
 import consumer from "./consumer"
-import { nameFromFilePath } from "../helpers.js";
+import { assetNameFromPath } from "../helpers.js";
 import { HtmlReloader } from "../reloaders/html_reloader.js";
 import { CssReloader } from "../reloaders/css_reloader.js";
 import { StimulusReloader } from "../reloaders/stimulus_reloader.js";
@@ -18,7 +18,7 @@ consumer.subscriptions.create({ channel: "HotwireSpark::Channel" }, {
   },
 
   dispatchMessage({ action, path }) {
-    const fileName = nameFromFilePath(path)
+    const fileName = assetNameFromPath(path)
 
     switch (action) {
       case "reload_html":
@@ -34,12 +34,12 @@ consumer.subscriptions.create({ channel: "HotwireSpark::Channel" }, {
     return HtmlReloader.reload()
   },
 
-  reloadCss(path) {
-    return CssReloader.reload(new RegExp(path))
+  reloadCss(fileName) {
+    return CssReloader.reload(new RegExp(fileName))
   },
 
-  reloadStimulus(path) {
-    return StimulusReloader.reload(new RegExp(path))
+  reloadStimulus(fileName) {
+    return StimulusReloader.reload(new RegExp(fileName))
   }
 })
 

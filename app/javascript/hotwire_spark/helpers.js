@@ -1,8 +1,8 @@
-export function nameFromFilePath(path) {
+export function assetNameFromPath(path) {
   return path.split("/").pop().split(".")[0]
 }
 
-export function withoutAssetDigest(path) {
+export function pathWithoutAssetDigest(path) {
   return path.replace(/-[a-z0-9]+\.(\w+)$/, ".$1");
 }
 

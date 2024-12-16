@@ -1,5 +1,5 @@
 import { log } from "../logger.js"
-import { cacheBustedUrl, reloadHtmlDocument, withoutAssetDigest } from "../helpers.js"
+import { cacheBustedUrl, reloadHtmlDocument, pathWithoutAssetDigest } from "../helpers.js"
 
 export class CssReloader {
   static async reload(...params) {
@@ -53,7 +53,7 @@ export class CssReloader {
   }
 
   #findExistingLinkFor(link) {
-    return this.#cssLinks.find(newLink => withoutAssetDigest(link.href) === withoutAssetDigest(newLink.href))
+    return this.#cssLinks.find(newLink => pathWithoutAssetDigest(link.href) === pathWithoutAssetDigest(newLink.href))
   }
 
   get #cssLinks() {

@@ -514,10 +514,10 @@ var HotwireSpark = (function () {
 
   var consumer = createConsumer();
 
-  function nameFromFilePath(path) {
+  function assetNameFromPath(path) {
     return path.split("/").pop().split(".")[0];
   }
-  function withoutAssetDigest(path) {
+  function pathWithoutAssetDigest(path) {
     return path.replace(/-[a-z0-9]+\.(\w+)$/, ".$1");
   }
   function urlWithParams(urlString, params) {
@@ -3638,7 +3638,7 @@ var HotwireSpark = (function () {
       });
     }
     #findExistingLinkFor(link) {
-      return this.#cssLinks.find(newLink => withoutAssetDigest(link.href) === withoutAssetDigest(newLink.href));
+      return this.#cssLinks.find(newLink => pathWithoutAssetDigest(link.href) === pathWithoutAssetDigest(newLink.href));
     }
     get #cssLinks() {
       return Array.from(document.querySelectorAll("link[rel='stylesheet']"));
@@ -3667,7 +3667,7 @@ var HotwireSpark = (function () {
         action,
         path
       } = _ref;
-      const fileName = nameFromFilePath(path);
+      const fileName = assetNameFromPath(path);
       switch (action) {
         case "reload_html":
           return this.reloadHtml();
@@ -3680,11 +3680,11 @@ var HotwireSpark = (function () {
     reloadHtml() {
       return HtmlReloader.reload();
     },
-    reloadCss(path) {
-      return CssReloader.reload(new RegExp(path));
+    reloadCss(fileName) {
+      return CssReloader.reload(new RegExp(fileName));
     },
-    reloadStimulus(path) {
-      return StimulusReloader.reload(new RegExp(path));
+    reloadStimulus(fileName) {
+      return StimulusReloader.reload(new RegExp(fileName));
     }
   });
 
