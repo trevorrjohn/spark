@@ -10,6 +10,7 @@ module Hotwire::Spark
   mattr_accessor :css_paths, default: []
   mattr_accessor :html_paths, default: []
   mattr_accessor :stimulus_paths, default: []
+  mattr_accessor :logging, default: false
 
   mattr_accessor :enabled, default: Rails.env.development?
 

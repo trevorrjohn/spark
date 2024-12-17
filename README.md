@@ -38,10 +38,11 @@ config.hotwire.spark.html_paths += %w[ lib ]
 
 | Name             | Description                                                                                                                  |
 |------------------|------------------------------------------------------------------------------------------------------------------------------|
-| `enabled`        | Enable or disable live reloading. By default, it's only enabled in `development`.                                            |
 | `html_paths`     | Paths where file changes trigger a content refresh. By default: `app/controllers`, `app/helpers`, `app/models`, `app/views`. |
 | `css_paths`      | Paths where file changes trigger a CSS refresh. By default: `app/assets/stylesheets`.                                        |
 | `stimulus_paths` | Paths where file changes trigger a Stimulus controller refresh. By default: `app/javascript/controllers`.                    |
+| `enabled`        | Enable or disable live reloading. By default, it's only enabled in `development`.                                            |
+| `logging`        | Show logs in the browser console when reloading happens. It's false by default.                                              |
 
 ## License
 

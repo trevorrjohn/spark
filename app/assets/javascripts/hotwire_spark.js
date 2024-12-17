@@ -545,6 +545,9 @@ var HotwireSpark = (function () {
     const parser = new DOMParser();
     return parser.parseFromString(fetchedHTML, "text/html");
   }
+  function getConfigurationProperty(name) {
+    return document.querySelector(`meta[name="hotwire-spark:${name}"]`)?.content;
+  }
 
   // base IIFE to define idiomorph
   var Idiomorph = (function () {
@@ -3690,9 +3693,12 @@ var HotwireSpark = (function () {
 
   const HotwireSpark = {
     config: {
-      loggingEnabled: true
+      loggingEnabled: false
     }
   };
+  document.addEventListener("DOMContentLoaded", function () {
+    HotwireSpark.config.loggingEnabled = getConfigurationProperty("logging");
+  });
 
   return HotwireSpark;
 

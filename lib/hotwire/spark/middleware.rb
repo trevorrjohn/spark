@@ -9,8 +9,9 @@ class Hotwire::Spark::Middleware
     if html_response?(headers)
       html = html_from(response)
       html = inject_javascript(html)
+      html = inject_options(html)
       headers["Content-Length"] = html.bytesize.to_s if html
-      response = [ html ]
+      response = [html]
     end
 
     [ status, headers, response ]
@@ -32,7 +33,23 @@ class Hotwire::Spark::Middleware
     end
 
     def script_tag
-      script_path = ActionController::Base.helpers.asset_path("hotwire_spark.js")
-      ActionController::Base.helpers.javascript_include_tag(script_path)
+      script_path = view_helpers.asset_path("hotwire_spark.js")
+      view_helpers.javascript_include_tag(script_path)
+    end
+
+    def view_helpers
+      ActionController::Base.helpers
+    end
+
+    def inject_options(html)
+      if Hotwire::Spark.logging
+        html.sub("</head>", "#{logging_option}</head>")
+      else
+        html
+      end
+    end
+
+    def logging_option
+      view_helpers.tag.meta(name: "hotwire-spark:logging", content: "true")
     end
 end
