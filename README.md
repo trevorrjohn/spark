@@ -24,9 +24,9 @@ That's it!
 
 The system will listen for three kinds of changes and will take action depending on each:
 
-* HTML change: it fetches the new document body and updates the current body with morphing. It uses [`idiomorph`](https://github.com/bigskysoftware/idiomorph) under the hood.
-* CSS change: it fetches and reload the stylesheet that changed.
-* Stimulus controller change: it fetches the Stimulus controller that changed and reload all the controllers in the page.
+* **HTML change:** it fetches the new document body and updates the current body with morphing. It uses [`idiomorph`](https://github.com/bigskysoftware/idiomorph) under the hood.
+* **CSS change:** it fetches and reload the stylesheet that changed.
+* **Stimulus controller change:** it fetches the Stimulus controller that changed and reload all the controllers in the page.
 
 ## Configuration
 
