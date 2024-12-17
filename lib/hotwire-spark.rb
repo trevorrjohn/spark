@@ -23,6 +23,3 @@ module Hotwire::Spark
     end
   end
 end
-
-
-
