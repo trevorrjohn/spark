@@ -8,7 +8,7 @@ Add the gem to the group `development`:
 
 ```ruby
 group :development do
-  gem "hotwire_spark"
+  gem "hotwire-spark"
 end
 ```
 
