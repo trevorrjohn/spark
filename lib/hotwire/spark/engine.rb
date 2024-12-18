@@ -8,7 +8,7 @@ module Hotwire::Spark
     config.hotwire.spark = ActiveSupport::OrderedOptions.new
     config.hotwire.spark.merge! \
       enabled: Rails.env.development?,
-      css_paths: %w[ app/assets/stylesheets ],
+      css_paths: File.directory?("app/assets/builds") ? %w[ app/assets/builds ] : %w[ app/assets/stylesheets ],
       html_paths: %w[ app/controllers app/helpers app/models app/views ],
       stimulus_paths: %w[ app/javascript/controllers ]
 
