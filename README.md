@@ -20,7 +20,7 @@ $ bundle
 
 That's it!
 
-## Hot it works
+## How it works
 
 The system will listen for three kinds of changes and will take action depending on each:
 
