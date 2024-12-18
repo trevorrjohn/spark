@@ -3,10 +3,9 @@ import { getConfigurationProperty } from "./helpers.js";
 
 const HotwireSpark = {
   config: {
-    loggingEnabled: false
+    loggingEnabled: false 
   }
 }
-
 
 document.addEventListener("DOMContentLoaded", function() {
   HotwireSpark.config.loggingEnabled = getConfigurationProperty("logging");

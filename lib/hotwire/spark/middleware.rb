@@ -11,7 +11,7 @@ class Hotwire::Spark::Middleware
       html = inject_javascript(html)
       html = inject_options(html)
       headers["Content-Length"] = html.bytesize.to_s if html
-      response = [html]
+      response = [ html ]
     end
 
     [ status, headers, response ]
