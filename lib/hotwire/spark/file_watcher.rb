@@ -25,10 +25,10 @@ class Hotwire::Spark::FileWatcher
     end
 
     def paths
-      ensure_paths_present @callbacks_by_path.keys
+      only_existing_paths @callbacks_by_path.keys
     end
 
-    def ensure_paths_present(paths)
+    def only_existing_paths(paths)
       paths.select do |path|
         path.exist?
       end
