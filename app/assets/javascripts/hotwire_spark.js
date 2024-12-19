@@ -537,7 +537,11 @@ var HotwireSpark = (function () {
     let currentUrl = cacheBustedUrl(urlWithParams(window.location.href, {
       hotwire_spark: "true"
     }));
-    const response = await fetch(currentUrl);
+    const response = await fetch(currentUrl, {
+      headers: {
+        "Accept": "text/html"
+      }
+    });
     if (!response.ok) {
       throw new Error(`${response.status} when fetching ${currentUrl}`);
     }
