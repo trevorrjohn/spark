@@ -4,6 +4,7 @@ require "hotwire/spark/engine"
 require "zeitwerk"
 loader = Zeitwerk::Loader.for_gem(warn_on_extra_files: false)
 loader.ignore("#{__dir__}/hotwire-spark.rb")
+loader.ignore("#{__dir__}/hotwire/spark/version.rb")
 loader.setup
 
 module Hotwire::Spark
