@@ -29,7 +29,7 @@ The system will listen for three kinds of changes and will take action depending
 * **Stimulus controller change:** it fetches the Stimulus controller that changed and reloads all the controllers in the page.
 
 > [!NOTE]  
-> Hotwire spark currently does not support `jsbundling`, only import maps.
+> Hotwire Spark currently does not support `jsbundling`, only import maps.
 
 ## Configuration
 
