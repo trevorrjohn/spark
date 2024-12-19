@@ -29,9 +29,7 @@ class Hotwire::Spark::FileWatcher
     end
 
     def only_existing_paths(paths)
-      paths.select do |path|
-        path.exist?
-      end
+      paths.select(&:exist?)
     end
 
     def process_changed_files(changed_files)
