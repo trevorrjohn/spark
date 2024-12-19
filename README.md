@@ -28,6 +28,9 @@ The system will listen for three kinds of changes and will take action depending
 * **CSS change:** it fetches and reloads the stylesheet that changed.
 * **Stimulus controller change:** it fetches the Stimulus controller that changed and reloads all the controllers in the page.
 
+> [!NOTE]  
+> Hotwire spark currently does not support `jsbundling`, only import maps.
+
 ## Configuration
 
 You can set configuration options on your `development.rb`. For example:
