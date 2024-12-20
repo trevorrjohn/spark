@@ -11,13 +11,13 @@ module FilesHelper
   ORIGINAL_EXTENSION = ".original"
 
   def edit_file(path, replace:, with:)
-    path = Rails.application.root.join(path).to_s
+    path = expand_path(path)
 
     raise ArgumentError, "File at '#{path}' does not exist." unless File.exist?(path)
 
-    original_path = "#{path}#{ORIGINAL_EXTENSION}"
-    remember_path_to_restore original_path
-    system "cp", path, original_path
+    original_path = remember_original_path_to_restore path
+
+    FileUtils.cp path, original_path
 
     content = File.read(path)
     updated_content = content.gsub(replace, with)
@@ -27,7 +27,7 @@ module FilesHelper
   end
 
   def add_file(path, content)
-    path = Rails.application.root.join(path).to_s
+    path = expand_path(path)
 
     raise ArgumentError, "File at '#{path}' already exists." if File.exist?(path)
 
@@ -37,7 +37,25 @@ module FilesHelper
     reload_rails_reloader
   end
 
+  def remove_file(path)
+    path = expand_path(path)
+
+    original_path = remember_original_path_to_restore path
+
+    FileUtils.mv path, original_path
+  end
+
   private
+    def expand_path(path)
+      Rails.application.root.join(path).to_s
+    end
+
+    def remember_original_path_to_restore(path)
+      "#{path}#{ORIGINAL_EXTENSION}".tap do |original_path|
+        remember_path_to_restore original_path
+      end
+    end
+
     def remember_path_to_restore(path)
       paths_to_restore << path
     end

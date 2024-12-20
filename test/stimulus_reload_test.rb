@@ -1,8 +1,11 @@
 require "application_system_test_case"
 
 class StimulusReloadTest < ApplicationSystemTestCase
-  test "reload Stimulus controller changes" do
+  setup do
     visit root_path
+  end
+
+  test "reload Stimulus controller changes" do
     assert_no_text "This was replaced!"
 
     edit_file "app/javascript/controllers/dummy_controller.js", replace: "_REPLACE_", with: "This was replaced!"
@@ -11,7 +14,6 @@ class StimulusReloadTest < ApplicationSystemTestCase
   end
 
   test "load new Stimulus controllers" do
-    visit root_path
     assert_no_text "This was replaced!"
 
     edit_file "app/views/home/show.html.erb", replace: "_REPLACE_CONTROLLER_", with: "other-dummy"
@@ -28,5 +30,13 @@ class StimulusReloadTest < ApplicationSystemTestCase
     JS
 
     assert_text "This was replaced!"
+  end
+
+  test "unload removed Stimulus controllers" do
+    assert_css "[data-dummy-version]"
+
+    remove_file "app/javascript/controllers/dummy_controller.js"
+
+    assert_no_css "[data-dummy-version]"
   end
 end
