@@ -12,7 +12,7 @@ module Hotwire::Spark
       html_paths: %w[ app/controllers app/helpers app/models app/views ],
       stimulus_paths: %w[ app/javascript/controllers ]
 
-    initializer "hotwire_spark.config" do |app|
+    initializer "hotwire_spark.config" do |application|
       config.hotwire.spark.each do |key, value|
         Hotwire::Spark.send("#{key}=", value)
       end
