@@ -3537,19 +3537,14 @@ var HotwireSpark = (function () {
     async reload() {
       log("Reload Stimulus controllers...");
       this.application.stop();
-      await this.#reloadChangedStimulusControllers();
-      this.#unloadDeletedStimulusControllers();
+      await this.#reloadStimulusControllers();
       this.application.start();
     }
-    async #reloadChangedStimulusControllers() {
-      await Promise.all(this.#stimulusControllerPathsToReload.map(async moduleName => this.#reloadStimulusController(moduleName)));
-    }
-    get #stimulusControllerPathsToReload() {
-      this.controllerPathsToReload = this.controllerPathsToReload || this.#stimulusControllerPaths.filter(path => this.#shouldReloadController(path));
-      return this.controllerPathsToReload;
+    async #reloadStimulusControllers() {
+      await Promise.all(this.#stimulusControllerPaths.map(async moduleName => this.#reloadStimulusController(moduleName)));
     }
     get #stimulusControllerPaths() {
-      return Object.keys(this.#stimulusPathsByModule).filter(path => path.endsWith("_controller"));
+      return Object.keys(this.#stimulusPathsByModule).filter(path => path.endsWith("_controller") && this.#shouldReloadController(path));
     }
     #shouldReloadController(path) {
       return this.filePattern.test(path);
@@ -3569,19 +3564,6 @@ var HotwireSpark = (function () {
       const module = await import(path);
       this.#registerController(controllerName, module);
     }
-    #unloadDeletedStimulusControllers() {
-      this.#controllersToUnload.forEach(controller => this.#deregisterController(controller.identifier));
-    }
-    get #controllersToUnload() {
-      if (this.#didChangeTriggerAReload) {
-        return [];
-      } else {
-        return this.application.controllers.filter(controller => this.filePattern.test(`${controller.identifier}_controller`));
-      }
-    }
-    get #didChangeTriggerAReload() {
-      return this.#stimulusControllerPathsToReload.length > 0;
-    }
     #pathForModuleName(moduleName) {
       return this.#stimulusPathsByModule[moduleName];
     }
@@ -3589,12 +3571,8 @@ var HotwireSpark = (function () {
       return path.replace(/^.*\//, "").replace("_controller", "").replace(/\//g, "--").replace(/_/g, "-");
     }
     #registerController(name, module) {
-      this.#deregisterController(name);
-      this.application.register(name, module.default);
-    }
-    #deregisterController(name) {
-      log(`\tRemoving controller ${name}`);
       this.application.unload(name);
+      this.application.register(name, module.default);
     }
   }
 
