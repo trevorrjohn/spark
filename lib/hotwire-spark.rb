@@ -21,7 +21,7 @@ module Hotwire::Spark
     end
 
     def enabled?
-      enabled
+      enabled && defined?(Rails::Server)
     end
   end
 end

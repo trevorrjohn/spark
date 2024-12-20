@@ -16,6 +16,8 @@ end
 
 require "helpers/files_helper"
 
+::ActionCable::Server::Base.prepend(Hotwire::Spark::ActionCable::PersistentCableServer)
+
 class ActiveSupport::TestCase
   include FilesHelper
 
