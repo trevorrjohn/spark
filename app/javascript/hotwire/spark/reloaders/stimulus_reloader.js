@@ -94,7 +94,7 @@ export class StimulusReloader {
   }
 
   #registerController(name, module) {
-    this.#deregisterController(name)
+    this.application.unload(name)
     this.application.register(name, module.default)
   }
 

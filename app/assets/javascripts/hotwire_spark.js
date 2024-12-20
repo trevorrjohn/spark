@@ -3589,7 +3589,7 @@ var HotwireSpark = (function () {
       return path.replace(/^.*\//, "").replace("_controller", "").replace(/\//g, "--").replace(/_/g, "-");
     }
     #registerController(name, module) {
-      this.#deregisterController(name);
+      this.application.unload(name);
       this.application.register(name, module.default);
     }
     #deregisterController(name) {
