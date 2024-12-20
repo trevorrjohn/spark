@@ -46,6 +46,7 @@ config.hotwire.spark.html_paths += %w[ lib ]
 | `stimulus_paths` | Paths where file changes trigger a Stimulus controller refresh. By default: `app/javascript/controllers`.                    |
 | `enabled`        | Enable or disable live reloading. By default, it's only enabled in `development`.                                            |
 | `logging`        | Show logs in the browser console when reloading happens. It's false by default.                                              |
+| `html_reload_strategy` | Reload html by morphing (`"morph"`) or with a Turbo page reload (`"turbo"`). By default `"morph"`. Use Turbo if your app is incompatible with morphing. |
 
 ## License
 

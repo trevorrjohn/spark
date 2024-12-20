@@ -2,6 +2,7 @@ import { Idiomorph } from "idiomorph/dist/idiomorph.esm.js"
 import { log } from "../logger.js"
 import { reloadHtmlDocument } from "../helpers.js"
 import { StimulusReloader } from "./stimulus_reloader.js"
+import HotwireSpark from "../index.js"
 
 export class HtmlReloader {
   static async reload() {
@@ -9,12 +10,29 @@ export class HtmlReloader {
   }
 
   async reload() {
-    const reloadedDocument = await this.#reloadHtml()
-    await this.#reloadStimulus(reloadedDocument)
+    if(HotwireSpark.config.htmlReloadStrategy == "morph") {
+      const reloadedDocument = await this.#reloadWithMorph()
+      await this.#reloadStimulus(reloadedDocument)
+    } else if(HotwireSpark.config.htmlReloadStrategy == "turbo") {
+      await this.#reloadWithTurbo()
+    } else {
+      throw new Error(`Invalid html reload strategy "${HotwireSpark.config.htmlReloadStrategy}". Only "morph" and "turbo" is supported.`)
+    }
   }
 
-  async #reloadHtml() {
-    log("Reload html...")
+  async #reloadWithTurbo() {
+    log("Reload html with Turbo...")
+
+    return new Promise((resolve) => {
+      document.addEventListener("turbo:load", () => {
+        resolve(document)
+      }, { once: true })
+      window.Turbo.visit(window.location)
+    })
+  }
+
+  async #reloadWithMorph() {
+    log("Reload html with morph...")
 
     const reloadedDocument = await reloadHtmlDocument()
     this.#updateBody(reloadedDocument.body)

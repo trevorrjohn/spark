@@ -46,10 +46,15 @@ class Hotwire::Spark::Middleware
         html.sub("</head>", "#{logging_option}</head>")
       else
         html
-      end
+      end.sub("</head>", "#{html_reload_strategy_option}</head>")
     end
 
     def logging_option
       view_helpers.tag.meta(name: "hotwire-spark:logging", content: "true")
+    end
+
+    def html_reload_strategy_option
+      content = Hotwire::Spark.html_reload_strategy
+      view_helpers.tag.meta(name: "hotwire-spark:html-reload-strategy", content: content)
     end
 end

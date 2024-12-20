@@ -1475,11 +1475,28 @@ var HotwireSpark = (function () {
       return new HtmlReloader().reload();
     }
     async reload() {
-      const reloadedDocument = await this.#reloadHtml();
-      await this.#reloadStimulus(reloadedDocument);
+      if (HotwireSpark.config.htmlReloadStrategy == "morph") {
+        const reloadedDocument = await this.#reloadWithMorph();
+        await this.#reloadStimulus(reloadedDocument);
+      } else if (HotwireSpark.config.htmlReloadStrategy == "turbo") {
+        await this.#reloadWithTurbo();
+      } else {
+        throw new Error(`Invalid html reload strategy "${HotwireSpark.config.htmlReloadStrategy}". Only "morph" and "turbo" is supported.`);
+      }
     }
-    async #reloadHtml() {
-      log("Reload html...");
+    async #reloadWithTurbo() {
+      log("Reload html with Turbo...");
+      return new Promise(resolve => {
+        document.addEventListener("turbo:load", () => {
+          resolve(document);
+        }, {
+          once: true
+        });
+        window.Turbo.visit(window.location);
+      });
+    }
+    async #reloadWithMorph() {
+      log("Reload html with morph...");
       const reloadedDocument = await reloadHtmlDocument();
       this.#updateBody(reloadedDocument.body);
       return reloadedDocument;
@@ -1591,11 +1608,13 @@ var HotwireSpark = (function () {
 
   const HotwireSpark = {
     config: {
-      loggingEnabled: false
+      loggingEnabled: false,
+      htmlReloadStrategy: "morph"
     }
   };
   document.addEventListener("DOMContentLoaded", function () {
     HotwireSpark.config.loggingEnabled = getConfigurationProperty("logging");
+    HotwireSpark.config.htmlReloadStrategy = getConfigurationProperty("html-reload-strategy");
   });
 
   return HotwireSpark;
