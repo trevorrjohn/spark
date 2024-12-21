@@ -5,14 +5,14 @@ Gem::Specification.new do |spec|
   spec.version     = Hotwire::Spark::VERSION
   spec.authors     = [ "Jorge Manrubia" ]
   spec.email       = [ "jorge@37signals.com" ]
-  spec.homepage    = "https://github.com/basecamp/hotwire_spark"
+  spec.homepage    = "https://github.com/hotwired/spark"
   spec.summary     = "Smooth live reloading for your Rails apps"
   spec.description = "A live reloading system that updates just what's needed to offer a smooth experience."
   spec.license     = "MIT"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/basecamp/hotwire_spark"
-  spec.metadata["changelog_uri"] = "https://github.com/basecamp/hotwire_spark"
+  spec.metadata["source_code_uri"] = "https://github.com/hotwired/spark"
+  spec.metadata["changelog_uri"] = "https://github.com/hotwired/spark"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
