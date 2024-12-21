@@ -11,13 +11,13 @@ class Hotwire::Spark::Installer
     monitor_paths
   end
 
-  def configure_middleware
-    middleware.use Hotwire::Spark::Middleware
-  end
-
   private
     attr_reader :application
     delegate :middleware, to: :application
+
+    def configure_middleware
+      middleware.use Hotwire::Spark::Middleware
+    end
 
     def configure_cable_server
       application.routes.prepend do
