@@ -6,20 +6,24 @@ class Hotwire::Spark::Installer
   end
 
   def install
+    configure_cable_server
     configure_middleware
     monitor_paths
   end
 
   def configure_middleware
-    ::ActionCable::Server::Base.prepend(Hotwire::Spark::ActionCable::PersistentCableServer)
-
-    middleware.insert_before ActionDispatch::Executor, Hotwire::Spark::ActionCable::PersistentCableMiddleware
     middleware.use Hotwire::Spark::Middleware
   end
 
   private
     attr_reader :application
     delegate :middleware, to: :application
+
+    def configure_cable_server
+      application.routes.prepend do
+        mount Hotwire::Spark.cable_server => "/hotwire-spark", internal: true, anchor: true
+      end
+    end
 
     def monitor_paths
       register_monitored_paths
@@ -39,7 +43,7 @@ class Hotwire::Spark::Installer
     end
 
     def broadcast_reload_action(action, file_path)
-      ActionCable.server.broadcast "hotwire_spark", reload_message_for(action, file_path)
+      Hotwire::Spark.cable_server.broadcast "hotwire_spark", reload_message_for(action, file_path)
     end
 
     def reload_message_for(action, file_path)

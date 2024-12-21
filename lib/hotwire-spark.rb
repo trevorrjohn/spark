@@ -23,5 +23,9 @@ module Hotwire::Spark
     def enabled?
       enabled && defined?(Rails::Server)
     end
+
+    def cable_server
+      @server ||= Hotwire::Spark::ActionCable::Server.new
+    end
   end
 end
