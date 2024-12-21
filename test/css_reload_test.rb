@@ -1,8 +1,11 @@
 require "application_system_test_case"
 
 class CssReloadTest < ApplicationSystemTestCase
-  test "reload CSS changes" do
+  setup do
     visit root_path
+  end
+
+  test "reload CSS changes" do
     assert_text "This is pretty cool"
 
     edit_file "app/assets/stylesheets/base.css", replace: "visible", with: "hidden"
@@ -11,7 +14,6 @@ class CssReloadTest < ApplicationSystemTestCase
   end
 
   test "load new CSS stylesheets" do
-    visit root_path
     assert_text "This is pretty cool"
 
     add_file "app/assets/stylesheets/other_stylesheet.css", <<~CSS
