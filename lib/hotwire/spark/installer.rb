@@ -1,6 +1,4 @@
 class Hotwire::Spark::Installer
-  attr_reader :file_watcher
-
   def initialize(application)
     @application = application
   end
