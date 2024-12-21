@@ -15,14 +15,14 @@ class Hotwire::Spark::Installer
     attr_reader :application
     delegate :middleware, to: :application
 
-    def configure_middleware
-      middleware.use Hotwire::Spark::Middleware
-    end
-
     def configure_cable_server
       application.routes.prepend do
         mount Hotwire::Spark.cable_server => "/hotwire-spark", internal: true, anchor: true
       end
+    end
+
+    def configure_middleware
+      middleware.use Hotwire::Spark::Middleware
     end
 
     def monitor_paths
