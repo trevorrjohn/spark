@@ -20,13 +20,13 @@ export class HtmlReloader {
     }
   }
 
-  async #reloadWithTurbo() {
+  #reloadWithTurbo() {
     log("Reload html with Turbo...")
 
-    return new Promise((resolve) => {
-      document.addEventListener("turbo:load", () => {
-        resolve(document)
-      }, { once: true })
+    this.#maintainScrollPosition()
+  
+    return new Promise(resolve => {
+      document.addEventListener("turbo:load", () => resolve(document), { once: true })
       window.Turbo.visit(window.location)
     })
   }
@@ -41,6 +41,12 @@ export class HtmlReloader {
 
   #updateBody(newBody) {
     Idiomorph.morph(document.body, newBody)
+  }
+
+  #maintainScrollPosition() {
+    document.addEventListener("turbo:render", () => {
+      Turbo.navigator.currentVisit.scrolled = true
+    }, { once: true })
   }
 
   async #reloadStimulus(reloadedDocument) {

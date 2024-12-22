@@ -1484,12 +1484,11 @@ var HotwireSpark = (function () {
         throw new Error(`Invalid html reload strategy "${HotwireSpark.config.htmlReloadStrategy}". Only "morph" and "turbo" is supported.`);
       }
     }
-    async #reloadWithTurbo() {
+    #reloadWithTurbo() {
       log("Reload html with Turbo...");
+      this.#maintainScrollPosition();
       return new Promise(resolve => {
-        document.addEventListener("turbo:load", () => {
-          resolve(document);
-        }, {
+        document.addEventListener("turbo:load", () => resolve(document), {
           once: true
         });
         window.Turbo.visit(window.location);
@@ -1503,6 +1502,13 @@ var HotwireSpark = (function () {
     }
     #updateBody(newBody) {
       Idiomorph.morph(document.body, newBody);
+    }
+    #maintainScrollPosition() {
+      document.addEventListener("turbo:render", () => {
+        Turbo.navigator.currentVisit.scrolled = true;
+      }, {
+        once: true
+      });
     }
     async #reloadStimulus(reloadedDocument) {
       return new StimulusReloader(reloadedDocument).reload();
