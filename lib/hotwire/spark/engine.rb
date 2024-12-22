@@ -18,6 +18,10 @@ module Hotwire::Spark
       end
     end
 
+    initializer "hotwire_spark.assets" do |application|
+      application.config.assets.precompile << "hotwire_spark.js"
+    end
+
     initializer "hotwire_spark.install" do |application|
       Hotwire::Spark.install_into application if Hotwire::Spark.enabled?
     end
