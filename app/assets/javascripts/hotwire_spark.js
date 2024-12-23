@@ -1387,7 +1387,7 @@ var HotwireSpark = (function () {
       })();
 
   function log() {
-    if (HotwireSpark.config.loggingEnabled) {
+    if (HotwireSpark$1.config.loggingEnabled) {
       for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
@@ -1470,29 +1470,13 @@ var HotwireSpark = (function () {
     }
   }
 
-  class HtmlReloader {
+  class MorphHtmlReloader {
     static async reload() {
-      return new HtmlReloader().reload();
+      return new MorphHtmlReloader().reload();
     }
     async reload() {
-      if (HotwireSpark.config.htmlReloadMethod == "morph") {
-        const reloadedDocument = await this.#reloadWithMorph();
-        await this.#reloadStimulus(reloadedDocument);
-      } else if (HotwireSpark.config.htmlReloadMethod == "replace") {
-        await this.#reloadWithTurbo();
-      } else {
-        throw new Error(`Invalid html reload method "${HotwireSpark.config.htmlReloadMethod}". Only "morph" and "replace" is supported.`);
-      }
-    }
-    #reloadWithTurbo() {
-      log("Reload html with Turbo...");
-      this.#maintainScrollPosition();
-      return new Promise(resolve => {
-        document.addEventListener("turbo:load", () => resolve(document), {
-          once: true
-        });
-        window.Turbo.visit(window.location);
-      });
+      const reloadedDocument = await this.#reloadWithMorph();
+      await this.#reloadStimulus(reloadedDocument);
     }
     async #reloadWithMorph() {
       log("Reload html with morph...");
@@ -1502,13 +1486,6 @@ var HotwireSpark = (function () {
     }
     #updateBody(newBody) {
       Idiomorph.morph(document.body, newBody);
-    }
-    #maintainScrollPosition() {
-      document.addEventListener("turbo:render", () => {
-        Turbo.navigator.currentVisit.scrolled = true;
-      }, {
-        once: true
-      });
     }
     async #reloadStimulus(reloadedDocument) {
       return new StimulusReloader(reloadedDocument).reload();
@@ -1571,6 +1548,32 @@ var HotwireSpark = (function () {
     }
   }
 
+  class ReplaceHtmlReloader {
+    static async reload() {
+      return new ReplaceHtmlReloader().reload();
+    }
+    async reload() {
+      await this.#reloadWithTurbo();
+    }
+    #reloadWithTurbo() {
+      log("Reload html with Turbo...");
+      this.#maintainScrollPosition();
+      return new Promise(resolve => {
+        document.addEventListener("turbo:load", () => resolve(document), {
+          once: true
+        });
+        window.Turbo.visit(window.location);
+      });
+    }
+    #maintainScrollPosition() {
+      document.addEventListener("turbo:render", () => {
+        Turbo.navigator.currentVisit.scrolled = true;
+      }, {
+        once: true
+      });
+    }
+  }
+
   consumer.subscriptions.create({
     channel: "Hotwire::Spark::Channel"
   }, {
@@ -1602,6 +1605,7 @@ var HotwireSpark = (function () {
       }
     },
     reloadHtml() {
+      const HtmlReloader = HotwireSpark.config.htmlReloadMethod == "morph" ? MorphHtmlReloader : ReplaceHtmlReloader;
       return HtmlReloader.reload();
     },
     reloadCss(fileName) {
@@ -1612,17 +1616,17 @@ var HotwireSpark = (function () {
     }
   });
 
-  const HotwireSpark = {
+  const HotwireSpark$1 = {
     config: {
       loggingEnabled: false,
       htmlReloadMethod: "morph"
     }
   };
   document.addEventListener("DOMContentLoaded", function () {
-    HotwireSpark.config.loggingEnabled = getConfigurationProperty("logging");
-    HotwireSpark.config.htmlReloadMethod = getConfigurationProperty("html-reload-method");
+    HotwireSpark$1.config.loggingEnabled = getConfigurationProperty("logging");
+    HotwireSpark$1.config.htmlReloadMethod = getConfigurationProperty("html-reload-method");
   });
 
-  return HotwireSpark;
+  return HotwireSpark$1;
 
 })();
