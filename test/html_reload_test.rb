@@ -15,7 +15,7 @@ class HtmlReloadTest < ApplicationSystemTestCase
     with_turbo_reload_method do
       visit root_path
       assert_no_text "This is pretty amazing"
-      assert_config("html-reload-method", "turbo")
+      assert_config("html-reload-method", "replace")
 
       edit_file "app/views/home/show.html.erb", replace: "cool", with: "amazing"
 
@@ -31,7 +31,7 @@ class HtmlReloadTest < ApplicationSystemTestCase
 
   def with_turbo_reload_method
     old_method = Hotwire::Spark.html_reload_method
-    Hotwire::Spark.html_reload_method = "turbo"
+    Hotwire::Spark.html_reload_method = "replace"
 
     yield
 

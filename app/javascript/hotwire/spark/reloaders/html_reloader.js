@@ -13,10 +13,10 @@ export class HtmlReloader {
     if(HotwireSpark.config.htmlReloadMethod == "morph") {
       const reloadedDocument = await this.#reloadWithMorph()
       await this.#reloadStimulus(reloadedDocument)
-    } else if(HotwireSpark.config.htmlReloadMethod == "turbo") {
+    } else if(HotwireSpark.config.htmlReloadMethod == "replace") {
       await this.#reloadWithTurbo()
     } else {
-      throw new Error(`Invalid html reload method "${HotwireSpark.config.htmlReloadMethod}". Only "morph" and "turbo" is supported.`)
+      throw new Error(`Invalid html reload method "${HotwireSpark.config.htmlReloadMethod}". Only "morph" and "replace" is supported.`)
     }
   }
 
