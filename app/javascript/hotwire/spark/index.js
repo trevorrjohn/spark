@@ -4,13 +4,13 @@ import { getConfigurationProperty } from "./helpers.js";
 const HotwireSpark = {
   config: {
     loggingEnabled: false,
-    htmlReloadStrategy: "morph"
+    htmlReloadMethod: "morph"
   }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
   HotwireSpark.config.loggingEnabled = getConfigurationProperty("logging");
-  HotwireSpark.config.htmlReloadStrategy = getConfigurationProperty("html-reload-strategy");
+  HotwireSpark.config.htmlReloadMethod = getConfigurationProperty("html-reload-method");
 })
 
 export default HotwireSpark

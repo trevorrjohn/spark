@@ -1475,13 +1475,13 @@ var HotwireSpark = (function () {
       return new HtmlReloader().reload();
     }
     async reload() {
-      if (HotwireSpark.config.htmlReloadStrategy == "morph") {
+      if (HotwireSpark.config.htmlReloadMethod == "morph") {
         const reloadedDocument = await this.#reloadWithMorph();
         await this.#reloadStimulus(reloadedDocument);
-      } else if (HotwireSpark.config.htmlReloadStrategy == "turbo") {
+      } else if (HotwireSpark.config.htmlReloadMethod == "turbo") {
         await this.#reloadWithTurbo();
       } else {
-        throw new Error(`Invalid html reload strategy "${HotwireSpark.config.htmlReloadStrategy}". Only "morph" and "turbo" is supported.`);
+        throw new Error(`Invalid html reload method "${HotwireSpark.config.htmlReloadMethod}". Only "morph" and "turbo" is supported.`);
       }
     }
     #reloadWithTurbo() {
@@ -1615,12 +1615,12 @@ var HotwireSpark = (function () {
   const HotwireSpark = {
     config: {
       loggingEnabled: false,
-      htmlReloadStrategy: "morph"
+      htmlReloadMethod: "morph"
     }
   };
   document.addEventListener("DOMContentLoaded", function () {
     HotwireSpark.config.loggingEnabled = getConfigurationProperty("logging");
-    HotwireSpark.config.htmlReloadStrategy = getConfigurationProperty("html-reload-strategy");
+    HotwireSpark.config.htmlReloadMethod = getConfigurationProperty("html-reload-method");
   });
 
   return HotwireSpark;
