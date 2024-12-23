@@ -1,23 +1,17 @@
 require "application_system_test_case"
 
-class HtmlReloadTest < ApplicationSystemTestCase
+class MorphReloadTest < ApplicationSystemTestCase
   setup do
     Hotwire::Spark.html_reload_method = "morph"
   end
 
   test "reload HTML changes" do
     visit root_path
-    assert_no_text "This was replaced"
-    assert_config("html-reload-method", "morph")
+    assert_no_text "This was morphed"
 
-    edit_file "app/views/home/show.html.erb", replace: "_REPLACE_", with: "This was replaced!"
+    edit_file "app/views/home/show.html.erb", replace: "_REPLACE_", with: "This was morphed!"
 
-    assert_text "This was replaced"
-  end
-
-  private
-
-  def assert_config(name, value)
-    assert_selector "meta[name='hotwire-spark:#{name}'][content='#{value}']", visible: false
+    assert_text "This was morphed"
+    assert_no_css "[data-turbo-navigated]"
   end
 end

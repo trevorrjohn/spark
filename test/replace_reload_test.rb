@@ -12,5 +12,6 @@ class ReplaceReloadTest < ApplicationSystemTestCase
     edit_file "app/views/home/show.html.erb", replace: "cool", with: "amazing"
 
     assert_text "This is pretty amazing"
+    assert_css "[data-turbo-navigated]"
   end
 end
