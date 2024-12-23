@@ -9,8 +9,8 @@ export class MorphHtmlReloader {
   }
 
   async reload() {
-    const reloadedDocument = await this.#reloadHtml()
-    await this.#reloadStimulus(reloadedDocument)
+    await this.#reloadHtml()
+    await this.#reloadStimulus()
   }
 
   async #reloadHtml() {
@@ -25,7 +25,7 @@ export class MorphHtmlReloader {
     Idiomorph.morph(document.body, newBody)
   }
 
-  async #reloadStimulus(reloadedDocument) {
-    return new StimulusReloader(reloadedDocument).reload()
+  async #reloadStimulus() {
+    await StimulusReloader.reloadAll()
   }
 }
