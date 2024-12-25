@@ -1,4 +1,5 @@
 require "action_cable/server/base"
+require "hotwire/spark/default_options"
 
 module Hotwire::Spark
   class Engine < ::Rails::Engine
@@ -6,11 +7,7 @@ module Hotwire::Spark
 
     config.hotwire = ActiveSupport::OrderedOptions.new unless config.respond_to?(:hotwire)
     config.hotwire.spark = ActiveSupport::OrderedOptions.new
-    config.hotwire.spark.merge! \
-      enabled: Rails.env.development?,
-      css_paths: File.directory?("app/assets/builds") ? %w[ app/assets/builds ] : %w[ app/assets/stylesheets ],
-      html_paths: %w[ app/controllers app/helpers app/models app/views ],
-      stimulus_paths: %w[ app/javascript/controllers ]
+    config.hotwire.spark.merge! Hotwire::Spark::DefaultOptions.new.to_h
 
     initializer "hotwire_spark.config" do |application|
       config.hotwire.spark.each do |key, value|
