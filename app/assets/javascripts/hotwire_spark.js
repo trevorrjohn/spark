@@ -1605,8 +1605,8 @@ var HotwireSpark = (function () {
       }
     },
     reloadHtml() {
-      const HtmlReloader = HotwireSpark.config.htmlReloadMethod == "morph" ? MorphHtmlReloader : ReplaceHtmlReloader;
-      return HtmlReloader.reload();
+      const htmlReloader = HotwireSpark.config.htmlReloadMethod == "morph" ? MorphHtmlReloader : ReplaceHtmlReloader;
+      return htmlReloader.reload();
     },
     reloadCss(fileName) {
       return CssReloader.reload(new RegExp(fileName));
@@ -1622,9 +1622,15 @@ var HotwireSpark = (function () {
       htmlReloadMethod: "morph"
     }
   };
+  const configProperties = {
+    loggingEnabled: "logging",
+    htmlReloadMethod: "html-reload-method"
+  };
   document.addEventListener("DOMContentLoaded", function () {
-    HotwireSpark$1.config.loggingEnabled = getConfigurationProperty("logging");
-    HotwireSpark$1.config.htmlReloadMethod = getConfigurationProperty("html-reload-method");
+    Object.entries(configProperties).forEach(_ref => {
+      let [key, property] = _ref;
+      HotwireSpark$1.config[key] = getConfigurationProperty(property);
+    });
   });
 
   return HotwireSpark$1;

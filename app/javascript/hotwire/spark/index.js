@@ -8,9 +8,15 @@ const HotwireSpark = {
   }
 }
 
+const configProperties = {
+  loggingEnabled: "logging",
+  htmlReloadMethod: "html-reload-method",
+}
+
 document.addEventListener("DOMContentLoaded", function() {
-  HotwireSpark.config.loggingEnabled = getConfigurationProperty("logging");
-  HotwireSpark.config.htmlReloadMethod = getConfigurationProperty("html-reload-method");
+  Object.entries(configProperties).forEach(([key, property]) => {
+    HotwireSpark.config[key] = getConfigurationProperty(property)
+  })
 })
 
 export default HotwireSpark
