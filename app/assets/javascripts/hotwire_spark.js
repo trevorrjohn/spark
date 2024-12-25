@@ -1475,10 +1475,10 @@ var HotwireSpark = (function () {
       return new MorphHtmlReloader().reload();
     }
     async reload() {
-      const reloadedDocument = await this.#reloadWithMorph();
+      const reloadedDocument = await this.#reloadHtml();
       await this.#reloadStimulus(reloadedDocument);
     }
-    async #reloadWithMorph() {
+    async #reloadHtml() {
       log("Reload html with morph...");
       const reloadedDocument = await reloadHtmlDocument();
       this.#updateBody(reloadedDocument.body);
@@ -1553,23 +1553,26 @@ var HotwireSpark = (function () {
       return new ReplaceHtmlReloader().reload();
     }
     async reload() {
-      await this.#reloadWithTurbo();
+      await this.#reloadHtml();
     }
-    #reloadWithTurbo() {
+    async #reloadHtml() {
       log("Reload html with Turbo...");
       this.#maintainScrollPosition();
-      return new Promise(resolve => {
-        document.addEventListener("turbo:load", () => resolve(document), {
-          once: true
-        });
-        window.Turbo.visit(window.location);
-      });
+      await this.#visitCurrentPage();
     }
     #maintainScrollPosition() {
       document.addEventListener("turbo:render", () => {
         Turbo.navigator.currentVisit.scrolled = true;
       }, {
         once: true
+      });
+    }
+    #visitCurrentPage() {
+      return new Promise(resolve => {
+        document.addEventListener("turbo:load", () => resolve(document), {
+          once: true
+        });
+        window.Turbo.visit(window.location);
       });
     }
   }
@@ -1605,8 +1608,8 @@ var HotwireSpark = (function () {
       }
     },
     reloadHtml() {
-      const HtmlReloader = HotwireSpark.config.htmlReloadMethod == "morph" ? MorphHtmlReloader : ReplaceHtmlReloader;
-      return HtmlReloader.reload();
+      const htmlReloader = HotwireSpark.config.htmlReloadMethod == "morph" ? MorphHtmlReloader : ReplaceHtmlReloader;
+      return htmlReloader.reload();
     },
     reloadCss(fileName) {
       return CssReloader.reload(new RegExp(fileName));
@@ -1622,9 +1625,15 @@ var HotwireSpark = (function () {
       htmlReloadMethod: "morph"
     }
   };
+  const configProperties = {
+    loggingEnabled: "logging",
+    htmlReloadMethod: "html-reload-method"
+  };
   document.addEventListener("DOMContentLoaded", function () {
-    HotwireSpark$1.config.loggingEnabled = getConfigurationProperty("logging");
-    HotwireSpark$1.config.htmlReloadMethod = getConfigurationProperty("html-reload-method");
+    Object.entries(configProperties).forEach(_ref => {
+      let [key, property] = _ref;
+      HotwireSpark$1.config[key] = getConfigurationProperty(property);
+    });
   });
 
   return HotwireSpark$1;

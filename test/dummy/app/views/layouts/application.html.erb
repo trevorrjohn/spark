@@ -22,12 +22,8 @@
   <%= javascript_importmap_tags %>
 
   <script>
-    let firstLoad = true
     document.addEventListener("turbo:load", (event) => {
-      if (!firstLoad) {
-        document.body.setAttribute("data-turbo-navigated", "")
-      }
-      firstLoad = false
+      document.body.setAttribute("data-turbo-navigated", "")
     })
   </script>
 </head>

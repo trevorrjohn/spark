@@ -34,10 +34,8 @@ consumer.subscriptions.create({ channel: "Hotwire::Spark::Channel" }, {
   },
 
   reloadHtml() {
-    const HtmlReloader = HotwireSpark.config.htmlReloadMethod == "morph"
-      ? MorphHtmlReloader
-      : ReplaceHtmlReloader
-    return HtmlReloader.reload()
+    const htmlReloader = HotwireSpark.config.htmlReloadMethod == "morph" ? MorphHtmlReloader : ReplaceHtmlReloader
+    return htmlReloader.reload()
   },
 
   reloadCss(fileName) {
