@@ -24,12 +24,25 @@ That's it!
 
 The system will listen for three kinds of changes and will take action depending on each:
 
-* **HTML change:** it fetches the new document body and updates the current body with morphing. It uses [`idiomorph`](https://github.com/bigskysoftware/idiomorph) under the hood.
+* HTML contents
+* CSS
+* Stimulus controllers
+
+Depending on your setup, the default behavior will be different.
+
+### Importmaps
+
+Importmaps is the setup that allows for the smoother updates:
+
+* **HTML change:** it fetches the new document body and updates the current body with morphing, then it reloads the Stimulus controllers in the page. It uses [`idiomorph`](https://github.com/bigskysoftware/idiomorph) under the hood.
 * **CSS change:** it fetches and reloads the stylesheet that changed.
 * **Stimulus controller change:** it fetches the Stimulus controller that changed and reloads all the controllers in the page.
 
-> [!NOTE]  
-> Hotwire Spark currently does not support `jsbundling`, only import maps.
+### JavaScript Bundling
+
+* **HTML change:** it reloads the page with a Turbo visit.
+* **CSS change:** it fetches and reloads the stylesheet that changed.
+* **Stimulus controller change:** it reloads the page with a Turbo visit.
 
 ## Configuration
 
@@ -39,14 +52,17 @@ You can set configuration options on your `development.rb`. For example:
 config.hotwire.spark.html_paths += %w[ lib ]
 ```
 
-| Name                 | Description                                                                                                                                                                                                                                            |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `html_paths`         | Paths where file changes trigger a content refresh. By default: `app/controllers`, `app/helpers`, `app/models`, `app/views`.                                                                                                                           |
-| `css_paths`          | Paths where file changes trigger a CSS refresh. By default: `app/assets/stylesheets` or `app/assets/builds` if exists.                                                                                                                                 |
-| `stimulus_paths`     | Paths where file changes trigger a Stimulus controller refresh. By default: `app/javascript/controllers`.                                                                                                                                              |
-| `enabled`            | Enable or disable live reloading. By default, it's only enabled in `development`.                                                                                                                                                                      |
-| `logging`            | Show logs in the browser console when reloading happens. It's false by default.                                                                                                                                                                        |
-| `html_reload_method` | How to perform reloads when HTML contents changes: `:morph` or `:replace`. By default, it is `:morph` and it will morph the `<body>` of the page. Set to `:replace` to reload the page with a regular Turbo navigation that will replace the `<body>`. |
+| Name                  | Description                                                                                                                                                                                                                                                                                   |
+|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `html_paths`          | Paths where file changes trigger a content refresh. By default: `app/controllers`, `app/helpers`, `app/models`, `app/views`.                                                                                                                                                                  |
+| `css_paths`           | Paths where file changes trigger a CSS refresh. By default: `app/assets/stylesheets` or `app/assets/builds` if exists.                                                                                                                                                                        |
+| `stimulus_paths`      | Paths where file changes trigger a Stimulus controller refresh. By default: `app/javascript/controllers`.                                                                                                                                                                                     |
+| `enabled`             | Enable or disable live reloading. By default, it's only enabled in `development`.                                                                                                                                                                                                             |
+| `logging`             | Show logs in the browser console when reloading happens. It's false by default.                                                                                                                                                                                                               |
+| `html_reload_method`  | How to perform reloads when HTML content changes: `:morph` or `:replace`. By default, it is `:morph` and it will morph the `<body>` of the page and reload all the stimulus controllers. Set to `:replace` to reload the page with a regular Turbo navigation that will replace the `<body>`. |
+| `html_extensions`     | The extension to monitor for HTML content changes. By default: `rb`, `erb`.                                                                                                                                                                                                                   |                                                                                                                                                                                                                                                   |
+| `css_extensions`      | The extension to monitor for CSS changes. By default: `css`.                                                                                                                                                                                                                                  |                                                                                                                                                                                                                                                   |
+| `stimulus_extensions` | The extension to monitor for CSS changes. By default: `js`.                                                                                                                                                                                                                                   |                                                                                                                                                                                                                                                   |
 
 ## License
 
