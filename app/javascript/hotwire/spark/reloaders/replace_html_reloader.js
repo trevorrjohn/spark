@@ -12,11 +12,11 @@ export class ReplaceHtmlReloader {
   async #reloadHtml() {
     log("Reload html with Turbo...")
 
-    this.#maintainScrollPosition()
+    this.#keepScrollPosition()
     await this.#visitCurrentPage()
   }
 
-  #maintainScrollPosition() {
+  #keepScrollPosition() {
     document.addEventListener("turbo:before-render", () => {
       Turbo.navigator.currentVisit.scrolled = true
     }, { once: true })
