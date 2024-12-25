@@ -1475,10 +1475,10 @@ var HotwireSpark = (function () {
       return new MorphHtmlReloader().reload();
     }
     async reload() {
-      const reloadedDocument = await this.#reloadWithMorph();
+      const reloadedDocument = await this.#reloadHtml();
       await this.#reloadStimulus(reloadedDocument);
     }
-    async #reloadWithMorph() {
+    async #reloadHtml() {
       log("Reload html with morph...");
       const reloadedDocument = await reloadHtmlDocument();
       this.#updateBody(reloadedDocument.body);
