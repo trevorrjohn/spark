@@ -17,7 +17,7 @@ export class ReplaceHtmlReloader {
   }
 
   #maintainScrollPosition() {
-    document.addEventListener("turbo:render", () => {
+    document.addEventListener("turbo:before-render", () => {
       Turbo.navigator.currentVisit.scrolled = true
     }, { once: true })
   }

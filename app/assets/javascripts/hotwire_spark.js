@@ -1555,7 +1555,7 @@ var HotwireSpark = (function () {
       await this.#visitCurrentPage();
     }
     #maintainScrollPosition() {
-      document.addEventListener("turbo:render", () => {
+      document.addEventListener("turbo:before-render", () => {
         Turbo.navigator.currentVisit.scrolled = true;
       }, {
         once: true
