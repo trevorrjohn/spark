@@ -1,6 +1,6 @@
 class Hotwire::Spark::DefaultOptions
   def initialize
-    @config = {}
+    @config = base_options
 
     build
   end
@@ -10,10 +10,6 @@ class Hotwire::Spark::DefaultOptions
   end
 
   private
-    def build
-      @config.merge! base_options
-    end
-
     def base_options
       {
         enabled: Rails.env.development?,
@@ -22,7 +18,19 @@ class Hotwire::Spark::DefaultOptions
         html_paths: %w[ app/controllers app/helpers app/models app/views ],
         html_extensions: %w[ rb erb ],
         stimulus_paths: %w[ app/javascript/controllers ],
-        stimulus_extensions: %w[ js ]
+        stimulus_extensions: %w[ js ],
+        html_reload_method: :morph
       }
+    end
+
+    def build
+      configure_jsbundling if defined?(Jsbundling)
+    end
+
+    def configure_jsbundling
+      @config[:stimulus_paths] = []
+      @config[:html_paths] << "app/assets/builds"
+      @config[:html_extensions] << "js"
+      @config[:html_reload_method] = :replace
     end
 end

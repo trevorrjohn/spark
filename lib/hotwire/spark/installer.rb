@@ -42,9 +42,12 @@ class Hotwire::Spark::Installer
     end
 
     def monitor(paths_name, action:, extensions:)
-      file_watcher.monitor Hotwire::Spark.public_send(paths_name) do |file_path|
-        pattern = /#{extensions.map { |ext| "\\." + ext }.join("|")}$/
-        broadcast_reload_action(action, file_path) if file_path.to_s =~ pattern
+      paths = Hotwire::Spark.public_send(paths_name)
+      if paths.present?
+        file_watcher.monitor paths do |file_path|
+          pattern = /#{extensions.map { |ext| "\\." + ext }.join("|")}$/
+          broadcast_reload_action(action, file_path) if file_path.to_s =~ pattern
+        end
       end
     end
 

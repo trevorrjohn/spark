@@ -14,7 +14,7 @@ module Hotwire::Spark
   end
 
   mattr_accessor :logging, default: false
-  mattr_accessor :html_reload_method, default: "morph"
+  mattr_accessor :html_reload_method, default: :morph
 
   mattr_accessor :enabled, default: Rails.env.development?
 
