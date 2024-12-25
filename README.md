@@ -32,7 +32,7 @@ Depending on your setup, the default behavior will be different.
 
 ### Importmaps
 
-Importmaps is the setup that allows for the smoother updates:
+Importmaps allows for the smoother updates because it supports hot-reloading for Stimulus controllers:
 
 * **HTML change:** it fetches the new document body and updates the current body with morphing, then it reloads the Stimulus controllers in the page. It uses [`idiomorph`](https://github.com/bigskysoftware/idiomorph) under the hood.
 * **CSS change:** it fetches and reloads the stylesheet that changed.
