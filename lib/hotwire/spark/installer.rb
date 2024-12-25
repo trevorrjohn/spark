@@ -36,13 +36,14 @@ class Hotwire::Spark::Installer
     end
 
     def register_monitored_paths
-      monitor :css_paths, action: :reload_css
-      monitor :html_paths, action: :reload_html
-      monitor :stimulus_paths, action: :reload_stimulus, pattern: /\.js$/
+      monitor :css_paths, action: :reload_css, extensions: Hotwire::Spark.css_extensions
+      monitor :html_paths, action: :reload_html, extensions: Hotwire::Spark.html_extensions
+      monitor :stimulus_paths, action: :reload_stimulus, extensions: Hotwire::Spark.stimulus_extensions
     end
 
-    def monitor(paths_name, action:, pattern: /./)
+    def monitor(paths_name, action:, extensions:)
       file_watcher.monitor Hotwire::Spark.public_send(paths_name) do |file_path|
+        pattern = /#{extensions.map { |ext| "\\." + ext }.join("|")}$/
         broadcast_reload_action(action, file_path) if file_path.to_s =~ pattern
       end
     end

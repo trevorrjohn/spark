@@ -8,9 +8,11 @@ loader.ignore("#{__dir__}/hotwire/spark/version.rb")
 loader.setup
 
 module Hotwire::Spark
-  mattr_accessor :css_paths, default: []
-  mattr_accessor :html_paths, default: []
-  mattr_accessor :stimulus_paths, default: []
+  %i[ css html stimulus ].each do |type|
+    mattr_accessor "#{type}_paths".to_sym, default: []
+    mattr_accessor "#{type}_extensions".to_sym, default: []
+  end
+
   mattr_accessor :logging, default: false
   mattr_accessor :html_reload_method, default: "morph"
 
