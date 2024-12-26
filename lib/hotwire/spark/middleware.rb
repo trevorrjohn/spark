@@ -6,8 +6,9 @@ class Hotwire::Spark::Middleware
   def call(env)
     status, headers, response = @app.call(env)
 
-    if html_response?(headers)
-      @request = ActionDispatch::Request.new(env)
+    @request = ActionDispatch::Request.new(env)
+
+    if interceptable_request? && html_response?(headers)
       html = html_from(response)
       html = inject_javascript(html)
       html = inject_options(html)
@@ -19,6 +20,10 @@ class Hotwire::Spark::Middleware
   end
 
   private
+    def interceptable_request?
+      @request.controller_instance.present?
+    end
+
     def html_response?(headers)
       headers["Content-Type"]&.include?("text/html")
     end
