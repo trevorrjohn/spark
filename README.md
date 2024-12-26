@@ -62,14 +62,14 @@ config.hotwire.spark.html_paths += %w[ lib ]
 
 ### Monitored paths
 
-| Name                  | Description                                                                                                                  |
-|-----------------------|------------------------------------------------------------------------------------------------------------------------------|
-| `html_paths`          | Paths where file changes trigger a content refresh. By default: `app/controllers`, `app/helpers`, `app/models`, `app/views`. |
-| `html_extensions`     | The extensions to monitor for HTML content changes. By default: `rb`, `erb`.                                                 |                                                                                                                                                                                                                                                   |
-| `css_paths`           | Paths where file changes trigger a CSS refresh. By default: `app/assets/stylesheets` or `app/assets/builds` if exists.       |
-| `css_extensions`      | The extensions to monitor for CSS changes. By default: `css`.                                                                |                                                                                                                                                                                                                                                   |
-| `stimulus_paths`      | Paths where file changes trigger a Stimulus controller refresh. By default: `app/javascript/controllers`.                    |
-| `stimulus_extensions` | The extensions to monitor for Stimulus changes. By default: `js`.                                                            |                                                                                                                                                                                                                                                   |
+| Name                  | Description                                                                                                                                       |
+|-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `html_paths`          | Paths where file changes trigger a content refresh. By default: `app/controllers`, `app/helpers`, `app/assets/images`, `app/models`, `app/views`. |
+| `html_extensions`     | The extensions to monitor for HTML content changes. By default: `rb`, `erb`, `png`, `jpg`, `jpeg`, `webp`, `svg`.                                 |
+| `css_paths`           | Paths where file changes trigger a CSS refresh. By default: `app/assets/stylesheets` or `app/assets/builds` if exists.                            |
+| `css_extensions`      | The extensions to monitor for CSS changes. By default: `css`.                                                                                     |
+| `stimulus_paths`      | Paths where file changes trigger a Stimulus controller refresh. By default: `app/javascript/controllers`.                                         |
+| `stimulus_extensions` | The extensions to monitor for Stimulus changes. By default: `js`.                                                                                 |
 
 ## License
 

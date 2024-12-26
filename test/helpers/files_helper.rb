@@ -46,6 +46,15 @@ module FilesHelper
     FileUtils.mv path, original_path
   end
 
+  def replace_file(path, with:)
+    path = expand_path(path)
+    replacement = expand_path(with)
+
+    original_path = remember_original_path_to_restore path
+    FileUtils.cp path, original_path
+    FileUtils.cp replacement, path
+  end
+
   private
     def expand_path(path)
       Rails.application.root.join(path).to_s
