@@ -1,7 +1,7 @@
 require "application_system_test_case"
 
 class MiddlewareTest < ActionDispatch::IntegrationTest
-  test "error" do
+  test "don't fail on redirects" do
     get "/redirected"
   end
 end
