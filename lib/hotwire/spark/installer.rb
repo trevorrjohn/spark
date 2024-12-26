@@ -5,7 +5,6 @@ class Hotwire::Spark::Installer
 
   def install
     configure_cable_server
-    configure_routes
     configure_middleware
     monitor_paths
   end
@@ -17,12 +16,6 @@ class Hotwire::Spark::Installer
     def configure_cable_server
       application.routes.prepend do
         mount Hotwire::Spark.cable_server => "/hotwire-spark", internal: true, anchor: true
-      end
-    end
-
-    def configure_routes
-      application.routes.prepend do
-        mount Hotwire::Spark::Engine => "/spark", as: "hotwire_spark"
       end
     end
 
@@ -45,18 +38,9 @@ class Hotwire::Spark::Installer
       paths = Hotwire::Spark.public_send(paths_name)
       if paths.present?
         file_watcher.monitor paths do |file_path|
-          pattern = /#{extensions.map { |ext| "\\." + ext }.join("|")}$/
-          broadcast_reload_action(action, file_path) if file_path.to_s =~ pattern
+          Hotwire::Spark::Change.new(paths, extensions, file_path, action).broadcast
         end
       end
-    end
-
-    def broadcast_reload_action(action, file_path)
-      Hotwire::Spark.cable_server.broadcast "hotwire_spark", reload_message_for(action, file_path)
-    end
-
-    def reload_message_for(action, file_path)
-      { action: action, path: file_path }
     end
 
     def file_watcher
