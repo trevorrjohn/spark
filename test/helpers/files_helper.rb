@@ -24,6 +24,7 @@ module FilesHelper
     File.write(path, updated_content)
 
     reload_rails_reloader
+    sleep 2 # Broadcasting many jobs in a row sometimes makes the test fail
   end
 
   def add_file(path, content)
