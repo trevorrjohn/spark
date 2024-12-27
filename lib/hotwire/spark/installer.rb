@@ -35,10 +35,10 @@ class Hotwire::Spark::Installer
     end
 
     def monitor(paths_name, action:, extensions:)
-      paths = Hotwire::Spark.public_send(paths_name)
-      if paths.present?
-        file_watcher.monitor paths do |file_path|
-          Hotwire::Spark::Change.new(paths, extensions, file_path, action).broadcast
+      monitored_paths = Hotwire::Spark.public_send(paths_name)
+      if monitored_paths.present?
+        file_watcher.monitor monitored_paths do |changed_path|
+          Hotwire::Spark::Change.new(monitored_paths, extensions, changed_path, action).broadcast
         end
       end
     end

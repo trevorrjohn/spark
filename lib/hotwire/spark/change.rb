@@ -1,8 +1,8 @@
 class Hotwire::Spark::Change
-  attr_reader :paths, :extensions, :changed_path, :action
+  attr_reader :monitored_paths, :extensions, :changed_path, :action
 
-  def initialize(paths, extensions, changed_path, action)
-    @paths = paths
+  def initialize(monitored_paths, extensions, changed_path, action)
+    @monitored_paths = monitored_paths
     @extensions = extensions
     @changed_path = changed_path
     @action = action
@@ -23,7 +23,7 @@ class Hotwire::Spark::Change
 
     def canonical_changed_path
       canonical_changed_path = changed_path
-      paths.each { |path| canonical_changed_path = canonical_changed_path.to_s.gsub(/^#{path}/, "") }
+      monitored_paths.each { |path| canonical_changed_path = canonical_changed_path.to_s.gsub(/^#{path}/, "") }
       canonical_changed_path
     end
 
