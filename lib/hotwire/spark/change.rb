@@ -22,9 +22,9 @@ class Hotwire::Spark::Change
     end
 
     def canonical_changed_path
-      canonical_changed_path = changed_path
-      monitored_paths.each { |path| canonical_changed_path = canonical_changed_path.to_s.gsub(/^#{path}/, "") }
-      canonical_changed_path
+      changed_path.to_s.tap do |changed_path|
+        monitored_paths.each { |path| changed_path.gsub!(/^#{path}/, "")}
+      end
     end
 
     def should_broadcast?
