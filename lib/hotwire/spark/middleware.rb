@@ -10,8 +10,8 @@ class Hotwire::Spark::Middleware
 
     if interceptable_request? && html_response?(headers)
       html = html_from(response)
-      html = inject_javascript(html)
       html = inject_options(html)
+      html = inject_javascript(html)
       headers["Content-Length"] = html.bytesize.to_s if html
       response = [ html ]
     end
@@ -40,7 +40,7 @@ class Hotwire::Spark::Middleware
 
     def script_tag
       script_path = view_helpers.asset_path("hotwire_spark.js")
-      view_helpers.javascript_include_tag(script_path)
+      view_helpers.javascript_include_tag(script_path, defer: "")
     end
 
     def view_helpers
