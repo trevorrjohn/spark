@@ -1,45 +1,9 @@
 var HotwireSpark = (function () {
   'use strict';
 
-  function assetNameFromPath(path) {
-    return path.split("/").pop().split(".")[0];
-  }
-  function pathWithoutAssetDigest(path) {
-    return path.replace(/-[a-z0-9]+\.(\w+)(\?.*)?$/, ".$1");
-  }
-  function urlWithParams(urlString, params) {
-    const url = new URL(urlString, window.location.origin);
-    Object.entries(params).forEach(_ref => {
-      let [key, value] = _ref;
-      url.searchParams.set(key, value);
-    });
-    return url.toString();
-  }
-  function cacheBustedUrl(urlString) {
-    return urlWithParams(urlString, {
-      reload: Date.now()
-    });
-  }
-  async function reloadHtmlDocument() {
-    let currentUrl = cacheBustedUrl(urlWithParams(window.location.href, {
-      hotwire_spark: "true"
-    }));
-    const response = await fetch(currentUrl, {
-      headers: {
-        "Accept": "text/html"
-      }
-    });
-    if (!response.ok) {
-      throw new Error(`${response.status} when fetching ${currentUrl}`);
-    }
-    const fetchedHTML = await response.text();
-    const parser = new DOMParser();
-    return parser.parseFromString(fetchedHTML, "text/html");
-  }
   function getConfigurationProperty(name) {
     return document.querySelector(`meta[name="hotwire-spark:${name}"]`)?.content;
   }
-
   var config = {
     loggingEnabled: getConfigurationProperty("logging") ?? false,
     htmlReloadMethod: getConfigurationProperty("html-reload-method"),
@@ -558,6 +522,42 @@ var HotwireSpark = (function () {
   }
 
   var consumer = createConsumer(config.cableServerPath);
+
+  function assetNameFromPath(path) {
+    return path.split("/").pop().split(".")[0];
+  }
+  function pathWithoutAssetDigest(path) {
+    return path.replace(/-[a-z0-9]+\.(\w+)(\?.*)?$/, ".$1");
+  }
+  function urlWithParams(urlString, params) {
+    const url = new URL(urlString, window.location.origin);
+    Object.entries(params).forEach(_ref => {
+      let [key, value] = _ref;
+      url.searchParams.set(key, value);
+    });
+    return url.toString();
+  }
+  function cacheBustedUrl(urlString) {
+    return urlWithParams(urlString, {
+      reload: Date.now()
+    });
+  }
+  async function reloadHtmlDocument() {
+    let currentUrl = cacheBustedUrl(urlWithParams(window.location.href, {
+      hotwire_spark: "true"
+    }));
+    const response = await fetch(currentUrl, {
+      headers: {
+        "Accept": "text/html"
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`${response.status} when fetching ${currentUrl}`);
+    }
+    const fetchedHTML = await response.text();
+    const parser = new DOMParser();
+    return parser.parseFromString(fetchedHTML, "text/html");
+  }
 
   // base IIFE to define idiomorph
   var Idiomorph = (function () {
@@ -1636,7 +1636,7 @@ var HotwireSpark = (function () {
   });
 
   const HotwireSpark$1 = {
-    config: config
+    config
   };
 
   return HotwireSpark$1;

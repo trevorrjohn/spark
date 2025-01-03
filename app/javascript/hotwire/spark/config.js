@@ -1,4 +1,6 @@
-import { getConfigurationProperty } from "./helpers.js";
+function getConfigurationProperty(name) {
+  return document.querySelector(`meta[name="hotwire-spark:${name}"]`)?.content
+}
 
 export default {
   loggingEnabled: getConfigurationProperty("logging") ?? false,
