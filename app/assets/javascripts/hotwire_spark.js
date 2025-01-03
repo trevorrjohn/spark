@@ -42,7 +42,8 @@ var HotwireSpark = (function () {
 
   var config = {
     loggingEnabled: getConfigurationProperty("logging") ?? false,
-    htmlReloadMethod: getConfigurationProperty("html-reload-method")
+    htmlReloadMethod: getConfigurationProperty("html-reload-method"),
+    cableServerPath: getConfigurationProperty("cable-server-path")
   };
 
   var adapters = {
@@ -556,7 +557,7 @@ var HotwireSpark = (function () {
     }
   }
 
-  var consumer = createConsumer("/hotwire-spark");
+  var consumer = createConsumer(config.cableServerPath);
 
   // base IIFE to define idiomorph
   var Idiomorph = (function () {

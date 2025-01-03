@@ -52,7 +52,11 @@ class Hotwire::Spark::Middleware
     end
 
     def options
-      [ logging_option, html_reload_method_option ].compact.join("\n")
+      [ logging_option, html_reload_method_option, cable_server_path_option ].compact.join("\n")
+    end
+
+    def cable_server_path_option
+      view_helpers.tag.meta(name: "hotwire-spark:cable-server-path", content: Hotwire::Spark.cable_server_path)
     end
 
     def logging_option
