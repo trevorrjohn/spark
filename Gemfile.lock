@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    hotwire-spark (0.1.12)
+    hotwire-spark (0.1.13)
       listen
       rails (>= 7.0.0)
       zeitwerk
