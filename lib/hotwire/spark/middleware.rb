@@ -39,7 +39,7 @@ class Hotwire::Spark::Middleware
     end
 
     def script_tag
-      script_path = view_helpers.asset_path("hotwire_spark.js")
+      script_path = view_helpers.path_to_asset("hotwire_spark.js")
       view_helpers.javascript_include_tag(script_path, defer: "")
     end
 
